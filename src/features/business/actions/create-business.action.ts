@@ -1,6 +1,7 @@
 "use server";
 
 import { businessInfoSchema } from "@/features/business/schemas/business-info.schema";
+import { extractErrorMessage } from "@/lib/api/error-message";
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 
 export type CreateBusinessResult =
@@ -40,12 +41,12 @@ export async function createBusinessAction(input: unknown): Promise<CreateBusine
       cache: "no-store",
     });
 
-    if (!res.ok) {
+if (!res.ok) {
       const body = await res.json().catch(() => null);
       console.error("[createBusinessAction] backend rejected:", res.status, body);
       return {
         success: false,
-        message: Array.isArray(body?.message) ? body.message[0] : (body?.message ?? `ثبت کسب‌وکار با خطا مواجه شد (کد ${res.status})`),
+        message: extractErrorMessage(body, `ثبت کسب‌وکار با خطا مواجه شد (کد ${res.status})`),
       };
     }
 

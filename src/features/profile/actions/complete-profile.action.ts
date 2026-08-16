@@ -5,6 +5,7 @@ import { completeProfileSchema } from "@/features/profile/schemas/complete-profi
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import { jalaliToGregorian } from "@/lib/utils/jalali";
 import { IRAN_PROVINCES } from "@/lib/constants/iran-locations";
+import { extractErrorMessage } from "@/lib/api/error-message";
 
 export type CompleteProfileResult =
   | { success: true }
@@ -60,12 +61,12 @@ export async function completeProfileAction(input: unknown): Promise<CompletePro
       cache: "no-store",
     });
 
-    if (!res.ok) {
+if (!res.ok) {
       const body = await res.json().catch(() => null);
       console.error("[completeProfileAction] backend rejected:", res.status, body);
       return {
         success: false,
-        message: body?.message ?? `ذخیره‌ی اطلاعات با خطا مواجه شد (کد ${res.status})`,
+        message: extractErrorMessage(body, `ذخیره‌ی اطلاعات با خطا مواجه شد (کد ${res.status})`),
       };
     }
   } catch (err) {

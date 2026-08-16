@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 export function SuccessStep() {
   return (
@@ -15,12 +14,18 @@ export function SuccessStep() {
       </p>
 
       <div className="w-full space-y-2 mt-6">
-        <Button asChild className="w-full">
-          <Link href="/dashboard/business">برو به پروفایل من</Link>
-        </Button>
-        <Button asChild variant="outline" className="w-full">
-          <Link href="/dashboard">بازگشت به صفحه خانه</Link>
-        </Button>
+        <Link
+          href="/dashboard/business"
+          className="w-full inline-flex items-center justify-center rounded-md bg-emerald-950 text-white h-10 px-4 font-medium hover:bg-emerald-900 transition-colors"
+        >
+          برو به پروفایل من
+        </Link>
+        <Link
+          href="/dashboard"
+          className="w-full inline-flex items-center justify-center rounded-md border border-input h-10 px-4 font-medium hover:bg-neutral-50 transition-colors"
+        >
+          بازگشت به صفحه خانه
+        </Link>
       </div>
     </div>
   );

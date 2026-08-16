@@ -38,7 +38,7 @@ export default async function DashboardPage() {
 
         <nav className="mt-6 px-5">
           <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 overflow-hidden">
-            <DashboardMenuItem title="پروفایل من" subtitle="ویرایش پروفایل و اطلاعات" icon={Briefcase} href="/dashboard/profile" />
+            <DashboardMenuItem title="پروفایل من" subtitle="ویرایش پروفایل و اطلاعات" icon={Briefcase} href="/dashboard/business/profile" />
             <DashboardMenuItem title="اطلاعات حساب کاربری" subtitle="شماره موبایل و امنیت" icon={UserIcon} href="/dashboard/account" />
             <DashboardMenuItem title="خرید اشتراک VIP" subtitle="مزایای ویژه کاربران" icon={ShieldCheck} href="/dashboard/vip" />
             <DashboardMenuItem title="پرداخت‌ها" subtitle="تاریخچه تراکنش‌ها" icon={CreditCard} href="/dashboard/payments" />

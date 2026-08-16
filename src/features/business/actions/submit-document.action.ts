@@ -1,5 +1,6 @@
 "use server";
 
+import { extractErrorMessage } from "@/lib/api/error-message";
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 
 export type DocumentType = "NATIONAL_ID_FRONT" | "NATIONAL_ID_BACK" | "BUSINESS_LICENSE_PHOTO";
@@ -35,10 +36,10 @@ export async function submitBusinessDocumentAction(input: SubmitDocumentInput): 
       cache: "no-store",
     });
 
-    if (!res.ok) {
+if (!res.ok) {
       const errBody = await res.json().catch(() => null);
       console.error("[submitBusinessDocumentAction] backend rejected:", res.status, errBody);
-      return { success: false, message: errBody?.message ?? `ثبت مدرک با خطا مواجه شد (کد ${res.status})` };
+      return { success: false, message: extractErrorMessage(errBody, `ثبت مدرک با خطا مواجه شد (کد ${res.status})`) };
     }
   } catch (err) {
     console.error("[submitBusinessDocumentAction] network error:", err);
