@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { updateBusinessProfileAction } from "@/features/business/actions/update-business-profile.action";
 import { uploadFileAction } from "@/features/business/actions/upload-file.action";
+import { isFileTooLarge } from "@/lib/validate-file";
 
 interface BasicInfoFormProps {
   businessId: string;
@@ -22,8 +23,12 @@ export function BasicInfoForm({ businessId, initialName, initialBio, initialLogo
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
 
-  async function handleLogoChange(file: File | null) {
+async function handleLogoChange(file: File | null) {
     if (!file) return;
+    if (isFileTooLarge(file, 20)) {
+      toast.error("حجم لوگو نباید بیشتر از ۲۰ مگابایت باشد");
+      return;
+    }
     setLogoFile(file);
     setIsUploadingLogo(true);
 
@@ -59,10 +64,15 @@ export function BasicInfoForm({ businessId, initialName, initialBio, initialLogo
         <label className="flex items-center gap-3 border border-dashed border-neutral-300 rounded-lg p-3 cursor-pointer hover:bg-neutral-50">
           <input type="file" accept="image/*" className="hidden" onChange={(e) => handleLogoChange(e.target.files?.[0] ?? null)} />
           <div className="w-14 h-14 rounded-full bg-neutral-100 shrink-0 overflow-hidden flex items-center justify-center text-xs text-neutral-400">
-            {logoId ? "ثبت شد" : "بدون لوگو"}
+            {logoId ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={`/api/backend/files/${logoId}`} alt="لوگوی فعلی" className="w-full h-full object-cover" />
+            ) : (
+              "بدون لوگو"
+            )}
           </div>
           <span className="text-sm text-neutral-600">
-            {isUploadingLogo ? "در حال آپلود..." : logoFile ? logoFile.name : "برای آپلود لوگو کلیک کنید"}
+            {isUploadingLogo ? "در حال آپلود..." : logoFile ? logoFile.name : "برای آپلود یا تغییر لوگو کلیک کنید"}
           </span>
         </label>
       </div>

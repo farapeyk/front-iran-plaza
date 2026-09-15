@@ -1,12 +1,18 @@
+// src/features/home/components/navbar.tsx
 "use client";
 
 import Link from "next/link";
-import { Menu, User, Plus } from "lucide-react";
+import { Menu, User, Plus, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { MobileDrawer } from "./mobile-drawer";
+import type { CurrentUser } from "@/types/auth"; // ✅ اضافه شد
 
-export function Navbar() {
+interface NavbarProps {
+  user?: CurrentUser | null; // ✅ اضافه شد
+}
+
+export function Navbar({ user }: NavbarProps) {
   return (
     <header className="w-full bg-[#FAF7F0] border-b border-amber-900/5 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -32,32 +38,49 @@ export function Navbar() {
               ثبت رایگان کسب و کار
             </Button>
           </Link>
-          <Link href="/login">
-            <Button variant="outline" className="rounded-full border-gray-300 text-gray-700 hover:bg-gray-100">
-              <User className="w-4 h-4 ml-2" />
-              ورود / ثبت نام
-            </Button>
-          </Link>
+          
+          {/* ✅ شرط لاگین بودن یا نبودن */}
+          {user ? (
+            <Link href="/dashboard" className="flex items-center gap-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-full px-4 py-2.5 hover:bg-gray-100 transition-colors">
+              <UserCircle className="w-5 h-5 text-[#0B3C26]" />
+              {user.fullName || user.phone}
+            </Link>
+          ) : (
+            <Link href="/login">
+              <Button variant="outline" className="rounded-full border-gray-300 text-gray-700 hover:bg-gray-100">
+                <User className="w-4 h-4 ml-2" />
+                ورود / ثبت نام
+              </Button>
+            </Link>
+          )}
         </div>
 
-        {/* Mobile Header Elements - ✅ راه‌حل جدید */}
+        {/* Mobile Header Elements */}
         <div className="flex md:hidden items-center justify-between w-full">
           <Sheet>
             <SheetTrigger className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
               <Menu className="w-6 h-6 text-gray-800" />
             </SheetTrigger>
-            <MobileDrawer isLoggedIn={false} />
+            {/* پاس دادن اطلاعات کاربر به منوی موبایل */}
+            <MobileDrawer isLoggedIn={!!user} user={user ? { name: user.fullName || user.phone, phone: user.phone } : undefined} />
           </Sheet>
 
           <Link href="/" className="text-xl font-black text-[#0B3C26]">
             ایران پلازا
           </Link>
 
-          <Link href="/login">
-            <Button variant="ghost" size="icon" className="text-gray-800">
-              <User className="w-6 h-6" />
-            </Button>
-          </Link>
+          {/* ✅ آیکون کاربر یا ورود در موبایل */}
+          {user ? (
+            <Link href="/dashboard" className="text-gray-800">
+              <UserCircle className="w-6 h-6" />
+            </Link>
+          ) : (
+            <Link href="/login">
+              <Button variant="ghost" size="icon" className="text-gray-800">
+                <User className="w-6 h-6" />
+              </Button>
+            </Link>
+          )}
         </div>
 
       </div>

@@ -1,3 +1,4 @@
+// src/app/(dashboard)/dashboard/profile/page.tsx
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import type { CurrentUser } from "@/types/auth";
 import { DashboardHeader } from "@/features/dashboard/components/dashboard-header";

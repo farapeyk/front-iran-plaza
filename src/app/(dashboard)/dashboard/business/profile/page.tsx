@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { FileText, Phone, MapPin, Images, Share2, Wrench, Package, Info, Clock, CreditCard } from "lucide-react";
+import { FileText, Phone, MapPin, Images, Share2, Wrench, Package, Info, Clock, CreditCard, ListChecks } from "lucide-react";
 import { getMyBusiness } from "@/features/business/lib/get-my-business";
 import { DashboardMenuItem } from "@/features/dashboard/components/dashboard-menu-item";
 
@@ -21,6 +21,7 @@ export default async function BusinessProfilePage() {
         <nav>
           <DashboardMenuItem title="نام، بیوگرافی و لوگو" subtitle="نام برای نمایش عمومی و کد بیوگرافی کسب‌وکار" icon={FileText} href="/dashboard/business/profile/basic" />
           <DashboardMenuItem title="تماس و واتساپ" subtitle="شماره تماس‌ها و واتساپ" icon={Phone} href="/dashboard/business/profile/contact" />
+          <DashboardMenuItem title="امکانات" subtitle="پذیرش حضوری، بیرون‌بر و..." icon={ListChecks} href="/dashboard/business/profile/features" />
           <DashboardMenuItem title="آدرس و لوکیشن" subtitle="آدرس روی نقشه و شعبه‌ها" icon={MapPin} href="/dashboard/business/profile/address" />
           <DashboardMenuItem title="گالری تصاویر و ویدیو" subtitle="عکس‌ها و یک ویدیوی معرفی" icon={Images} href="/dashboard/business/profile/gallery" />
           <DashboardMenuItem title="شبکه‌های اجتماعی" subtitle="اینستاگرام، تلگرام و..." icon={Share2} href="/dashboard/business/profile/social" />

@@ -1,3 +1,5 @@
+// src/app/admin/(panel)/businesses/pending/page.tsx
+import Link from "next/link"; // ✅ اضافه شد
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import { PendingBusinessRow } from "@/features/admin/components/pending-business-row";
 
@@ -24,8 +26,16 @@ export default async function PendingBusinessesPage() {
 
   return (
     <div dir="rtl">
-      <h1 className="text-lg font-bold text-neutral-900 mb-1">کسب‌وکارهای در انتظار تایید</h1>
-      <p className="text-sm text-neutral-500 mb-6">{businesses.length} مورد در صف بررسی</p>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-lg font-bold text-neutral-900">کسب‌وکارهای در انتظار تایید</h1>
+          <p className="text-sm text-neutral-500 mt-1">{businesses.length} مورد در صف بررسی</p>
+        </div>
+        {/* ✅ دکمه ثبت دستی اضافه شد */}
+        <Link href="/admin/businesses/new" className="text-sm px-4 py-2 rounded-md bg-emerald-950 text-white hover:bg-emerald-900 transition-colors">
+          + ثبت حضوری/تلفنی
+        </Link>
+      </div>
 
       {businesses.length === 0 ? (
         <p className="text-sm text-neutral-500">موردی برای بررسی وجود ندارد.</p>

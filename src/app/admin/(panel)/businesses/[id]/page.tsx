@@ -1,6 +1,9 @@
+// src/app/admin/(panel)/businesses/[id]/page.tsx
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import { BusinessApprovalActions } from "@/features/admin/components/business-approval-actions";
+import { PlanChangeControl } from "@/features/admin/components/plan-change-control";
 import { DocumentReviewCard, type BusinessDocumentData } from "@/features/admin/components/document-review-card";
+import type { PlanSummary } from "@/features/admin/types/plan";
 
 interface BusinessDetail {
   id: string;
@@ -9,6 +12,7 @@ interface BusinessDetail {
   description: string | null;
   address: string | null;
   status: string;
+  planType: string;
   createdAt: string;
   documents?: BusinessDocumentData[];
 }
@@ -22,10 +26,27 @@ async function getBusinessDetail(id: string, accessToken: string): Promise<Busin
   return res.json();
 }
 
+async function getPlans(): Promise<PlanSummary[]> {
+  try {
+    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/plans`, { cache: "no-store" });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
 export default async function BusinessDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const accessToken = await getAccessTokenCookie();
-  const business = accessToken ? await getBusinessDetail(id, accessToken) : null;
+  
+  // دریافت همزمان اطلاعات کسب‌وکار و لیست پلن‌ها
+  const [business, plans] = accessToken
+    ? await Promise.all([
+        getBusinessDetail(id, accessToken),
+        getPlans()
+      ])
+    : [null, []];
 
   if (!business) {
     return <p className="text-sm text-neutral-500" dir="rtl">کسب‌وکار پیدا نشد.</p>;
@@ -41,6 +62,13 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
         {business.address && <p className="text-sm text-neutral-500 mt-0.5">{business.address}</p>}
         {business.description && <p className="text-sm text-neutral-700 mt-2">{business.description}</p>}
       </div>
+
+      {/* ✅ اعمال تغییرات مورد نیاز شما */}
+      <PlanChangeControl 
+        businessId={business.id} 
+        currentPlanType={business.planType} 
+        plans={plans} 
+      />
 
       <BusinessApprovalActions businessId={business.id} status={business.status} />
 

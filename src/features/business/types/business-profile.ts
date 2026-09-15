@@ -9,7 +9,8 @@ export interface BusinessProfile {
   socialMedia: Record<string, string> | null;
   logoId: string | null;
   introVideoId: string | null;
-  status: string;
+  status: "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED"; 
+  rejectionReason?: string | null;
   updatedAt: string;
 }
 

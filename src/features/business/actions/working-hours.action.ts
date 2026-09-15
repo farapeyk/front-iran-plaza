@@ -23,7 +23,7 @@ export async function updateWorkingHoursAction(
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-      body: JSON.stringify(entries),
+      body: JSON.stringify({ hours: entries }),
       cache: "no-store",
     });
 

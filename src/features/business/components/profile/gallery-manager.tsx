@@ -7,6 +7,7 @@ import { uploadFileAction } from "@/features/business/actions/upload-file.action
 import { addGalleryImageAction, removeGalleryImageAction } from "@/features/business/actions/gallery.action";
 import { updateBusinessProfileAction } from "@/features/business/actions/update-business-profile.action";
 import type { GalleryImageData } from "@/features/business/types/business-profile";
+import { isFileTooLarge } from "@/lib/validate-file";
 
 function fileUrl(fileId: string) {
   return `/api/backend/files/${fileId}`;
@@ -20,6 +21,10 @@ export function GalleryManager({ businessId, initialImages, initialIntroVideoId 
 
   function handleAddImage(file: File | null) {
     if (!file) return;
+    if (isFileTooLarge(file, 20)) {
+      toast.error("حجم تصویر نباید بیشتر از ۲۰ مگابایت باشد");
+      return;
+    }
     startImageUpload(async () => {
       const formData = new FormData();
       formData.append("file", file);
@@ -53,6 +58,12 @@ export function GalleryManager({ businessId, initialImages, initialIntroVideoId 
 
   async function handleVideoChange(file: File | null) {
     if (!file) return;
+    // ⚠️ فعلاً بک‌اند برای ویدیو هم همون سقف ۲۰ مگابایتی فایل عادی رو داره؛
+    // اگه بعداً یه limit جدا براش گرفتیم، این عدد رو عوض کنید.
+    if (isFileTooLarge(file, 20)) {
+      toast.error("حجم ویدیو نباید بیشتر از ۲۰ مگابایت باشد");
+      return;
+    }
     setIsUploadingVideo(true);
 
     const formData = new FormData();

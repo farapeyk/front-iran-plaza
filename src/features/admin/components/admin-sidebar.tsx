@@ -1,19 +1,24 @@
+// src/features/admin/components/admin-sidebar.tsx
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Building2, Wallet, ShieldCheck, Tags, MessageSquare, LogOut , Users } from "lucide-react";
+import { LayoutDashboard, Building2, Wallet, ShieldCheck, Tags, MessageSquare, LogOut, Users, Ban , BookPlusIcon } from "lucide-react"; // ✅ Ban اضافه شد
 import { adminLogoutAction } from "@/features/admin/actions/admin-auth.action";
+
 const NAV_ITEMS = [
   { href: "/admin", label: "داشبورد", icon: LayoutDashboard },
-  { href: "/admin/businesses", label: "تمام کسب‌وکارها", icon: Building2 }, // این خط اضافه شد
+  { href: "/admin/businesses", label: "تمام کسب‌وکارها", icon: Building2 },
+  { href: "/admin/categories", label: "دسته بندی ها", icon: BookPlusIcon },
   { href: "/admin/businesses/pending", label: "کسب‌وکارهای در انتظار", icon: Building2 },
+  { href: "/admin/businesses/rejected", label: "کسب‌وکارهای رد شده", icon: Ban }, 
   { href: "/admin/users", label: "کاربران", icon: Users },
   { href: "/admin/wallet", label: "کیف پول و تراکنش‌ها", icon: Wallet },
   { href: "/admin/roles", label: "نقش‌ها (RBAC)", icon: ShieldCheck },
   { href: "/admin/plans", label: "پلن‌ها", icon: Tags },
   { href: "/admin/messages", label: "پیام به کاربران", icon: MessageSquare },
 ];
+
 export function AdminSidebar() {
   const pathname = usePathname();
 
@@ -23,7 +28,7 @@ export function AdminSidebar() {
         <span className="font-bold text-emerald-950">پنل ادمین — ایران پلازا</span>
       </div>
 
-      <nav className="flex-1 py-3">
+      <nav className="flex-1 py-3 overflow-y-auto">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || (href !== "/admin" && pathname.startsWith(href));
           return (
