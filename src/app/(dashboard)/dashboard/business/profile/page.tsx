@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { FileText, Phone, MapPin, Images, Share2, Wrench, Package, Info, Clock, CreditCard, ListChecks } from "lucide-react";
+import { FileText, Phone, MapPin, Images, Share2, Wrench, Package, Info, Clock, CreditCard, ListChecks, BarChart } from "lucide-react";
 import { getMyBusiness } from "@/features/business/lib/get-my-business";
 import { DashboardMenuItem } from "@/features/dashboard/components/dashboard-menu-item";
 
@@ -30,6 +30,12 @@ export default async function BusinessProfilePage() {
           <DashboardMenuItem title="درباره ما" subtitle="متن کامل معرفی کسب‌وکار" icon={Info} href="/dashboard/business/profile/about" />
           <DashboardMenuItem title="ساعات کاری" subtitle="ساعت کاری هر روز هفته" icon={Clock} href="/dashboard/business/profile/hours" />
           <DashboardMenuItem title="شرایط اقساط" subtitle="پیش‌پرداخت، سود و بازه‌ی اقساط" icon={CreditCard} href="/dashboard/business/profile/installment" />
+          <DashboardMenuItem 
+  title="آمار بازدید" 
+  subtitle="تحلیل بازدید، تماس و کلیک‌ها" 
+  icon={BarChart} 
+  href="/dashboard/business/profile/analytics" 
+/>
         </nav>
       </div>
     </div>

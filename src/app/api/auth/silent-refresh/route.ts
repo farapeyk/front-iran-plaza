@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { setAuthCookies, clearAuthCookies, getRefreshTokenCookie } from "@/lib/auth/cookies";
 
 export async function GET(request: NextRequest) {
-  const redirectTo = request.nextUrl.searchParams.get("redirect") || "/dashboard";
+  const requestedRedirect = request.nextUrl.searchParams.get("redirect") || "/dashboard";
+  const redirectTo = requestedRedirect.startsWith("/") && !requestedRedirect.startsWith("//") && !requestedRedirect.includes("\\")
+    ? requestedRedirect : "/dashboard";
   const loginPath = redirectTo.startsWith("/admin") ? "/admin/login" : "/login";
   const refreshToken = await getRefreshTokenCookie();
 
@@ -13,7 +15,8 @@ export async function GET(request: NextRequest) {
   try {
     const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/auth/refresh`, {
       method: "POST",
-      headers: { Authorization: `Bearer ${refreshToken}` },
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken }),
       cache: "no-store",
     });
 

@@ -25,6 +25,7 @@ export async function createBusinessAction(input: unknown): Promise<CreateBusine
   const payload = {
     name,
     phone,
+    city,
     description: bio || undefined,
     address: `${province}، ${city}`,
     businessType: "SOLE_PROPRIETOR",

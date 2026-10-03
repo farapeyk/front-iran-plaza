@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Building2, Wallet, ShieldCheck, Tags, MessageSquare, LogOut, Users, Ban , BookPlusIcon } from "lucide-react"; // ✅ Ban اضافه شد
+import { LayoutDashboard, Building2, Wallet, ShieldCheck, Tags, MessageSquare, LogOut, Users, Ban , BookPlusIcon, Settings } from "lucide-react"; // ✅ Ban اضافه شد
 import { adminLogoutAction } from "@/features/admin/actions/admin-auth.action";
 
 const NAV_ITEMS = [
@@ -17,6 +17,7 @@ const NAV_ITEMS = [
   { href: "/admin/roles", label: "نقش‌ها (RBAC)", icon: ShieldCheck },
   { href: "/admin/plans", label: "پلن‌ها", icon: Tags },
   { href: "/admin/messages", label: "پیام به کاربران", icon: MessageSquare },
+  { href: "/admin/settings", label: "تنظیمات سیستم", icon: Settings },
 ];
 
 export function AdminSidebar() {
