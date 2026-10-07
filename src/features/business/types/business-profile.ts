@@ -1,5 +1,7 @@
 export interface BusinessProfile {
   id: string;
+  onboardingStep: number;
+  categories?: { categoryId: string }[];
   name: string;
   description: string | null; // بیوگرافی کوتاه (حداکثر ۱۰۰ کاراکتر)
   aboutText: string | null; // متن کامل «درباره ما»

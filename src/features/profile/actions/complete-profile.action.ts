@@ -1,8 +1,10 @@
 "use server";
 
+import { actionFetch } from '@/lib/api/action-fetch';
+
 import { redirect } from "next/navigation";
 import { completeProfileSchema } from "@/features/profile/schemas/complete-profile.schema";
-import { getAccessTokenCookie } from "@/lib/auth/cookies";
+import { getActionAccessToken } from '@/lib/auth/action-access-token';
 import { jalaliToGregorian } from "@/lib/utils/jalali";
 import { IRAN_PROVINCES } from "@/lib/constants/iran-locations";
 import { extractErrorMessage } from "@/lib/api/error-message";
@@ -24,7 +26,7 @@ export async function completeProfileAction(input: unknown): Promise<CompletePro
     return { success: false, message: parsed.error.issues[0]?.message ?? "ورودی نامعتبر است" };
   }
 
-  const accessToken = await getAccessTokenCookie();
+  const accessToken = await getActionAccessToken();
   if (!accessToken) {
     return { success: false, message: "نشست شما منقضی شده، دوباره وارد شوید" };
   }
@@ -34,6 +36,8 @@ export async function completeProfileAction(input: unknown): Promise<CompletePro
 
   const province = IRAN_PROVINCES.find((p) => p.id === provinceId);
   const city = province?.cities.find((c) => c.id === cityId);
+
+  if (!province || !city) return { success: false, message: 'استان و شهر معتبر نیست.' };
 
   const isoDate = jalaliToGregorian(birthYear, birthMonth, birthDay);
 
@@ -48,10 +52,9 @@ export async function completeProfileAction(input: unknown): Promise<CompletePro
   };
 
   // لاگ موقت برای دیباگ — بعد از حل مشکل می‌توانید حذفش کنید
-  console.log("[completeProfileAction] payload sent to backend:", payload);
 
   try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/users/me`, {
+    const res = await actionFetch(`${process.env.BACKEND_INTERNAL_URL}/api/users/me`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -63,7 +66,7 @@ export async function completeProfileAction(input: unknown): Promise<CompletePro
 
 if (!res.ok) {
       const body = await res.json().catch(() => null);
-      console.error("[completeProfileAction] backend rejected:", res.status, body);
+      console.error("[completeProfileAction] backend rejected:", res.status);
       return {
         success: false,
         message: extractErrorMessage(body, `ذخیره‌ی اطلاعات با خطا مواجه شد (کد ${res.status})`),

@@ -1,13 +1,17 @@
 "use server";
 
-import { getAccessTokenCookie } from "@/lib/auth/cookies";
+import { getActionAccessToken } from "@/lib/auth/action-access-token";
+import { validateUpload } from "@/lib/validate-upload";
+import { extractErrorMessage } from "@/lib/api/error-message";
 
 export type UploadFileResult = { success: true; fileId: string } | { success: false; message: string };
 
-// ⚠️ فرض کردم نام فیلد فایل توی FormData باید "file" باشه (رایج‌ترین قرارداد
-// NestJS با FileInterceptor('file')) — اگه بک‌اند اسم دیگه‌ای می‌خواد بگید.
+// Matches FileInterceptor('file') and the backend's 20 MB limit.
 export async function uploadFileAction(formData: FormData): Promise<UploadFileResult> {
-  const accessToken = await getAccessTokenCookie();
+  if (!(formData instanceof FormData)) return { success: false, message: "فایل معتبر نیست." };
+  const validationError = await validateUpload(formData);
+  if (validationError) return { success: false, message: validationError };
+  const accessToken = await getActionAccessToken();
   if (!accessToken) {
     return { success: false, message: "نشست شما منقضی شده، دوباره وارد شوید" };
   }
@@ -22,11 +26,12 @@ export async function uploadFileAction(formData: FormData): Promise<UploadFileRe
 
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      console.error("[uploadFileAction] backend rejected:", res.status, body);
-      return { success: false, message: body?.message ?? `آپلود فایل با خطا مواجه شد (کد ${res.status})` };
+      console.error("[uploadFileAction] backend rejected:", res.status);
+      return { success: false, message: extractErrorMessage(body, `آپلود فایل با خطا مواجه شد (کد ${res.status})`) };
     }
 
     const file = await res.json();
+    if (typeof file?.id !== 'string' || !file.id) return { success: false, message: "پاسخ آپلود معتبر نیست." };
     return { success: true, fileId: file.id };
   } catch (err) {
     console.error("[uploadFileAction] network error:", err);

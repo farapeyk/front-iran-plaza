@@ -27,7 +27,8 @@ export async function createManualBusinessAction(
     return createResult;
   }
 
-  const businessId = createResult.data.id;
+  const businessId = createResult.data?.id;
+  if (typeof businessId !== 'string' || !businessId) return { success: false, message: 'پاسخ ثبت معتبر نیست؛ قبل از ثبت مجدد فهرست کسب‌وکارها را بررسی کنید.' };
 
   if (planId) {
     const planResult = await authedFetch(`/api/admin/businesses/${businessId}/plan`, "PATCH", { planId });

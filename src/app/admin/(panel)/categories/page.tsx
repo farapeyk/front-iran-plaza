@@ -1,8 +1,9 @@
+import { pageFetch } from '@/lib/api/page-fetch';
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import { CategoryManager, type AdminCategoryItem } from "@/features/admin/components/category-manager";
 
 async function getCategories(accessToken: string): Promise<AdminCategoryItem[]> {
-  const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/admin/categories`, {
+  const res = await pageFetch(`${process.env.BACKEND_INTERNAL_URL}/api/admin/categories`, {
     headers: { Authorization: `Bearer ${accessToken}` },
     cache: "no-store",
   });

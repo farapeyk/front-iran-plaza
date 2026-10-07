@@ -1,4 +1,5 @@
 "use client";
+import { useProfileBusy } from "./onboarding-context";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -10,6 +11,7 @@ import type { ServiceItem } from "@/features/business/types/business-extras";
 
 export function ServicesManager({ businessId, initialServices }: { businessId: string; initialServices: ServiceItem[] }) {
   const [isPending, startTransition] = useTransition();
+  useProfileBusy(isPending);
   const [services, setServices] = useState(initialServices);
   const [showAdd, setShowAdd] = useState(false);
   const [name, setName] = useState("");

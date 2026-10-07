@@ -1,7 +1,7 @@
 "use client";
 
 import { Lock } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,10 +14,12 @@ interface IdentityStepProps {
   user: CurrentUser;
   onSubmit: (values: IdentityInput) => void;
   onBack: () => void;
+  initialValues?: Partial<IdentityInput>;
 }
 
-export function IdentityStep({ user, onSubmit, onBack }: IdentityStepProps) {
-  const [firstName = "", lastName = ""] = (user.fullName ?? "").split(" ", 2);
+export function IdentityStep({ user, onSubmit, onBack, initialValues }: IdentityStepProps) {
+  const [firstName = "", ...lastNames] = (user.fullName ?? "").split(" ");
+  const lastName = lastNames.join(' ');
   const knownBirth = user.birthDate ? gregorianToJalali(user.birthDate) : null;
 
   const form = useForm<IdentityInput>({
@@ -34,8 +36,11 @@ export function IdentityStep({ user, onSubmit, onBack }: IdentityStepProps) {
       birthMonth: knownBirth?.jm,
       birthYear: knownBirth?.jy,
       email: user.email ?? "",
+      ...initialValues,
     },
   });
+
+  const dates = useWatch({ control: form.control });
 
   return (
     <div>
@@ -72,9 +77,9 @@ export function IdentityStep({ user, onSubmit, onBack }: IdentityStepProps) {
         <div className="space-y-2">
           <label className="text-sm font-medium">تاریخ صدور</label>
           <JalaliDateSelect
-            day={form.watch("issueDay")}
-            month={form.watch("issueMonth")}
-            year={form.watch("issueYear")}
+            day={dates.issueDay}
+            month={dates.issueMonth}
+            year={dates.issueYear}
             onDayChange={(v) => form.setValue("issueDay", v)}
             onMonthChange={(v) => form.setValue("issueMonth", v)}
             onYearChange={(v) => form.setValue("issueYear", v)}
@@ -86,7 +91,7 @@ export function IdentityStep({ user, onSubmit, onBack }: IdentityStepProps) {
         <Controller control={form.control} name="firstName" render={({ field, fieldState }) => (
           <div className="space-y-2">
             <label className="text-sm font-medium">نام</label>
-            <Input {...field} disabled={!!firstName} aria-invalid={fieldState.invalid} />
+            <Input {...field} disabled={false} aria-invalid={fieldState.invalid} />
             {fieldState.error && <p className="text-sm text-destructive">{fieldState.error.message}</p>}
           </div>
         )} />
@@ -94,7 +99,7 @@ export function IdentityStep({ user, onSubmit, onBack }: IdentityStepProps) {
         <Controller control={form.control} name="lastName" render={({ field, fieldState }) => (
           <div className="space-y-2">
             <label className="text-sm font-medium">نام خانوادگی</label>
-            <Input {...field} disabled={!!lastName} aria-invalid={fieldState.invalid} />
+            <Input {...field} disabled={false} aria-invalid={fieldState.invalid} />
             {fieldState.error && <p className="text-sm text-destructive">{fieldState.error.message}</p>}
           </div>
         )} />
@@ -118,9 +123,9 @@ export function IdentityStep({ user, onSubmit, onBack }: IdentityStepProps) {
         <div className="space-y-2">
           <label className="text-sm font-medium">تاریخ تولد</label>
           <JalaliDateSelect
-            day={form.watch("birthDay")}
-            month={form.watch("birthMonth")}
-            year={form.watch("birthYear")}
+            day={dates.birthDay}
+            month={dates.birthMonth}
+            year={dates.birthYear}
             onDayChange={(v) => form.setValue("birthDay", v)}
             onMonthChange={(v) => form.setValue("birthMonth", v)}
             onYearChange={(v) => form.setValue("birthYear", v)}

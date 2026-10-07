@@ -1,3 +1,5 @@
+import { Pagination } from '@/components/pagination';
+import { getBusinessPage, pageNumber } from '@/features/admin/lib/get-business-page';
 // src/app/admin/(panel)/businesses/pending/page.tsx
 import Link from "next/link"; // ✅ اضافه شد
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
@@ -11,25 +13,18 @@ interface PendingBusiness {
   createdAt: string;
 }
 
-async function getPendingBusinesses(accessToken: string): Promise<PendingBusiness[]> {
-  const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/admin/pending?skip=0&take=50`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-    cache: "no-store",
-  });
-  if (!res.ok) return [];
-  return res.json();
-}
-
-export default async function PendingBusinessesPage() {
+export default async function PendingBusinessesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+  const page = pageNumber((await searchParams).page);
   const accessToken = await getAccessTokenCookie();
-  const businesses = accessToken ? await getPendingBusinesses(accessToken) : [];
+  const result = accessToken ? await getBusinessPage<PendingBusiness>(accessToken, page, 'PENDING') : { data: [], total: 0, take: 20, page };
+  const businesses = result.data;
 
   return (
     <div dir="rtl">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-lg font-bold text-neutral-900">کسب‌وکارهای در انتظار تایید</h1>
-          <p className="text-sm text-neutral-500 mt-1">{businesses.length} مورد در صف بررسی</p>
+          <p className="text-sm text-neutral-500 mt-1">{result.total} مورد در صف بررسی</p>
         </div>
         {/* ✅ دکمه ثبت دستی اضافه شد */}
         <Link href="/admin/businesses/new" className="text-sm px-4 py-2 rounded-md bg-emerald-950 text-white hover:bg-emerald-900 transition-colors">
@@ -46,6 +41,7 @@ export default async function PendingBusinessesPage() {
           ))}
         </div>
       )}
+      <Pagination base="/admin/businesses/pending" page={page} total={result.total} take={result.take} />
     </div>
   );
 }

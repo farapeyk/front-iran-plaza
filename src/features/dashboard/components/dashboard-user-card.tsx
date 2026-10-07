@@ -1,14 +1,18 @@
 import { Plus, User, AlertCircle, CheckCircle2, Clock } from "lucide-react";
 import Link from "next/link";
 import type { BusinessProfile } from "@/features/business/types/business-profile";
+import { PROFILE_STEPS, profileStepUrl } from "@/features/business/lib/onboarding-steps";
 
 interface DashboardUserCardProps {
   fullName: string | null;
   phone: string;
   business: BusinessProfile | null;
+  needsRegistration?: boolean;
 }
 
-export function DashboardUserCard({ fullName, phone, business }: DashboardUserCardProps) {
+export function DashboardUserCard({ fullName, phone, business, needsRegistration = false }: DashboardUserCardProps) {
+  const savedStep = business?.onboardingStep;
+  const isProfileIncomplete = savedStep !== undefined && savedStep >= 0 && savedStep < PROFILE_STEPS.length;
   return (
     <div className="px-5 pt-6">
       <div className="rounded-3xl p-6 bg-white shadow-sm border border-neutral-100">
@@ -27,6 +31,26 @@ export function DashboardUserCard({ fullName, phone, business }: DashboardUserCa
 
         {business ? (
           <div className="space-y-3">
+            {needsRegistration && (
+              <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 space-y-3">
+                <p className="font-bold text-sm">ثبت اولیه کسب‌وکار و مدارک شما هنوز کامل نشده است</p>
+                <p className="text-xs leading-6">مشخصات کسب‌وکار، اطلاعات هویتی و سه مدرک را تکمیل و در پایان تأیید کنید.</p>
+                <Link href="/dashboard/business/new" className="inline-flex w-full justify-center rounded-xl bg-emerald-950 p-3 text-sm font-bold text-white">ادامه ثبت و ارسال برای تأیید ادمین</Link>
+              </div>
+            )}
+            {!needsRegistration && business.status !== 'APPROVED' && <p className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">دسترسی به پروفایل پس از تأیید کسب‌وکار توسط ادمین فعال می‌شود.</p>}
+            {isProfileIncomplete && !needsRegistration && business.status === 'APPROVED' && (
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 space-y-3">
+                <p className="font-bold text-sm text-emerald-950">پروفایل {business.name} هنوز کامل نشده است</p>
+                <p className="text-sm text-emerald-900">
+                  مرحله {savedStep + 1} از {PROFILE_STEPS.length}: {PROFILE_STEPS[savedStep].title}
+                </p>
+                <p className="text-xs leading-6 text-emerald-900">اطلاعات ذخیره‌شده شما محفوظ است؛ تکمیل پروفایل را از همین مرحله ادامه دهید.</p>
+                <Link href={profileStepUrl(savedStep)} className="w-full inline-flex items-center justify-center rounded-xl bg-emerald-950 px-3 py-3 text-sm font-bold text-white hover:bg-emerald-900">
+                  این پروفایل را تکمیل کنید
+                </Link>
+              </div>
+            )}
             <div className="flex items-center justify-between p-3 rounded-xl bg-neutral-50">
               <span className="text-sm text-neutral-600">وضعیت کسب‌وکار</span>
               {business.status === "APPROVED" && (
@@ -36,7 +60,7 @@ export function DashboardUserCard({ fullName, phone, business }: DashboardUserCa
               )}
               {business.status === "PENDING" && (
                 <span className="flex items-center gap-1 text-sm font-bold text-amber-600">
-                  <Clock size={16} /> در انتظار بررسی
+                  <Clock size={16} /> {needsRegistration ? 'ثبت اولیه ناقص' : 'در انتظار بررسی'}
                 </span>
               )}
               {business.status === "REJECTED" && (
@@ -44,6 +68,7 @@ export function DashboardUserCard({ fullName, phone, business }: DashboardUserCa
                   <AlertCircle size={16} /> رد شده
                 </span>
               )}
+              {business.status === "SUSPENDED" && <span className="text-sm font-bold text-red-600">معلق شده</span>}
             </div>
 
             {business.status === "REJECTED" && (

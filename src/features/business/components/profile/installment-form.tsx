@@ -1,4 +1,5 @@
 "use client";
+import { useProfileFlow, useProfileBusy } from "./onboarding-context";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -9,6 +10,8 @@ import { REPAYMENT_PERIOD_OPTIONS, type InstallmentPlanData } from "@/features/b
 
 export function InstallmentForm({ businessId, initialPlan }: { businessId: string; initialPlan: InstallmentPlanData | null }) {
   const [isPending, startTransition] = useTransition();
+  const flow = useProfileFlow();
+  useProfileBusy(isPending);
   const [isActive, setIsActive] = useState(initialPlan?.isActive ?? false); // ✅ استیت برای فعال/غیرفعال
   const [minDownPayment, setMinDownPayment] = useState(String(initialPlan?.minDownPaymentPercent ?? ""));
   const [monthlyInterest, setMonthlyInterest] = useState(String(initialPlan?.monthlyInterestPercent ?? ""));
@@ -37,7 +40,7 @@ export function InstallmentForm({ businessId, initialPlan }: { businessId: strin
         guaranteeNote: guaranteeNote || undefined,
       });
       if (!result.success) toast.error(result.message);
-      else toast.success("شرایط اقساط ذخیره شد");
+      else { toast.success("شرایط اقساط ذخیره شد"); await flow.advance(); }
     });
   }
 
@@ -96,7 +99,7 @@ export function InstallmentForm({ businessId, initialPlan }: { businessId: strin
       </div>
 
       <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "در حال ذخیره..." : "ذخیره شرایط اقساط"}
+        {isPending ? "در حال ذخیره..." : flow.active ? "ذخیره و ادامه" : "ذخیره شرایط اقساط"}
       </Button>
     </form>
   );

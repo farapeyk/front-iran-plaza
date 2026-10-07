@@ -1,19 +1,13 @@
+import { backendGet } from '@/lib/api/backend-get';
 import Link from "next/link";
 import { Building2, FileWarning } from "lucide-react";
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 
-async function getCount(path: string, accessToken: string): Promise<number> {
-  try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}${path}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      cache: "no-store",
-    });
-    if (!res.ok) return 0;
-    const data = await res.json();
-    return Array.isArray(data) ? data.length : 0;
-  } catch {
-    return 0;
-  }
+async function getCount(path: string, token: string): Promise<number> {
+  const data = await backendGet<{ total: number } | unknown[]>(path, token);
+  if (Array.isArray(data)) return data.length;
+  if (!Number.isSafeInteger(data.total) || data.total < 0) throw new Error('پاسخ شمارش معتبر نیست.');
+  return data.total;
 }
 
 export default async function AdminDashboardPage() {
@@ -21,7 +15,7 @@ export default async function AdminDashboardPage() {
 
   const [pendingBusinesses, pendingDocuments] = accessToken
     ? await Promise.all([
-        getCount("/api/businesses/admin/pending?skip=0&take=50", accessToken),
+        getCount("/api/businesses/admin?status=PENDING&skip=0&take=1", accessToken),
         getCount("/api/admin/documents/pending?skip=0&take=50", accessToken),
       ])
     : [0, 0];
@@ -40,8 +34,8 @@ export default async function AdminDashboardPage() {
 
         <Link href="/admin/businesses/pending" className="border border-neutral-200 rounded-lg p-5 bg-white hover:border-emerald-300 transition-colors">
           <FileWarning className="text-amber-600 mb-2" size={22} />
-          <p className="text-2xl font-bold text-neutral-900">{pendingDocuments}</p>
-          <p className="text-sm text-neutral-500 mt-1">مدرک در انتظار بررسی</p>
+          <p className="text-2xl font-bold text-neutral-900">{pendingDocuments >= 50 ? '۵۰+' : pendingDocuments}</p>
+          <p className="text-sm text-neutral-500 mt-1">مدرک در انتظار بررسی (اولین ۵۰ مورد)</p>
         </Link>
       </div>
 

@@ -1,4 +1,5 @@
 "use client";
+import { useProfileFlow, useProfileBusy } from "./onboarding-context";
 
 import { useState, useTransition } from "react";
 import { Trash2, Plus } from "lucide-react";
@@ -8,18 +9,10 @@ import { Input } from "@/components/ui/input";
 import { updateBusinessProfileAction } from "@/features/business/actions/update-business-profile.action";
 
 const PLATFORM_OPTIONS = [
-  { value: "instagram", label: "اینستاگرام" },
-  { value: "telegram", label: "تلگرام" },
-  { value: "x", label: "ایکس (توییتر)" },
-  { value: "youtube", label: "یوتیوب" },
-  { value: "facebook", label: "فیسبوک" },
-  { value: "linkedin", label: "لینکدین" },
-  { value: "pinterest", label: "پینترست" },
-  { value: "aparat", label: "آپارات" },
-  { value: "rubika", label: "روبیکا" },
-  { value: "bale", label: "بله" },
-  { value: "eitaa", label: "ایتا" },
-  { value: "soroush", label: "سروش" },
+  { value: 'instagram', label: 'اینستاگرام' },
+  { value: 'telegram', label: 'تلگرام' },
+  { value: 'whatsapp', label: 'واتساپ' },
+  { value: 'website', label: 'وب‌سایت' },
 ];
 
 interface SocialAccount {
@@ -34,6 +27,8 @@ function toEntries(social: Record<string, string> | null): SocialAccount[] {
 
 export function SocialMediaForm({ businessId, initialSocial }: { businessId: string; initialSocial: Record<string, string> | null }) {
   const [isPending, startTransition] = useTransition();
+  const flow = useProfileFlow();
+  useProfileBusy(isPending);
   const [accounts, setAccounts] = useState<SocialAccount[]>(
     toEntries(initialSocial).length > 0 ? toEntries(initialSocial) : [{ platform: "instagram", value: "" }],
   );
@@ -57,7 +52,7 @@ export function SocialMediaForm({ businessId, initialSocial }: { businessId: str
     startTransition(async () => {
       const result = await updateBusinessProfileAction(businessId, { socialMedia });
       if (!result.success) toast.error(result.message);
-      else toast.success("اطلاعات ذخیره شد");
+      else { toast.success("اطلاعات ذخیره شد"); await flow.advance(); }
     });
   }
 
@@ -71,7 +66,7 @@ export function SocialMediaForm({ businessId, initialSocial }: { businessId: str
             ))}
           </select>
           <Input value={account.value} onChange={(e) => updateAccount(i, { value: e.target.value })} placeholder="آیدی یا لینک خود را وارد کنید" dir="ltr" className="text-left flex-1" disabled={isPending} />
-          <button type="button" onClick={() => removeAccount(i)} disabled={isPending} className="text-red-500 shrink-0">
+          <button type="button" onClick={() => removeAccount(i)} aria-label="حذف شبکه اجتماعی" disabled={isPending} className="text-red-500 shrink-0">
             <Trash2 size={18} />
           </button>
         </div>
@@ -83,7 +78,7 @@ export function SocialMediaForm({ businessId, initialSocial }: { businessId: str
       </button>
 
       <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "در حال ذخیره..." : "ذخیره اطلاعات"}
+        {isPending ? "در حال ذخیره..." : flow.active ? "ذخیره و ادامه" : "ذخیره اطلاعات"}
       </Button>
     </form>
   );

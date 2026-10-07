@@ -10,18 +10,18 @@ export function SuccessStep() {
 
       <h2 className="text-lg font-bold text-neutral-900">ثبت نام شما با موفقیت انجام شد</h2>
       <p className="text-sm text-neutral-500 mt-2 max-w-xs">
-        اطلاعات شما به‌زودی بررسی خواهد شد و پس از تایید، پروفایل VIP یک‌ماهه برای شما فعال خواهد شد.
+        مدارک شما برای بررسی ثبت شد. پس از تأیید مدیر می‌توانید پروفایل کسب‌وکار را تکمیل کنید.
       </p>
 
       <div className="w-full space-y-2 mt-6">
         <Link
-          href="/dashboard/business"
+          href="/dashboard"
           className="w-full inline-flex items-center justify-center rounded-md bg-emerald-950 text-white h-10 px-4 font-medium hover:bg-emerald-900 transition-colors"
         >
-          برو به پروفایل من
+          مشاهده وضعیت بررسی
         </Link>
         <Link
-          href="/dashboard"
+          href="/"
           className="w-full inline-flex items-center justify-center rounded-md border border-input h-10 px-4 font-medium hover:bg-neutral-50 transition-colors"
         >
           بازگشت به صفحه خانه

@@ -1,19 +1,11 @@
+import { backendGet } from '@/lib/api/backend-get';
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import { NotificationRow } from "@/features/notifications/components/notification-row";
 import type { NotificationItem } from "@/features/notifications/types";
 
 async function getNotifications(accessToken: string): Promise<NotificationItem[]> {
-  try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/notifications?page=1&limit=50`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      cache: "no-store",
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return Array.isArray(data) ? data : (data.data ?? []);
-  } catch {
-    return [];
-  }
+  const data = await backendGet<NotificationItem[] | { data: NotificationItem[] }>('/api/notifications?page=1&limit=50', accessToken);
+  return Array.isArray(data) ? data : data.data;
 }
 
 export default async function NotificationsPage() {

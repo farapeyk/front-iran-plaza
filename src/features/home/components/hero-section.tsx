@@ -16,25 +16,25 @@ export function HeroSection() {
         </p>
 
         {/* Search Box */}
-        <div className="bg-white p-2 sm:p-3 rounded-2xl sm:rounded-full shadow-lg border border-gray-100 flex flex-col sm:flex-row items-center gap-2 max-w-2xl mx-auto">
+        <form action="/businesses" method="get" className="bg-white p-2 sm:p-3 rounded-2xl sm:rounded-full shadow-lg border border-gray-100 flex flex-col sm:flex-row items-center gap-2 max-w-2xl mx-auto">
           <div className="flex items-center gap-2 px-3 w-full sm:w-1/2 border-b sm:border-b-0 sm:border-l border-gray-100 py-2 sm:py-0">
             <Search className="w-5 h-5 text-gray-400 shrink-0" />
-            <Input 
-              placeholder="نام کسب و کار، خدمت یا ..." 
-              className="border-none shadow-none focus-visible:ring-0 text-sm p-0 placeholder:text-gray-400" 
+            <Input
+              name="search" aria-label="نام کسب‌وکار یا خدمت" placeholder="نام کسب و کار، خدمت یا ..."
+              className="border-none shadow-none focus-visible:ring-0 text-sm p-0 placeholder:text-gray-400"
             />
           </div>
           <div className="flex items-center gap-2 px-3 w-full sm:w-1/2 py-2 sm:py-0">
             <MapPin className="w-5 h-5 text-gray-400 shrink-0" />
-            <Input 
-              placeholder="همه شهرها" 
-              className="border-none shadow-none focus-visible:ring-0 text-sm p-0 placeholder:text-gray-400" 
+            <Input
+              name="city" aria-label="شهر" placeholder="همه شهرها"
+              className="border-none shadow-none focus-visible:ring-0 text-sm p-0 placeholder:text-gray-400"
             />
           </div>
-          <Button className="w-full sm:w-auto bg-[#0B3C26] hover:bg-[#082D1C] text-white rounded-xl sm:rounded-full px-8 py-2.5 font-medium">
+          <Button type="submit" className="w-full sm:w-auto bg-[#0B3C26] hover:bg-[#082D1C] text-white rounded-xl sm:rounded-full px-8 py-2.5 font-medium">
             جستجو
           </Button>
-        </div>
+        </form>
       </div>
 
       {/* Skyline Placeholder Graphic */}

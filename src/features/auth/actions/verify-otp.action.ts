@@ -1,8 +1,10 @@
 "use server";
 
+import { validateAuthResponse } from '@/lib/auth/validate-auth-response';
 import { redirect } from "next/navigation";
 import { verifyOtpSchema } from "@/features/auth/schemas/otp.schema";
 import { setAuthCookies } from "@/lib/auth/cookies";
+import { isAdminUser } from "@/lib/auth/roles";
 import type { VerifyOtpResponse } from "@/types/auth";
 
 export type VerifyOtpResult =
@@ -15,7 +17,7 @@ export type VerifyOtpResult =
  * برمی‌گرداند (نه کوکی) — این Server Action خودش مسئول ذخیره‌ی توکن‌ها در
  * کوکی‌های httpOnly است.
  *
- * تصمیم محصول: کاربر تازه (isNewUser: true، fullName هنوز null) به
+ * مدیر همیشه به /admin می‌رود. کاربر غیرمدیر تازه (isNewUser: true، fullName هنوز null) به
  * /complete-profile می‌رود؛ کاربر قدیمی مستقیم به /dashboard.
  */
 export async function verifyOtpAction(input: unknown): Promise<VerifyOtpResult> {
@@ -40,12 +42,17 @@ export async function verifyOtpAction(input: unknown): Promise<VerifyOtpResult> 
       return { success: false, message: body?.message ?? "کد تایید نادرست است" };
     }
 
-    data = await res.json();
+    const validated = await validateAuthResponse(await res.json());
+    if (!validated) return { success: false, message: 'پاسخ احراز هویت معتبر نیست.' };
+    data = validated;
   } catch {
     return { success: false, message: "برقراری ارتباط با سرور ممکن نشد" };
   }
 
   await setAuthCookies({ accessToken: data.accessToken, refreshToken: data.refreshToken });
+
+  // Admin routing takes priority over ordinary-user profile completion.
+  if (isAdminUser(data.user.userType)) redirect("/admin");
 
   // تصمیم محصول: کاربر تازه‌ثبت‌نام‌شده یا کاربری که هنوز fullName ندارد
   // (پروفایل ناقص) اول باید حساب کاربری‌اش را تکمیل کند؛ بقیه مستقیم به داشبورد.

@@ -14,7 +14,7 @@ const faqs = [
 
 export function FaqSection() {
   return (
-    <section className="py-16 px-4 max-w-5xl mx-auto">
+    <section id="faq" className="py-16 px-4 max-w-5xl mx-auto">
       <h2 className="text-2xl font-bold text-[#0B3C26] text-center mb-2">سوالات متداول</h2>
       <div className="w-12 h-1 bg-[#C39E67] mx-auto mb-10 rounded-full" />
 
@@ -28,7 +28,7 @@ export function FaqSection() {
         <div className="md:col-span-2">
           <Accordion 
             className="w-full space-y-3"
-            defaultValue="item-0"
+            defaultValue={['item-0']}
           >
             {faqs.map((faq, idx) => (
               <AccordionItem 

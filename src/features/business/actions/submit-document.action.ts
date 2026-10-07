@@ -1,7 +1,9 @@
 "use server";
 
+import { actionFetch } from '@/lib/api/action-fetch';
+
 import { extractErrorMessage } from "@/lib/api/error-message";
-import { getAccessTokenCookie } from "@/lib/auth/cookies";
+import { getActionAccessToken } from '@/lib/auth/action-access-token';
 
 export type DocumentType = "NATIONAL_ID_FRONT" | "NATIONAL_ID_BACK" | "BUSINESS_LICENSE_PHOTO";
 
@@ -18,7 +20,7 @@ interface SubmitDocumentInput {
 export type SubmitDocumentResult = { success: true } | { success: false; message: string };
 
 export async function submitBusinessDocumentAction(input: SubmitDocumentInput): Promise<SubmitDocumentResult> {
-  const accessToken = await getAccessTokenCookie();
+  const accessToken = await getActionAccessToken();
   if (!accessToken) {
     return { success: false, message: "نشست شما منقضی شده، دوباره وارد شوید" };
   }
@@ -26,7 +28,7 @@ export async function submitBusinessDocumentAction(input: SubmitDocumentInput): 
   const { businessId, ...body } = input;
 
   try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/${businessId}/documents`, {
+    const res = await actionFetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/${businessId}/documents`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -38,7 +40,7 @@ export async function submitBusinessDocumentAction(input: SubmitDocumentInput): 
 
 if (!res.ok) {
       const errBody = await res.json().catch(() => null);
-      console.error("[submitBusinessDocumentAction] backend rejected:", res.status, errBody);
+      console.error("[submitBusinessDocumentAction] backend rejected:", res.status);
       return { success: false, message: extractErrorMessage(errBody, `ثبت مدرک با خطا مواجه شد (کد ${res.status})`) };
     }
   } catch (err) {

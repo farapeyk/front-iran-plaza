@@ -1,4 +1,5 @@
 "use client";
+import { useProfileBusy } from "./onboarding-context";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -10,6 +11,7 @@ import type { BranchLocation } from "@/features/business/types/business-extras";
 
 export function BranchesManager({ businessId, initialBranches }: { businessId: string; initialBranches: BranchLocation[] }) {
   const [isPending, startTransition] = useTransition();
+  useProfileBusy(isPending);
   const [branches, setBranches] = useState(initialBranches);
   const [showAdd, setShowAdd] = useState(false);
   const [title, setTitle] = useState("");

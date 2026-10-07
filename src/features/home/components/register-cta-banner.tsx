@@ -1,5 +1,5 @@
-import { CheckCircle2, ShieldAlert } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { CheckCircle2 } from "lucide-react";
+import Link from "next/link";
 
 export function RegisterCtaBanner() {
   return (
@@ -39,9 +39,9 @@ export function RegisterCtaBanner() {
         </div>
 
         <div className="z-10 shrink-0">
-          <Button className="bg-[#E8D4B0] text-[#0B3C26] hover:bg-[#dfc498] font-bold rounded-full px-8 py-6 text-base">
+          <Link href="/dashboard/business/new" className="inline-flex bg-[#E8D4B0] text-[#0B3C26] hover:bg-[#dfc498] font-bold rounded-full px-8 py-6 text-base">
             ثبت کسب و کار
-          </Button>
+          </Link>
         </div>
       </div>
     </section>

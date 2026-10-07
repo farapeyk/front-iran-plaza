@@ -1,5 +1,7 @@
 "use client";
+import { useProfileBusy } from "./onboarding-context";
 
+import Image from "next/image";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Trash2, Plus, UploadCloud } from "lucide-react";
@@ -24,6 +26,7 @@ export function ProductsManager({
   initialProducts: ProductItem[];
 }) {
   const [isPending, startTransition] = useTransition();
+  useProfileBusy(isPending);
   const [categories, setCategories] = useState(initialCategories);
   const [products, setProducts] = useState(initialProducts);
 
@@ -38,6 +41,7 @@ export function ProductsManager({
   // ✅ استیت‌های مربوط به آپلود تصویر محصول
   const [imageId, setImageId] = useState<string | null>(null);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  useProfileBusy(isUploadingImage);
 
   function handleAddCategory(e: React.FormEvent) {
     e.preventDefault();
@@ -148,7 +152,7 @@ export function ProductsManager({
                   <div key={p.id} className="flex items-center justify-between bg-neutral-50 rounded-md px-3 py-2">
                     <div className="flex items-center gap-2">
                       {p.imageId && (
-                       <img src={`/api/backend/files/${p.imageId}`} alt={p.name} className="w-10 h-10 rounded object-cover" />
+                       <Image unoptimized width={64} height={64} src={`/api/backend/files/${p.imageId}`} alt={p.name} className="w-10 h-10 rounded object-cover" />
                       )}
                       <div>
                         <p className="text-sm text-neutral-800">{p.name}</p>

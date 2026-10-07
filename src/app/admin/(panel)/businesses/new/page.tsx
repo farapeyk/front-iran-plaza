@@ -1,14 +1,13 @@
+import { pageFetch } from '@/lib/api/page-fetch';
 import { ManualBusinessForm } from "@/features/admin/components/manual-business-form";
 import type { PlanSummary } from "@/features/admin/types/plan";
 
 async function getPlans(): Promise<PlanSummary[]> {
   try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/plans`, { cache: "no-store" });
+    const res = await pageFetch(`${process.env.BACKEND_INTERNAL_URL}/api/plans`, { cache: "no-store" });
     if (!res.ok) return [];
     return res.json();
-  } catch {
-    return [];
-  }
+  } catch (error) { throw error; }
 }
 
 export default async function AdminNewBusinessPage() {

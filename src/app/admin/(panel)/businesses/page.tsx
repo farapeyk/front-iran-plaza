@@ -1,3 +1,5 @@
+import { Pagination } from '@/components/pagination';
+import { getBusinessPage, pageNumber } from '@/features/admin/lib/get-business-page';
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import Link from "next/link";
 import { Building2, ChevronLeft } from "lucide-react";
@@ -19,45 +21,18 @@ const STATUS_MAP: Record<string, { label: string; className: string }> = {
   SUSPENDED: { label: "معلق", className: "bg-neutral-100 text-neutral-600" },
 };
 
-async function getAllBusinesses(accessToken: string): Promise<BusinessListItem[]> {
-  try {
-    // اصلاح مسیر: استفاده از /api/businesses/admin
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/admin?skip=0&take=100`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      cache: "no-store",
-    });
-
-    if (!res.ok) {
-      
-      const errorText = await res.text();
-      
-      return [];
-    }
-
-    const data = await res.json();
-   
-
-    // هندل کردن هم حالت آرایه مستقیم و هم حالت دیتای تو در تو
-    if (Array.isArray(data)) return data;
-    if (data && Array.isArray(data.data)) return data.data;
-    
-    return [];
-  } catch (error) {
-   
-    return [];
-  }
-}
-
-export default async function AllBusinessesPage() {
+export default async function AllBusinessesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+  const page = pageNumber((await searchParams).page);
   const accessToken = await getAccessTokenCookie();
-  const businesses = accessToken ? await getAllBusinesses(accessToken) : [];
+  const result = accessToken ? await getBusinessPage<BusinessListItem>(accessToken, page) : { data: [], total: 0, take: 20, page };
+  const businesses = result.data;
 
   return (
     <div dir="rtl">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-lg font-bold text-neutral-900">تمام کسب‌وکارها</h1>
-          <p className="text-sm text-neutral-500 mt-1">{businesses.length} مورد یافت شد</p>
+          <p className="text-sm text-neutral-500 mt-1">{result.total} مورد یافت شد</p>
         </div>
       </div>
 
@@ -95,6 +70,7 @@ export default async function AllBusinessesPage() {
           })}
         </div>
       )}
+      <Pagination base="/admin/businesses" page={page} total={result.total} take={result.take} />
     </div>
   );
 }

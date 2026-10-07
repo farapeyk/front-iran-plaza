@@ -9,7 +9,7 @@ export interface ServiceInput {
   description?: string;
   priceFrom?: number;
   priceTo?: number;
-  durationMinutes?: number;
+  durationMin?: number;
 }
 
 export async function addServiceAction(businessId: string, input: ServiceInput) {

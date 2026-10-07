@@ -1,3 +1,4 @@
+import { pageFetch } from '@/lib/api/page-fetch';
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import { ReviewRow, type AdminReviewItem } from "@/features/admin/components/review-row";
 
@@ -7,7 +8,7 @@ interface AdminReviewListResponse {
 }
 
 async function getReviews(status: string, accessToken: string): Promise<AdminReviewListResponse> {
-  const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/admin/reviews?status=${status}&page=1&limit=50`, {
+  const res = await pageFetch(`${process.env.BACKEND_INTERNAL_URL}/api/admin/reviews?status=${status}&page=1&limit=50`, {
     headers: { Authorization: `Bearer ${accessToken}` },
     cache: "no-store",
   });

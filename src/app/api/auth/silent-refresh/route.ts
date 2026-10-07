@@ -1,36 +1,30 @@
-import { NextRequest, NextResponse } from "next/server";
-import { setAuthCookies, clearAuthCookies, getRefreshTokenCookie } from "@/lib/auth/cookies";
+import { NextRequest, NextResponse } from 'next/server';
+import { getAccessTokenCookie } from '@/lib/auth/cookies';
+import { verifyAccessToken } from '@/lib/auth/verify-access-token';
+import { refreshSession } from '@/lib/auth/refresh-session';
+import { safeRedirect } from '@/lib/auth/safe-redirect';
+
+export async function POST(request: NextRequest) {
+  const origin = request.headers.get('origin');
+  if (origin && origin !== request.nextUrl.origin) return NextResponse.json({ success: false }, { status: 403 });
+  const payload = await verifyAccessToken(await getAccessTokenCookie());
+  if (payload?.exp && payload.exp > Date.now() / 1000 + 30) {
+    return NextResponse.json({ success: true }, { headers: { 'Cache-Control': 'no-store' } });
+  }
+  const result = await refreshSession();
+  return NextResponse.json({ success: result.success }, {
+    status: result.success ? 200 : result.status, headers: { 'Cache-Control': 'no-store' },
+  });
+}
 
 export async function GET(request: NextRequest) {
-  const requestedRedirect = request.nextUrl.searchParams.get("redirect") || "/dashboard";
-  const redirectTo = requestedRedirect.startsWith("/") && !requestedRedirect.startsWith("//") && !requestedRedirect.includes("\\")
-    ? requestedRedirect : "/dashboard";
-  const loginPath = redirectTo.startsWith("/admin") ? "/admin/login" : "/login";
-  const refreshToken = await getRefreshTokenCookie();
-
-  if (!refreshToken) {
-    return NextResponse.redirect(new URL(loginPath, request.url));
-  }
-
-  try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/auth/refresh`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken }),
-      cache: "no-store",
-    });
-
-    if (!res.ok) {
-      await clearAuthCookies();
-      return NextResponse.redirect(new URL(loginPath, request.url));
-    }
-
-    const data = (await res.json()) as { accessToken: string; refreshToken: string };
-    await setAuthCookies({ accessToken: data.accessToken, refreshToken: data.refreshToken });
-
-    return NextResponse.redirect(new URL(redirectTo, request.url));
-  } catch {
-    await clearAuthCookies();
-    return NextResponse.redirect(new URL(loginPath, request.url));
-  }
+  const redirectTo = safeRedirect(request.nextUrl.searchParams.get('redirect'));
+  const loginPath = redirectTo.startsWith('/admin') ? '/admin/login' : '/login';
+  const result = await refreshSession();
+  if (!result.success && result.status === 503) return NextResponse.json({ message: 'تمدید نشست موقتاً در دسترس نیست؛ دوباره تلاش کنید.' }, {
+    status: 503, headers: { 'Cache-Control': 'no-store' },
+  });
+  const response = NextResponse.redirect(new URL(result.success ? redirectTo : loginPath, request.url));
+  response.headers.set('Cache-Control', 'no-store');
+  return response;
 }

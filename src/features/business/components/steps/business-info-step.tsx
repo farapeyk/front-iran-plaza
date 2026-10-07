@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
@@ -11,35 +11,49 @@ import { fieldClass } from "@/features/business/components/jalali-date-select";
 
 import { businessInfoSchema, type BusinessInfoInput } from "@/features/business/schemas/business-info.schema";
 import { createBusinessAction } from "@/features/business/actions/create-business.action";
+import { categoryOptions } from '../../lib/category-options';
+import { updateBusinessProfileAction } from '../../actions/update-business-profile.action';
 
 export interface Category {
   id: string;
   name: string;
+  parentId?: string | null;
 }
 
 interface BusinessInfoStepProps {
   categories: Category[];
-  onNext: (businessId: string) => void;
+  onNext: (businessId: string, values: BusinessInfoInput) => void;
+  existingBusinessId?: string;
+  initialValues?: BusinessInfoInput;
 }
 
-export function BusinessInfoStep({ categories, onNext }: BusinessInfoStepProps) {
+export function BusinessInfoStep({ categories, onNext, existingBusinessId, initialValues }: BusinessInfoStepProps) {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<BusinessInfoInput>({
     resolver: zodResolver(businessInfoSchema),
-    defaultValues: { name: "", phone: "", bio: "", categoryId: "", province: "", city: "" },
+    defaultValues: initialValues ?? { name: "", phone: "", bio: "", categoryId: "", province: "", city: "" },
   });
 
-  const bioValue = form.watch("bio") ?? "";
+  const bioValue = useWatch({ control: form.control, name: "bio" }) ?? "";
 
   function onSubmit(values: BusinessInfoInput) {
     startTransition(async () => {
+      if (existingBusinessId) {
+        const updated = await updateBusinessProfileAction(existingBusinessId, {
+          name: values.name, phone: values.phone, description: values.bio ?? '', city: values.city,
+          address: `${values.province}، ${values.city}`, categoryIds: [values.categoryId],
+        });
+        if (!updated.success) { toast.error(updated.message); return; }
+        onNext(existingBusinessId, values);
+        return;
+      }
       const result = await createBusinessAction(values);
       if (!result.success) {
         toast.error(result.message);
         return;
       }
-      onNext(result.businessId);
+      onNext(result.businessId, values);
     });
   }
 
@@ -109,8 +123,8 @@ export function BusinessInfoStep({ categories, onNext }: BusinessInfoStepProps) 
               <label className="text-sm font-medium">زمینه فعالیت</label>
               <select {...field} className={fieldClass(fieldState.invalid)} disabled={isPending}>
                 <option value="">انتخاب کنید</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
+                {categoryOptions(categories).map((c) => (
+                  <option key={c.id} value={c.id}>{c.label}</option>
                 ))}
               </select>
               {categories.length === 0 && (
@@ -145,7 +159,7 @@ export function BusinessInfoStep({ categories, onNext }: BusinessInfoStepProps) 
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={isPending}>
+        <Button type="submit" className="w-full" disabled={isPending || categories.length === 0}>
           {isPending ? "در حال ثبت..." : "تایید اطلاعات و احراز هویت"}
         </Button>
       </form>

@@ -1,4 +1,5 @@
 "use client";
+import { useProfileBusy } from "./onboarding-context";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -18,6 +19,7 @@ export function GalleryManager({ businessId, initialImages, initialIntroVideoId 
   const [introVideoId, setIntroVideoId] = useState(initialIntroVideoId);
   const [isUploadingImage, startImageUpload] = useTransition();
   const [isUploadingVideo, setIsUploadingVideo] = useState(false);
+  useProfileBusy(isUploadingImage || isUploadingVideo);
 
   function handleAddImage(file: File | null) {
     if (!file) return;
@@ -40,7 +42,7 @@ export function GalleryManager({ businessId, initialImages, initialIntroVideoId 
         return;
       }
 
-      setImages((prev) => [...prev, { id: uploadResult.fileId, businessId, fileId: uploadResult.fileId, title: null, sortOrder: prev.length, createdAt: new Date().toISOString() }]);
+      setImages((prev) => [...prev, addResult.image]);
       toast.success("تصویر اضافه شد");
     });
   }
