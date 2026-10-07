@@ -1,3 +1,4 @@
+import { pageFetch } from '@/lib/api/page-fetch';
 import { redirect } from "next/navigation";
 import { getMyBusiness } from "@/features/business/lib/get-my-business";
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
@@ -6,7 +7,7 @@ import { GalleryManager } from "@/features/business/components/profile/gallery-m
 import type { GalleryImageData } from "@/features/business/types/business-profile";
 
 async function getGallery(businessId: string, accessToken: string): Promise<GalleryImageData[]> {
-  const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/${businessId}/gallery`, {
+  const res = await pageFetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/${businessId}/gallery`, {
     headers: { Authorization: `Bearer ${accessToken}` },
     cache: "no-store",
   });

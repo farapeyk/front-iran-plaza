@@ -1,3 +1,4 @@
+import { isValidJalaliDate } from '@/lib/utils/jalali';
 import { z } from "zod";
 import { isValidIranianNationalCode } from "@/lib/validators/national-code";
 import { JALALI_YEAR_RANGE } from "@/lib/utils/jalali";
@@ -10,10 +11,10 @@ export const completeProfileSchema = z.object({
     .length(10, "کد ملی باید ۱۰ رقم باشد")
     .refine(isValidIranianNationalCode, "کد ملی معتبر نیست"),
   gender: z.enum(["MALE", "FEMALE"], { message: "جنسیت را انتخاب کنید" }),
-  birthDay: z.coerce.number().int().min(1).max(31),
-  birthMonth: z.coerce.number().int().min(1).max(12),
+  birthDay: z.coerce.number<number>().int().min(1).max(31),
+  birthMonth: z.coerce.number<number>().int().min(1).max(12),
   birthYear: z.coerce
-    .number()
+    .number<number>()
     .int()
     .min(JALALI_YEAR_RANGE.min, "سال معتبر نیست")
     .max(JALALI_YEAR_RANGE.max, "سال معتبر نیست"),
@@ -21,6 +22,6 @@ export const completeProfileSchema = z.object({
   email: z.string().email("ایمیل معتبر نیست").optional().or(z.literal("")),
   provinceId: z.string().min(1, "استان را انتخاب کنید"),
   cityId: z.string().min(1, "شهر را انتخاب کنید"),
-});
+}).refine(value => isValidJalaliDate(value.birthYear, value.birthMonth, value.birthDay), { message: 'تاریخ تولد معتبر نیست.', path: ['birthDay'] });
 
 export type CompleteProfileInput = z.infer<typeof completeProfileSchema>;

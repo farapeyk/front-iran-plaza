@@ -1,7 +1,9 @@
 "use server";
 
+import { actionFetch } from '@/lib/api/action-fetch';
+
 import { revalidatePath } from "next/cache";
-import { getAccessTokenCookie } from "@/lib/auth/cookies";
+import { getActionAccessToken } from '@/lib/auth/action-access-token';
 import { editProfileSchema } from "../schemas/edit-profile.schema";
 
 export type UpdateProfileResult =
@@ -15,7 +17,7 @@ export async function updateProfileAction(input: unknown): Promise<UpdateProfile
     return { success: false, message: parsed.error.issues[0]?.message ?? "ورودی نامعتبر است" };
   }
 
-  const accessToken = await getAccessTokenCookie();
+  const accessToken = await getActionAccessToken();
   if (!accessToken) {
     return { success: false, message: "نشست شما منقضی شده، دوباره وارد شوید" };
   }
@@ -23,7 +25,7 @@ export async function updateProfileAction(input: unknown): Promise<UpdateProfile
   const { fullName, email } = parsed.data;
 
   try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/users/me`, {
+    const res = await actionFetch(`${process.env.BACKEND_INTERNAL_URL}/api/users/me`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -43,7 +45,7 @@ export async function updateProfileAction(input: unknown): Promise<UpdateProfile
         message: body?.message ?? `بروزرسانی اطلاعات با خطا مواجه شد (کد ${res.status})`,
       };
     }
-  } catch (err) {
+  } catch {
     return { success: false, message: "برقراری ارتباط با سرور ممکن نشد" };
   }
 

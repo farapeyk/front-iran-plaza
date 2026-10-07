@@ -1,3 +1,4 @@
+import { pageFetch } from '@/lib/api/page-fetch';
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import type { BusinessProfile } from "@/features/business/types/business-profile";
 
@@ -6,7 +7,7 @@ export async function getMyBusiness(): Promise<BusinessProfile | null> {
   const accessToken = await getAccessTokenCookie();
   if (!accessToken) return null;
 
-  const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/mine`, {
+  const res = await pageFetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/mine`, {
     headers: { Authorization: `Bearer ${accessToken}` },
     cache: "no-store",
   });

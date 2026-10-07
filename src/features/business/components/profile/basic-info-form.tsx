@@ -1,4 +1,5 @@
 "use client";
+import { useProfileBusy } from "./onboarding-context";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -7,21 +8,28 @@ import { Input } from "@/components/ui/input";
 import { updateBusinessProfileAction } from "@/features/business/actions/update-business-profile.action";
 import { uploadFileAction } from "@/features/business/actions/upload-file.action";
 import { isFileTooLarge } from "@/lib/validate-file";
+import { categoryOptions, type BusinessCategoryOption } from '../../lib/category-options';
+import { useProfileFlow } from './onboarding-context';
 
 interface BasicInfoFormProps {
   businessId: string;
   initialName: string;
   initialBio: string;
   initialLogoId: string | null;
+  categories: BusinessCategoryOption[];
+  initialCategoryIds: string[];
 }
 
-export function BasicInfoForm({ businessId, initialName, initialBio, initialLogoId }: BasicInfoFormProps) {
+export function BasicInfoForm({ businessId, initialName, initialBio, initialLogoId, categories, initialCategoryIds }: BasicInfoFormProps) {
+  const flow = useProfileFlow();
+  const [categoryIds, setCategoryIds] = useState(initialCategoryIds);
   const [isPending, startTransition] = useTransition();
   const [name, setName] = useState(initialName);
   const [bio, setBio] = useState(initialBio);
   const [logoId, setLogoId] = useState(initialLogoId);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+  useProfileBusy(isPending || isUploadingLogo);
 
 async function handleLogoChange(file: File | null) {
     if (!file) return;
@@ -46,14 +54,16 @@ async function handleLogoChange(file: File | null) {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (name.trim().length < 2 || categoryIds.length === 0) { toast.error('نام و دسته‌بندی کسب‌وکار را تکمیل کنید'); return; }
     startTransition(async () => {
       const result = await updateBusinessProfileAction(businessId, {
         name,
         description: bio || undefined,
         logoId: logoId || undefined,
+        categoryIds,
       });
       if (!result.success) toast.error(result.message);
-      else toast.success("اطلاعات ذخیره شد");
+      else { toast.success("اطلاعات ذخیره شد"); await flow.advance(); }
     });
   }
 
@@ -95,8 +105,16 @@ async function handleLogoChange(file: File | null) {
         <p className="text-xs text-neutral-400">حداکثر ۱۰۰ کاراکتر ({bio.length}/۱۰۰)</p>
       </div>
 
-      <Button type="submit" className="w-full" disabled={isPending || isUploadingLogo}>
-        {isPending ? "در حال ذخیره..." : "ذخیره اطلاعات"}
+      <div className="space-y-2">
+        <label htmlFor="business-category" className="text-sm font-medium">دسته‌بندی کسب‌وکار</label>
+        <select id="business-category" value={categoryIds[0] ?? ''} onChange={e => setCategoryIds(e.target.value ? [e.target.value] : [])} disabled={isPending} className="w-full rounded-md border border-input p-2">
+          <option value="">دسته‌بندی را انتخاب کنید</option>
+          {categoryOptions(categories).map(category => <option key={category.id} value={category.id}>{category.label}</option>)}
+        </select>
+        {!categories.length && <p className="text-sm text-red-600">دسته‌بندی‌ها دریافت نشدند؛ صفحه را دوباره بارگذاری کنید.</p>}
+      </div>
+      <Button type="submit" className="w-full" disabled={isPending || isUploadingLogo || !categories.length}>
+        {isPending ? "در حال ذخیره..." : flow.active ? 'ذخیره و مرحله بعد' : "ذخیره اطلاعات"}
       </Button>
     </form>
   );

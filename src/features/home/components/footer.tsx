@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="bg-[#082D1C] text-white pt-16 pb-8 border-t border-emerald-900/50">
+    <footer id="about" className="bg-[#082D1C] text-white pt-16 pb-8 border-t border-emerald-900/50">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
         <div className="space-y-4">
           <h3 className="text-2xl font-black text-[#E8D4B0]">Iran Plaza</h3>
@@ -15,17 +15,17 @@ export function Footer() {
           <h4 className="text-sm font-bold text-[#E8D4B0] mb-4">دسترسی سریع</h4>
           <ul className="space-y-2 text-xs text-emerald-100/80">
             <li><Link href="/">صفحه اصلی</Link></li>
-            <li><Link href="/categories">دسته‌بندی‌ها</Link></li>
-            <li><Link href="/articles">مقالات</Link></li>
+            <li><Link href="/businesses">دسته‌بندی‌ها</Link></li>
+            <li><span aria-disabled="true">مقالات (به‌زودی)</span></li>
           </ul>
         </div>
 
         <div>
           <h4 className="text-sm font-bold text-[#E8D4B0] mb-4">راهنمای کاربران</h4>
           <ul className="space-y-2 text-xs text-emerald-100/80">
-            <li><Link href="/faq">سوالات متداول</Link></li>
-            <li><Link href="/terms">قوانین و مقررات</Link></li>
-            <li><Link href="/about">درباره ما</Link></li>
+            <li><Link href="/#faq">سوالات متداول</Link></li>
+            <li><span aria-disabled="true">قوانین و مقررات (به‌زودی)</span></li>
+            <li><Link href="/#about">درباره ما</Link></li>
           </ul>
         </div>
 

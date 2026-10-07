@@ -1,3 +1,4 @@
+import { decodeJwt } from 'jose';
 import { cookies } from "next/headers";
 import {
   ACCESS_TOKEN_COOKIE,
@@ -23,10 +24,12 @@ interface TokenPair {
 export async function setAuthCookies({
   accessToken,
   refreshToken,
-  accessTokenMaxAge = 60 * 15, // پیش‌فرض ۱۵ دقیقه — با عمر واقعی accessToken بک‌اند هماهنگ کنید
-  refreshTokenMaxAge = 60 * 60 * 24 * 30, // پیش‌فرض ۳۰ روز
+  accessTokenMaxAge = Math.max(1, Math.floor((decodeJwt(accessToken).exp ?? 0) - Date.now() / 1000)), // Match the signed token expiry.
+  refreshTokenMaxAge = Math.max(1, Math.floor((decodeJwt(refreshToken).exp ?? 0) - Date.now() / 1000)), // Match backend expiry.
 }: TokenPair) {
   const cookieStore = await cookies();
+
+  cookieStore.set(REFRESH_TOKEN_COOKIE, "", { path: "/api/auth", maxAge: 0 });
 
   cookieStore.set(ACCESS_TOKEN_COOKIE, accessToken, {
     httpOnly: true,
@@ -50,6 +53,7 @@ export async function clearAuthCookies() {
   const cookieStore = await cookies();
   cookieStore.set(ACCESS_TOKEN_COOKIE, "", { path: ACCESS_TOKEN_PATH, maxAge: 0 });
   cookieStore.set(REFRESH_TOKEN_COOKIE, "", { path: REFRESH_TOKEN_PATH, maxAge: 0 });
+  cookieStore.set(REFRESH_TOKEN_COOKIE, "", { path: "/api/auth", maxAge: 0 });
 }
 
 export async function getAccessTokenCookie(): Promise<string | undefined> {

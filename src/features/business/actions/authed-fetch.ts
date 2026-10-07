@@ -1,4 +1,5 @@
-import { getAccessTokenCookie } from "@/lib/auth/cookies";
+import { actionFetch } from '@/lib/api/action-fetch';
+import { getActionAccessToken } from '@/lib/auth/action-access-token';
 import { extractErrorMessage } from "@/lib/api/error-message";
 
 export type ActionResult<T = undefined> = { success: true; data: T } | { success: false; message: string };
@@ -8,13 +9,13 @@ export async function authedFetch<T>(
   method: "GET" | "POST" | "PATCH" | "DELETE",
   body?: unknown,
 ): Promise<ActionResult<T>> {
-  const accessToken = await getAccessTokenCookie();
+  const accessToken = await getActionAccessToken();
   if (!accessToken) {
     return { success: false, message: "نشست شما منقضی شده، دوباره وارد شوید" };
   }
 
   try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}${path}`, {
+    const res = await actionFetch(`${process.env.BACKEND_INTERNAL_URL}${path}`, {
       method,
       headers: {
         "Content-Type": "application/json",
@@ -26,7 +27,7 @@ export async function authedFetch<T>(
 
     if (!res.ok) {
       const errBody = await res.json().catch(() => null);
-      console.error(`[authedFetch] ${method} ${path} rejected:`, res.status, errBody);
+      console.error(`[authedFetch] ${method} ${path} rejected:`, res.status);
       return { success: false, message: extractErrorMessage(errBody, `عملیات با خطا مواجه شد (کد ${res.status})`) };
     }
 

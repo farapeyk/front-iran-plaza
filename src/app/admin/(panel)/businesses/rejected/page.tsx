@@ -1,3 +1,5 @@
+import { Pagination } from '@/components/pagination';
+import { getBusinessPage, pageNumber } from '@/features/admin/lib/get-business-page';
 // src/app/admin/(panel)/businesses/rejected/page.tsx
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import { PendingBusinessRow } from "@/features/admin/components/pending-business-row";
@@ -11,35 +13,16 @@ interface BusinessListItem {
   createdAt: string;
 }
 
-async function getRejectedBusinesses(accessToken: string): Promise<BusinessListItem[]> {
-  try {
-    // دریافت لیست کسب‌وکارها (فرض بر این است که اندپوینت admin همه را برمی‌گرداند)
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/admin?skip=0&take=100`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      cache: "no-store",
-    });
-
-    if (!res.ok) return [];
-    
-    const data = await res.json();
-    const allBusinesses: BusinessListItem[] = Array.isArray(data) ? data : (data.data ?? []);
-    
-    // فیلتر کردن فقط کسب‌وکارهای رد شده
-    return allBusinesses.filter(b => b.status === "REJECTED");
-  } catch (error) {
-    console.error("Failed to fetch rejected businesses:", error);
-    return [];
-  }
-}
-
-export default async function RejectedBusinessesPage() {
+export default async function RejectedBusinessesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+  const page = pageNumber((await searchParams).page);
   const accessToken = await getAccessTokenCookie();
-  const businesses = accessToken ? await getRejectedBusinesses(accessToken) : [];
+  const result = accessToken ? await getBusinessPage<BusinessListItem>(accessToken, page, 'REJECTED') : { data: [], total: 0, take: 20, page };
+  const businesses = result.data;
 
   return (
     <div dir="rtl">
       <h1 className="text-lg font-bold text-neutral-900 mb-1">کسب‌وکارهای رد شده</h1>
-      <p className="text-sm text-neutral-500 mb-6">{businesses.length} مورد یافت شد</p>
+      <p className="text-sm text-neutral-500 mb-6">{result.total} مورد یافت شد</p>
 
       {businesses.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-lg border border-neutral-200">
@@ -59,6 +42,7 @@ export default async function RejectedBusinessesPage() {
           ))}
         </div>
       )}
+      <Pagination base="/admin/businesses/rejected" page={page} total={result.total} take={result.take} />
     </div>
   );
 }

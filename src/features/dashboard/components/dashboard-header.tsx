@@ -1,4 +1,4 @@
-import { Menu, User, Bell } from "lucide-react";
+import { User, Bell } from "lucide-react";
 
 export function DashboardHeader() {
   return (

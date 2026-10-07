@@ -1,3 +1,4 @@
+import { pageFetch } from '@/lib/api/page-fetch';
 // src/app/(dashboard)/dashboard/profile/page.tsx
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import type { CurrentUser } from "@/types/auth";
@@ -6,7 +7,7 @@ import { redirect } from "next/navigation";
 import { EditProfileForm } from "@/features/dashboard/components/edit-profile-form";
 
 async function getCurrentUser(accessToken: string): Promise<CurrentUser | null> {
-  const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/users/me`, {
+  const res = await pageFetch(`${process.env.BACKEND_INTERNAL_URL}/api/users/me`, {
     headers: { Authorization: `Bearer ${accessToken}` },
     cache: "no-store",
   });

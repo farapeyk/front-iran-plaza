@@ -1,4 +1,5 @@
 "use client";
+import { useProfileFlow, useProfileBusy } from "./onboarding-context";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -7,6 +8,8 @@ import { updateBusinessProfileAction } from "@/features/business/actions/update-
 
 export function AboutForm({ businessId, initialAboutText }: { businessId: string; initialAboutText: string }) {
   const [isPending, startTransition] = useTransition();
+  const flow = useProfileFlow();
+  useProfileBusy(isPending);
   const [aboutText, setAboutText] = useState(initialAboutText);
 
   function handleSubmit(e: React.FormEvent) {
@@ -14,7 +17,7 @@ export function AboutForm({ businessId, initialAboutText }: { businessId: string
     startTransition(async () => {
       const result = await updateBusinessProfileAction(businessId, { aboutText: aboutText || undefined });
       if (!result.success) toast.error(result.message);
-      else toast.success("اطلاعات ذخیره شد");
+      else { toast.success("اطلاعات ذخیره شد"); await flow.advance(); }
     });
   }
 
@@ -33,7 +36,7 @@ export function AboutForm({ businessId, initialAboutText }: { businessId: string
       </div>
 
       <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "در حال ذخیره..." : "ذخیره اطلاعات"}
+        {isPending ? "در حال ذخیره..." : flow.active ? "ذخیره و ادامه" : "ذخیره اطلاعات"}
       </Button>
     </form>
   );

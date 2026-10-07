@@ -1,18 +1,20 @@
 "use server";
 
+import { actionFetch } from '@/lib/api/action-fetch';
+
 import { revalidatePath } from "next/cache";
-import { getAccessTokenCookie } from "@/lib/auth/cookies";
+import { getActionAccessToken } from '@/lib/auth/action-access-token';
 
 export type ModerationResult = { success: true } | { success: false; message: string };
 
 async function postAdmin(path: string, body?: unknown): Promise<ModerationResult> {
-  const accessToken = await getAccessTokenCookie();
+  const accessToken = await getActionAccessToken();
   if (!accessToken) {
     return { success: false, message: "نشست شما منقضی شده، دوباره وارد شوید" };
   }
 
   try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}${path}`, {
+    const res = await actionFetch(`${process.env.BACKEND_INTERNAL_URL}${path}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -24,7 +26,7 @@ async function postAdmin(path: string, body?: unknown): Promise<ModerationResult
 
     if (!res.ok) {
       const errBody = await res.json().catch(() => null);
-      console.error(`[admin action] ${path} rejected:`, res.status, errBody);
+      console.error(`[admin action] ${path} rejected:`, res.status);
       if (res.status === 403) {
         return { success: false, message: "شما مجوز لازم برای این عملیات را ندارید" };
       }

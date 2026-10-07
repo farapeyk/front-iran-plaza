@@ -1,3 +1,4 @@
+import { pageFetch } from '@/lib/api/page-fetch';
 import Link from "next/link";
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import type { AdminUserListResponse } from "@/features/admin/types/user";
@@ -12,7 +13,7 @@ const USER_TYPE_LABEL: Record<string, string> = {
 const LIMIT = 20;
 
 async function getUsers(params: URLSearchParams, accessToken: string): Promise<AdminUserListResponse> {
-  const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/admin/users?${params.toString()}`, {
+  const res = await pageFetch(`${process.env.BACKEND_INTERNAL_URL}/api/admin/users?${params.toString()}`, {
     headers: { Authorization: `Bearer ${accessToken}` },
     cache: "no-store",
   });

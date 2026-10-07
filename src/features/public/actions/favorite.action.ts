@@ -1,19 +1,21 @@
 "use server";
 
+import { actionFetch } from '@/lib/api/action-fetch';
+
 import { revalidatePath } from "next/cache";
-import { getAccessTokenCookie } from "@/lib/auth/cookies";
+import { getActionAccessToken } from '@/lib/auth/action-access-token';
 import { extractErrorMessage } from "@/lib/api/error-message";
 
 export type FavoriteResult = { success: true; favorited: boolean } | { success: false; message: string };
 
 export async function toggleFavoriteAction(businessId: string): Promise<FavoriteResult> {
-  const accessToken = await getAccessTokenCookie();
+  const accessToken = await getActionAccessToken();
   if (!accessToken) {
     return { success: false, message: "برای افزودن به علاقه‌مندی‌ها باید وارد حساب کاربری شوید" };
   }
 
   try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/${businessId}/favorite`, {
+    const res = await actionFetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/${businessId}/favorite`, {
       method: "POST",
       headers: { Authorization: `Bearer ${accessToken}` },
       cache: "no-store",
@@ -21,7 +23,7 @@ export async function toggleFavoriteAction(businessId: string): Promise<Favorite
 
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      console.error("[toggleFavoriteAction] backend rejected:", res.status, body);
+      console.error("[toggleFavoriteAction] backend rejected:", res.status);
       return { success: false, message: extractErrorMessage(body, `عملیات با خطا مواجه شد (کد ${res.status})`) };
     }
 

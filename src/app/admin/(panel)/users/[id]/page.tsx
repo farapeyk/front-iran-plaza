@@ -1,3 +1,4 @@
+import { pageFetch } from '@/lib/api/page-fetch';
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import { UserSuspensionActions } from "@/features/admin/components/user-suspension-actions";
 import type { AdminUserDetail } from "@/features/admin/types/user";
@@ -10,7 +11,7 @@ const USER_TYPE_LABEL: Record<string, string> = {
 };
 
 async function getUserDetail(id: string, accessToken: string): Promise<AdminUserDetail | null> {
-  const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/admin/users/${id}`, {
+  const res = await pageFetch(`${process.env.BACKEND_INTERNAL_URL}/api/admin/users/${id}`, {
     headers: { Authorization: `Bearer ${accessToken}` },
     cache: "no-store",
   });

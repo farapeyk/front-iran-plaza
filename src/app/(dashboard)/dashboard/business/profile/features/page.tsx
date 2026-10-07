@@ -1,3 +1,4 @@
+import { pageFetch } from '@/lib/api/page-fetch';
 import { redirect } from "next/navigation";
 import { getMyBusiness } from "@/features/business/lib/get-my-business";
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
@@ -6,7 +7,7 @@ import { FeaturesManager } from "@/features/business/components/profile/features
 import type { BusinessFeature } from "@/features/business/types/business-feature";
 
 async function getFeatures(businessId: string, accessToken: string): Promise<BusinessFeature[]> {
-  const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/${businessId}/features`, {
+  const res = await pageFetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/${businessId}/features`, {
     headers: { Authorization: `Bearer ${accessToken}` },
     cache: "no-store",
   });

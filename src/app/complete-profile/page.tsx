@@ -1,3 +1,4 @@
+import { pageFetch } from '@/lib/api/page-fetch';
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import { CompleteProfileForm } from "@/features/profile/components/complete-profile-form";
 import type { CurrentUser } from "@/types/auth";
@@ -6,7 +7,7 @@ async function getCurrentUser(): Promise<CurrentUser | null> {
   const accessToken = await getAccessTokenCookie();
   if (!accessToken) return null;
 
-  const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/users/me`, {
+  const res = await pageFetch(`${process.env.BACKEND_INTERNAL_URL}/api/users/me`, {
     headers: { Authorization: `Bearer ${accessToken}` },
     cache: "no-store",
   });

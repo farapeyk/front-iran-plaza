@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ایران پلازا — فرانت‌اند
 
-## Getting Started
+دایرکتوری فارسی کسب‌وکارها با Next.js App Router، React، TypeScript و Tailwind.
 
-First, run the development server:
+راهنمای کامل در [docs/README.md](docs/README.md)، تغییرات اصلاحی در [گزارش تغییرات](docs/CHANGES-2026-10-07.md) و پیش‌نیازهای قرارداد در [سازگاری بک‌اند](docs/BACKEND-COMPATIBILITY.md) است.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
+## اجرای توسعه
+
+Node 24 و pnpm 11.18.0 مرجع ثبت‌شده پروژه‌اند. متغیرهای خصوصی را مطابق [راهنمای راه‌اندازی](docs/SETUP.md) تنظیم کنید؛ secretها را در سورس یا مستندات قرار ندهید.
+
+```powershell
+pnpm install --frozen-lockfile
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+سرور توسعه روی http://localhost:3001 اجرا می‌شود. بک‌اند سازگار برای داده‌ها، auth و onboarding لازم است.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## کنترل کیفیت
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```powershell
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+```
 
-## Learn More
+lint هیچ warning را نمی‌پذیرد. تست‌های محلی و fixture HTTP جای آزمون حساب واقعی، SMS یا دیتابیس را نمی‌گیرند. نتایج و محدودیت‌های تازه در گزارش تغییرات ثبت شده‌اند.
 
-To learn more about Next.js, take a look at the following resources:
+## اجرای production
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```powershell
+pnpm start -- -p 3001
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+HTTPS و تنظیم معتبر BACKEND_INTERNAL_URL و JWT_ACCESS_SECRET لازم است. SITE_URL دامنه واقعی canonical و sitemap را تعیین می‌کند. پیش از استقرار، اختلاف‌های onboarding با بک‌اند را برطرف کنید.

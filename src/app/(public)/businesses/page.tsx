@@ -1,3 +1,4 @@
+import { backendGet } from '@/lib/api/backend-get';
 import { Share2 } from "lucide-react";
 import { Breadcrumb } from "@/features/public/components/breadcrumb";
 import { BusinessCard } from "@/features/public/components/business-card";
@@ -7,25 +8,8 @@ import Link from "next/link";
 
 const LIMIT = 20;
 
-async function getCategories(): Promise<CategorySummary[]> {
-  try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/categories`, { cache: "no-store" });
-    if (!res.ok) return [];
-    return res.json();
-  } catch {
-    return [];
-  }
-}
-
-async function getBusinesses(params: URLSearchParams): Promise<PublicBusinessListResponse> {
-  try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses?${params.toString()}`, { cache: "no-store" });
-    if (!res.ok) return { data: [], total: 0, page: 1, limit: LIMIT };
-    return res.json();
-  } catch {
-    return { data: [], total: 0, page: 1, limit: LIMIT };
-  }
-}
+async function getCategories(): Promise<CategorySummary[]> { return backendGet('/api/categories'); }
+async function getBusinesses(params: URLSearchParams): Promise<PublicBusinessListResponse> { return backendGet('/api/businesses?' + params.toString()); }
 
 interface PageProps {
   searchParams: Promise<{
@@ -41,7 +25,8 @@ interface PageProps {
 
 export default async function BusinessesPage({ searchParams }: PageProps) {
   const sp = await searchParams;
-  const page = Number(sp.page ?? "1") || 1;
+  const parsedPage = Number(sp.page ?? "1");
+  const page = Number.isSafeInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1;
 
   const query = new URLSearchParams();
   if (sp.search) query.set("search", sp.search);
@@ -86,7 +71,7 @@ export default async function BusinessesPage({ searchParams }: PageProps) {
       </div>
 
       <form method="get" className="space-y-3 mb-6">
-        {selectedCategory && <input type="hidden" name="categoryId" value={selectedCategory.id} />}
+
 
         <div className="flex gap-2">
           <div className="flex-1 flex items-center gap-2 bg-white border border-neutral-200 rounded-full px-4 h-11">

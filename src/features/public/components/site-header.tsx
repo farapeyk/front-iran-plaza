@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import { isAdminUser } from "@/lib/auth/roles";
 import { useState } from "react";
 import { ChevronDown, UserCircle } from "lucide-react";
 import type { CurrentUser } from "@/types/auth"; 
@@ -11,6 +12,9 @@ interface SiteHeaderProps {
 }
 
 export function SiteHeader({ user }: SiteHeaderProps) {
+  const isAdmin = !!user && isAdminUser(user.userType);
+  const panelHref = isAdmin ? "/admin" : "/dashboard";
+  const registrationHref = isAdmin ? "/admin/businesses/new" : "/dashboard/business/new";
   const [businessesOpen, setBusinessesOpen] = useState(false);
 
   return (
@@ -44,15 +48,15 @@ export function SiteHeader({ user }: SiteHeaderProps) {
 
         <div className="flex items-center gap-3">
           <Link
-            href="/dashboard/business/new"
+            href={registrationHref}
             className="hidden sm:inline-flex text-sm border border-emerald-800 text-emerald-900 rounded-full px-4 py-2 hover:bg-emerald-50"
           >
-            ثبت رایگان کسب‌وکار
+            {isAdmin ? "ثبت کسب‌وکار توسط مدیر" : "ثبت رایگان کسب‌وکار"}
           </Link>
           
           {/* ✅ شرط لاگین بودن یا نبودن */}
           {user ? (
-            <Link href="/dashboard" className="flex items-center gap-1.5 text-sm border border-emerald-800 text-emerald-900 rounded-full px-4 py-2 hover:bg-emerald-50">
+            <Link href={panelHref} className="flex items-center gap-1.5 text-sm border border-emerald-800 text-emerald-900 rounded-full px-4 py-2 hover:bg-emerald-50">
               <UserCircle size={16} />
               {user.fullName || user.phone}
             </Link>

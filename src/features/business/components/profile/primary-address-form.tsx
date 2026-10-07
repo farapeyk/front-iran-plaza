@@ -1,4 +1,5 @@
 "use client";
+import { useProfileFlow, useProfileBusy } from "./onboarding-context";
 
 import dynamic from "next/dynamic";
 import { useState, useTransition } from "react";
@@ -23,6 +24,8 @@ export function PrimaryAddressForm({
   initialLongitude: number | null;
 }) {
   const [isPending, startTransition] = useTransition();
+  const flow = useProfileFlow();
+  useProfileBusy(isPending);
   const [address, setAddress] = useState(initialAddress);
   const [lat, setLat] = useState<number | undefined>(initialLatitude ?? undefined);
   const [lng, setLng] = useState<number | undefined>(initialLongitude ?? undefined);
@@ -32,7 +35,7 @@ export function PrimaryAddressForm({
     startTransition(async () => {
       const result = await updateBusinessProfileAction(businessId, { address, latitude: lat, longitude: lng });
       if (!result.success) toast.error(result.message);
-      else toast.success("آدرس ذخیره شد");
+      else { toast.success("آدرس ذخیره شد"); await flow.advance(); }
     });
   }
 
@@ -55,7 +58,7 @@ export function PrimaryAddressForm({
       </div>
 
       <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "در حال ذخیره..." : "ذخیره آدرس اصلی"}
+        {isPending ? "در حال ذخیره..." : flow.active ? "ذخیره و ادامه" : "ذخیره آدرس اصلی"}
       </Button>
     </form>
   );

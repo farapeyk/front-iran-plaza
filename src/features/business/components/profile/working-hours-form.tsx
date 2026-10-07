@@ -1,4 +1,5 @@
 "use client";
+import { useProfileFlow, useProfileBusy } from "./onboarding-context";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -21,6 +22,8 @@ function timeInputClass() {
 
 export function WorkingHoursForm({ businessId, initialEntries }: { businessId: string; initialEntries: WorkingHoursEntry[] }) {
   const [isPending, startTransition] = useTransition();
+  const flow = useProfileFlow();
+  useProfileBusy(isPending);
   const [hoursMap, setHoursMap] = useState<Record<Weekday, WorkingHoursEntry>>(buildInitialMap(initialEntries));
 
   function updateDay(day: Weekday, patch: Partial<WorkingHoursEntry>) {
@@ -32,7 +35,7 @@ export function WorkingHoursForm({ businessId, initialEntries }: { businessId: s
     startTransition(async () => {
       const result = await updateWorkingHoursAction(businessId, Object.values(hoursMap));
       if (!result.success) toast.error(result.message);
-      else toast.success("ساعات کاری ذخیره شد");
+      else { toast.success("ساعات کاری ذخیره شد"); await flow.advance(); }
     });
   }
 
@@ -46,7 +49,7 @@ export function WorkingHoursForm({ businessId, initialEntries }: { businessId: s
               <span className="text-sm font-bold text-neutral-800">{label}</span>
               <label className="flex items-center gap-2 text-xs text-neutral-500">
                 دو شیفت
-                <input type="checkbox" checked={day.isTwoShift} onChange={(e) => updateDay(value, { isTwoShift: e.target.checked })} disabled={isPending} />
+                <input type="checkbox" checked={day.isTwoShift} onChange={(e) => updateDay(value, { isTwoShift: e.target.checked, ...(!e.target.checked ? { openTime2: null, closeTime2: null } : {}) })} disabled={isPending} />
               </label>
             </div>
 
@@ -66,7 +69,7 @@ export function WorkingHoursForm({ businessId, initialEntries }: { businessId: s
       })}
 
       <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "در حال ذخیره..." : "ذخیره اطلاعات"}
+        {isPending ? "در حال ذخیره..." : flow.active ? "ذخیره و ادامه" : "ذخیره اطلاعات"}
       </Button>
     </form>
   );

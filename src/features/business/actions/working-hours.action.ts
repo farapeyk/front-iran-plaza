@@ -1,7 +1,9 @@
 "use server";
 
+import { actionFetch } from '@/lib/api/action-fetch';
+
 import { revalidatePath } from "next/cache";
-import { getAccessTokenCookie } from "@/lib/auth/cookies";
+import { getActionAccessToken } from '@/lib/auth/action-access-token';
 import { extractErrorMessage } from "@/lib/api/error-message";
 import type { WorkingHoursEntry } from "@/features/business/types/business-profile";
 
@@ -11,13 +13,13 @@ export async function updateWorkingHoursAction(
   businessId: string,
   entries: WorkingHoursEntry[],
 ): Promise<WorkingHoursResult> {
-  const accessToken = await getAccessTokenCookie();
+  const accessToken = await getActionAccessToken();
   if (!accessToken) {
     return { success: false, message: "نشست شما منقضی شده، دوباره وارد شوید" };
   }
 
   try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/${businessId}/working-hours`, {
+    const res = await actionFetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/${businessId}/working-hours`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -29,7 +31,7 @@ export async function updateWorkingHoursAction(
 
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      console.error("[updateWorkingHoursAction] backend rejected:", res.status, body);
+      console.error("[updateWorkingHoursAction] backend rejected:", res.status);
       return { success: false, message: extractErrorMessage(body, `ذخیره‌ی ساعات کاری با خطا مواجه شد (کد ${res.status})`) };
     }
   } catch (err) {

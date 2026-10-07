@@ -1,8 +1,10 @@
 "use server";
 
+import { validateAuthResponse } from '@/lib/auth/validate-auth-response';
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { setAuthCookies, clearAuthCookies } from "@/lib/auth/cookies";
+import { isAdminUser } from "@/lib/auth/roles";
 import type { VerifyOtpResponse } from "@/types/auth";
 
 const loginPasswordSchema = z.object({
@@ -35,13 +37,15 @@ export async function adminLoginPasswordAction(input: unknown): Promise<AdminLog
       return { success: false, message: body?.message ?? "شماره موبایل یا رمز عبور نادرست است" };
     }
 
-    data = await res.json();
+    const validated = await validateAuthResponse(await res.json());
+    if (!validated) return { success: false, message: 'پاسخ احراز هویت معتبر نیست.' };
+    data = validated;
   } catch (err) {
     console.error("[adminLoginPasswordAction] network error:", err);
     return { success: false, message: "برقراری ارتباط با سرور ممکن نشد" };
   }
 
-  if (!["ADMIN", "SUPER_ADMIN"].includes(data.user.userType)) {
+  if (!isAdminUser(data.user.userType)) {
     return { success: false, message: "این حساب کاربری به پنل ادمین دسترسی ندارد" };
   }
 

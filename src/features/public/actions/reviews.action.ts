@@ -1,7 +1,9 @@
 "use server";
 
+import { actionFetch } from '@/lib/api/action-fetch';
+
 import { revalidatePath } from "next/cache";
-import { getAccessTokenCookie } from "@/lib/auth/cookies";
+import { getActionAccessToken } from '@/lib/auth/action-access-token';
 import { extractErrorMessage } from "@/lib/api/error-message";
 
 export type ReviewActionResult = { success: true } | { success: false; message: string };
@@ -10,13 +12,13 @@ export async function submitReviewAction(
   businessId: string,
   input: { rating: number; comment?: string },
 ): Promise<ReviewActionResult> {
-  const accessToken = await getAccessTokenCookie();
+  const accessToken = await getActionAccessToken();
   if (!accessToken) {
     return { success: false, message: "برای ثبت نظر باید وارد حساب کاربری شوید" };
   }
 
   try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/${businessId}/reviews`, {
+    const res = await actionFetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/${businessId}/reviews`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -28,7 +30,7 @@ export async function submitReviewAction(
 
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      console.error("[submitReviewAction] backend rejected:", res.status, body);
+      console.error("[submitReviewAction] backend rejected:", res.status);
       return { success: false, message: extractErrorMessage(body, `ثبت نظر با خطا مواجه شد (کد ${res.status})`) };
     }
   } catch (err) {
@@ -41,13 +43,13 @@ export async function submitReviewAction(
 }
 
 export async function submitReviewReplyAction(reviewId: string, comment: string): Promise<ReviewActionResult> {
-  const accessToken = await getAccessTokenCookie();
+  const accessToken = await getActionAccessToken();
   if (!accessToken) {
     return { success: false, message: "برای پاسخ دادن باید وارد حساب کاربری شوید" };
   }
 
   try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/reviews/${reviewId}/replies`, {
+    const res = await actionFetch(`${process.env.BACKEND_INTERNAL_URL}/api/reviews/${reviewId}/replies`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -59,7 +61,7 @@ export async function submitReviewReplyAction(reviewId: string, comment: string)
 
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      console.error("[submitReviewReplyAction] backend rejected:", res.status, body);
+      console.error("[submitReviewReplyAction] backend rejected:", res.status);
       return { success: false, message: extractErrorMessage(body, `ثبت پاسخ با خطا مواجه شد (کد ${res.status})`) };
     }
   } catch (err) {

@@ -1,48 +1,10 @@
-import {
-  LayoutDashboard,
-  Store,
-  Wallet,
-  FileText,
-  Settings,
-  type LucideIcon,
-} from "lucide-react";
-
-type NavItem = {
-  title: string;
-  href: string;
-  icon: LucideIcon;
-  roles: string[]; // کدام نقش‌ها دسترسی دارند
-};
-
+import { LayoutDashboard, Store, User, Heart, Bell, type LucideIcon } from 'lucide-react';
+type NavItem = { title: string; href: string; icon: LucideIcon; roles: string[] };
+const roles = ['CUSTOMER', 'BUSINESS_OWNER', 'ADMIN', 'SUPER_ADMIN'];
 export const dashboardNav: NavItem[] = [
-  {
-    title: "داشبورد",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-    roles: ["BUSINESS_OWNER", "ADMIN", "SUPER_ADMIN"],
-  },
-  {
-    title: "مدیریت کسب‌وکار",
-    href: "/dashboard/business",
-    icon: Store,
-    roles: ["BUSINESS_OWNER", "ADMIN", "SUPER_ADMIN"],
-  },
-  {
-    title: "کیف پول و تراکنش‌ها",
-    href: "/dashboard/wallet",
-    icon: Wallet,
-    roles: ["BUSINESS_OWNER", "ADMIN", "SUPER_ADMIN"],
-  },
-  {
-    title: "فاکتورها",
-    href: "/dashboard/invoices",
-    icon: FileText,
-    roles: ["BUSINESS_OWNER"],
-  },
-  {
-    title: "تنظیمات",
-    href: "/dashboard/settings",
-    icon: Settings,
-    roles: ["BUSINESS_OWNER", "ADMIN", "SUPER_ADMIN"],
-  },
+  { title: 'داشبورد', href: '/dashboard', icon: LayoutDashboard, roles },
+  { title: 'مدیریت کسب‌وکار', href: '/dashboard/business/profile', icon: Store, roles },
+  { title: 'حساب کاربری', href: '/dashboard/profile', icon: User, roles },
+  { title: 'علاقه‌مندی‌ها', href: '/dashboard/favorites', icon: Heart, roles },
+  { title: 'اعلان‌ها', href: '/dashboard/notifications', icon: Bell, roles },
 ];

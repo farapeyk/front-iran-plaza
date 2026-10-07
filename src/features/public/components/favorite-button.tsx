@@ -4,12 +4,10 @@ import { useState, useTransition } from "react";
 import { Heart } from "lucide-react";
 import { toast } from "sonner";
 import { toggleFavoriteAction } from "@/features/public/actions/favorite.action";
-import { useTrackEvent } from "@/hooks/use-track-event";
 
 export function FavoriteButton({ businessId, initialFavorited }: { businessId: string; initialFavorited: boolean }) {
   const [isPending, startTransition] = useTransition();
   const [favorited, setFavorited] = useState(initialFavorited);
-  const track = useTrackEvent();
 
   function handleClick() {
     startTransition(async () => {
@@ -19,7 +17,6 @@ export function FavoriteButton({ businessId, initialFavorited }: { businessId: s
         return;
       }
       setFavorited(result.favorited);
-      track(result.favorited ? "ADD_FAVORITE" : "REMOVE_FAVORITE", businessId);
     });
   }
 

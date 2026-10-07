@@ -1,3 +1,4 @@
+import { pageFetch } from '@/lib/api/page-fetch';
 import Link from "next/link";
 import { Heart } from "lucide-react";
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
@@ -14,7 +15,7 @@ function fileUrl(fileId: string) {
 }
 
 async function getFavorites(accessToken: string): Promise<FavoriteBusiness[]> {
-  const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/users/me/favorites`, {
+  const res = await pageFetch(`${process.env.BACKEND_INTERNAL_URL}/api/users/me/favorites`, {
     headers: { Authorization: `Bearer ${accessToken}` },
     cache: "no-store",
   });

@@ -1,4 +1,5 @@
 "use client";
+import { useProfileBusy } from "./onboarding-context";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -10,6 +11,7 @@ import type { BusinessFeature } from "@/features/business/types/business-feature
 
 export function FeaturesManager({ businessId, initialFeatures }: { businessId: string; initialFeatures: BusinessFeature[] }) {
   const [isPending, startTransition] = useTransition();
+  useProfileBusy(isPending);
   const [features, setFeatures] = useState(initialFeatures);
   const [label, setLabel] = useState("");
 

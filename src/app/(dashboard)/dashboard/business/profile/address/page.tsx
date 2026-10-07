@@ -1,3 +1,4 @@
+import { pageFetch } from '@/lib/api/page-fetch';
 import { redirect } from "next/navigation";
 import { getMyBusiness } from "@/features/business/lib/get-my-business";
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
@@ -13,7 +14,7 @@ interface BusinessWithLocation {
 }
 
 async function getBusinessLocation(businessId: string, accessToken: string): Promise<BusinessWithLocation | null> {
-  const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/${businessId}`, {
+  const res = await pageFetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/${businessId}`, {
     headers: { Authorization: `Bearer ${accessToken}` },
     cache: "no-store",
   });
@@ -22,7 +23,7 @@ async function getBusinessLocation(businessId: string, accessToken: string): Pro
 }
 
 async function getBranches(businessId: string, accessToken: string): Promise<BranchLocation[]> {
-  const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/${businessId}/branches`, {
+  const res = await pageFetch(`${process.env.BACKEND_INTERNAL_URL}/api/businesses/${businessId}/branches`, {
     headers: { Authorization: `Bearer ${accessToken}` },
     cache: "no-store",
   });

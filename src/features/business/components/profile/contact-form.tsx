@@ -1,4 +1,5 @@
 "use client";
+import { useProfileFlow, useProfileBusy } from "./onboarding-context";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -15,6 +16,8 @@ interface ContactFormProps {
 
 export function ContactForm({ businessId, initialPhone, initialPhone2, initialWhatsapp }: ContactFormProps) {
   const [isPending, startTransition] = useTransition();
+  const flow = useProfileFlow();
+  useProfileBusy(isPending);
   const [phone, setPhone] = useState(initialPhone);
   const [phone2, setPhone2] = useState(initialPhone2);
   const [whatsapp, setWhatsapp] = useState(initialWhatsapp);
@@ -24,11 +27,11 @@ export function ContactForm({ businessId, initialPhone, initialPhone2, initialWh
     startTransition(async () => {
       const result = await updateBusinessProfileAction(businessId, {
         phone,
-        phone2: phone2 || undefined,
-        whatsapp: whatsapp || undefined,
+        phone2: phone2.trim() || null,
+        whatsapp: whatsapp.trim() || null,
       });
       if (!result.success) toast.error(result.message);
-      else toast.success("اطلاعات ذخیره شد");
+      else { toast.success("اطلاعات ذخیره شد"); await flow.advance(); }
     });
   }
 
@@ -50,7 +53,7 @@ export function ContactForm({ businessId, initialPhone, initialPhone2, initialWh
       </div>
 
       <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "در حال ذخیره..." : "ذخیره اطلاعات"}
+        {isPending ? "در حال ذخیره..." : flow.active ? "ذخیره و ادامه" : "ذخیره اطلاعات"}
       </Button>
     </form>
   );
