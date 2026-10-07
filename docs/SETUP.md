@@ -4,23 +4,16 @@
 
 ## نصب و اجرای توسعه
 
-هر دو lockfile حفظ شده‌اند. مرجع ثبت‌شده در package.json اکنون `pnpm@11.18.0` و runtime آزموده‌شده Node 24 است. برای نصب npm:
-
-```powershell
-npm ci
-npm run dev
-```
-
-گزینه pnpm، مطابق راهنمای بسته onboarding موجود:
+مرجع نصب فقط `pnpm-lock.yaml` با `pnpm@11.18.0` است. Node دقیق `24.18.0` در `.node-version` و بازه `>=24.18.0 <25` در manifest ثبت شده است. lockfile قدیمی npm در artifacts محلی آرشیو و از سورس فرانت حذف شد.
 
 ```powershell
 pnpm install --frozen-lockfile
+# فقط در صورت نداشتن فایل خصوصی موجود:
+Copy-Item .env.example .env.local
 pnpm dev
 ```
 
-برای یک نصب، یک روش را انتخاب کنید. قفل‌ها را بدون تصمیم تیم بازتولید نکنید. script توسعه `next dev --turbopack -p 3001` است؛ نشانی توسعه `http://localhost:3001` است. README ریشه اکنون راهنمای همین پروژه و همین پورت را دارد.
-
-`engines.node` برابر `>=24.0.0` ثبت شده و بررسی‌ها با Node 24.18.0 انجام شده‌اند. برای تکرارپذیری CI نسخه runtime را ثابت نگه دارید.
+نمونه env فاقد کلید واقعی است؛ placeholder را در فایل خصوصی جایگزین کنید و فایل موجود را overwrite نکنید. توسعه با `next dev --turbopack -p 3001` روی `http://localhost:3001` اجرا می‌شود. `turbopack.root` در next.config.ts به ریشه همین برنامه محدود شده تا resolution در workspace و کپی ایزوله قابل تکرار باشد. نصب clean، build، typecheck، lint و تست‌ها در کپی ایزوله P1 موفق شدند؛ اتصال عملیاتی دیتابیس و بک‌اند هنوز پذیرفته نشده است.
 
 ## متغیرهای محیطی
 
@@ -40,7 +33,7 @@ SITE_URL=https://example.com
 | `SITE_URL` | اختیاری؛ origin واقعی سایت برای metadataBase و sitemap، فقط سمت سرور. پیش از build تنظیم شود؛ robots و sitemap فعلاً ایستا تولید می‌شوند. |
 | `NODE_ENV` | در production باعث `secure: true` در کوکی‌ها می‌شود؛ محیط production باید HTTPS داشته باشد. |
 
-هیچ‌کدام از دو مقدار اختصاصی بالا نباید با پیشوند `NEXT_PUBLIC_` منتشر شوند. `.gitignore` فایل‌های `.env*` را نادیده می‌گیرد. برای راه‌اندازی، این نمونه را در فایل محیطی خصوصی خود وارد کنید و مقدار placeholder را با تنظیم معتبر جایگزین کنید.
+هیچ‌کدام از دو مقدار اختصاصی بالا نباید با پیشوند `NEXT_PUBLIC_` منتشر شوند. `.gitignore` فایل‌های خصوصی `.env*` را نادیده می‌گیرد؛ `.env.example` قابل versioning است. برای راه‌اندازی، این نمونه را در فایل محیطی خصوصی خود وارد کنید و مقدار placeholder را با تنظیم معتبر جایگزین کنید.
 
 ## فرمان‌های پروژه
 

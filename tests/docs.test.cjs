@@ -9,6 +9,7 @@ test('project documents have valid local links, UTF-8 and closed fences', () => 
   for (const file of walk(path.join(root, 'docs')).filter(file => file.endsWith('.md') && path.basename(file) !== 'QA-SPECIALIST-CHECKLIST.md')) {
     const text = fs.readFileSync(file, 'utf8');
     assert.equal(text.includes('\ufffd'), false, file);
+    assert.equal(/\?{3,}/.test(text), false, file + ': possible lossy text encoding');
     assert.equal(text.split(/\r?\n/).filter(line => line.startsWith('```')).length % 2, 0, file);
     for (const match of text.matchAll(/\[[^\]]+\]\(([^)]+)\)/g)) {
       if (match[1].includes('://') || match[1].startsWith('#')) continue;
