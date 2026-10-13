@@ -31,21 +31,21 @@ export function JalaliDateSelect({
 
   return (
     <div className="grid grid-cols-3 gap-2">
-      <select value={day ?? ""} onChange={(e) => onDayChange(Number(e.target.value))} className={fieldClass(hasError)} disabled={disabled}>
+      <select aria-label="روز" value={day ?? ""} onChange={(e) => onDayChange(Number(e.target.value))} className={fieldClass(hasError)} disabled={disabled}>
         <option value="">روز</option>
         {Array.from({ length: dayCount }, (_, i) => i + 1).map((d) => (
           <option key={d} value={d}>{d}</option>
         ))}
       </select>
 
-      <select value={month ?? ""} onChange={(e) => onMonthChange(Number(e.target.value))} className={fieldClass(hasError)} disabled={disabled}>
+      <select aria-label="ماه" value={month ?? ""} onChange={(e) => onMonthChange(Number(e.target.value))} className={fieldClass(hasError)} disabled={disabled}>
         <option value="">ماه</option>
         {JALALI_MONTHS.map((name, i) => (
           <option key={name} value={i + 1}>{name}</option>
         ))}
       </select>
 
-      <select value={year ?? ""} onChange={(e) => onYearChange(Number(e.target.value))} className={fieldClass(hasError)} disabled={disabled}>
+      <select aria-label="سال" value={year ?? ""} onChange={(e) => onYearChange(Number(e.target.value))} className={fieldClass(hasError)} disabled={disabled}>
         <option value="">سال</option>
         {YEAR_OPTIONS.map((y) => (
           <option key={y} value={y}>{y}</option>

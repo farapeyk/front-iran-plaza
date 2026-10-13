@@ -3,8 +3,8 @@
 import { requestOtpSchema } from "@/features/auth/schemas/otp.schema";
 
 export type RequestOtpResult =
-  | { success: true }
-  | { success: false; message: string };
+  | { success: true; cooldownSeconds: number; debugCode?: string }
+  | { success: false; message: string; cooldownSeconds?: number };
 
 /**
  * قدم اول لاگین: شماره موبایل را می‌گیرد و به بک‌اند اطلاع می‌دهد کد ارسال کند.
@@ -28,10 +28,12 @@ export async function requestOtpAction(input: unknown): Promise<RequestOtpResult
 
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      return { success: false, message: body?.message ?? "ارسال کد با خطا مواجه شد" };
+      return { success: false, message: body?.message ?? "ارسال کد با خطا مواجه شد", cooldownSeconds: typeof body?.cooldownSeconds === 'number' ? body.cooldownSeconds : undefined };
     }
 
-    return { success: true };
+    const body = await res.json();
+    return { success: true, cooldownSeconds: Number.isFinite(body.cooldownSeconds) && body.cooldownSeconds >= 0 ? body.cooldownSeconds : 60,
+      ...(process.env.NODE_ENV === 'development' && typeof body.debugCode === 'string' ? {debugCode:body.debugCode} : {}) };
   } catch {
     return { success: false, message: "برقراری ارتباط با سرور ممکن نشد" };
   }

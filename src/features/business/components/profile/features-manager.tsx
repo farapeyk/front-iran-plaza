@@ -4,8 +4,8 @@ import { useProfileBusy } from "./onboarding-context";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Check, Trash2, Plus } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "@/design/components/ui/input";
+import { Button } from "@/design/components/ui/button";
 import { addFeatureAction, removeFeatureAction } from "@/features/business/actions/features.action";
 import type { BusinessFeature } from "@/features/business/types/business-feature";
 

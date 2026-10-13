@@ -5,7 +5,7 @@ const { once } = require('node:events');
 const { NextRequest } = require('next/server');
 const { load } = require('./helpers.cjs');
 
-test('BFF retries the same mutation over real HTTP, hides cookies and rejects cross-origin requests', async () => {
+test('BFF refreshes after rejection without replaying mutations, hides cookies and rejects cross-origin requests', async () => {
   const originalUrl=process.env.BACKEND_INTERNAL_URL;
   const calls=[];let token='expired';let stored=0;
   const server=http.createServer(async (req,res)=>{
@@ -21,16 +21,20 @@ test('BFF retries the same mutation over real HTTP, hides cookies and rejects cr
   process.env.BACKEND_INTERNAL_URL='http://127.0.0.1:'+server.address().port;
   const cookies={ getAccessTokenCookie:async()=>token,getRefreshTokenCookie:async()=>'old-refresh',clearAuthCookies:async()=>{},setAuthCookies:async data=>{token=data.accessToken;stored++;} };
   const {refreshSession}=load('src/lib/auth/refresh-session.ts',{'./cookies':cookies,'./verify-access-token':{verifyAccessToken:async value=>value==='valid'?{sub:'user_1',userType:'CUSTOMER'}:null}});
-  const route=load('src/app/api/backend/[...path]/route.ts',{'@/lib/auth/cookies':cookies,'@/lib/auth/refresh-session':{refreshSession}});
+  const route=load('src/app/api/backend/[...path]/route.ts',{'@/lib/auth/cookies':cookies,'@/lib/auth/refresh-session':{refreshSession},'@/lib/auth/same-origin':load('src/lib/auth/same-origin.ts')});
   try {
     const response=await route.POST(new NextRequest('http://frontend.invalid/api/backend/probe?q=1',{method:'POST',headers:{origin:'http://frontend.invalid',cookie:'private=secret',authorization:'Bearer forged','Content-Type':'application/json'},body:'{"step":1}'}),{params:Promise.resolve({path:['probe']})});
-    assert.equal(response.status,200);assert.deepEqual(await response.json(),{ok:true});assert.equal(stored,1);
-    const mutations=calls.filter(c=>c.url==='/api/probe?q=1');assert.equal(mutations.length,2);
-    assert.equal(mutations[0].body,mutations[1].body);assert.equal(mutations[1].method,'POST');
+    assert.equal(response.status,401);assert.equal(stored,1);
+    const mutations=calls.filter(c=>c.url==='/api/probe?q=1');assert.equal(mutations.length,1);
     assert.equal(mutations[0].headers.cookie,undefined);assert.equal(mutations[0].headers.authorization,'Bearer expired');
     assert.equal(response.headers.get('set-cookie'),null);assert.equal(response.headers.get('cache-control'),'private, no-store');
     const rejected=await route.POST(new NextRequest('http://frontend.invalid/api/backend/probe',{method:'POST',headers:{origin:'http://evil.invalid'}}),{params:Promise.resolve({path:['probe']})});
-    assert.equal(rejected.status,403);assert.equal(calls.length,3);
+    assert.equal(rejected.status,403);assert.equal(calls.length,2);
+    token='expired';
+    const read=await route.GET(new NextRequest('http://frontend.invalid/api/backend/probe'),{params:Promise.resolve({path:['probe']})});
+    assert.equal(read.status,200);assert.deepEqual(await read.json(),{ok:true});
+    assert.equal(calls.filter(call=>call.url==='/api/probe'&&call.method==='GET').length,2);
+    assert.equal(stored,2);assert.equal(read.headers.get('set-cookie'),null);
     const invalid=await route.GET(new NextRequest('http://frontend.invalid/api/backend/probe'),{params:Promise.resolve({path:['..','private']})});assert.equal(invalid.status,400);
   } finally {server.closeAllConnections();await new Promise(resolve=>server.close(resolve));if(originalUrl===undefined)delete process.env.BACKEND_INTERNAL_URL;else process.env.BACKEND_INTERNAL_URL=originalUrl;}
 });

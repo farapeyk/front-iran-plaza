@@ -9,6 +9,7 @@ export interface PublicBusinessSummary {
   city?: string | null;
   neighborhood?: string | null;
   planType?: "FREE" | "VIP";
+  planExpiryDate?: string | null;
   hasInstallment?: boolean;
 }
 

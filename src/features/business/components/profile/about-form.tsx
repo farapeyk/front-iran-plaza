@@ -3,7 +3,7 @@ import { useProfileFlow, useProfileBusy } from "./onboarding-context";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/design/components/ui/button";
 import { updateBusinessProfileAction } from "@/features/business/actions/update-business-profile.action";
 
 export function AboutForm({ businessId, initialAboutText }: { businessId: string; initialAboutText: string }) {

@@ -3,8 +3,8 @@ import { useProfileFlow, useProfileBusy } from "./onboarding-context";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/design/components/ui/button";
+import { Input } from "@/design/components/ui/input";
 import { updateInstallmentPlanAction } from "@/features/business/actions/installment.action";
 import { REPAYMENT_PERIOD_OPTIONS, type InstallmentPlanData } from "@/features/business/types/business-extras";
 

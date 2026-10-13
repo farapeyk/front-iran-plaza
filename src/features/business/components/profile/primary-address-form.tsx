@@ -4,7 +4,7 @@ import { useProfileFlow, useProfileBusy } from "./onboarding-context";
 import dynamic from "next/dynamic";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/design/components/ui/button";
 import { updateBusinessProfileAction } from "@/features/business/actions/update-business-profile.action";
 
 const LocationPicker = dynamic(() => import("./location-picker"), {

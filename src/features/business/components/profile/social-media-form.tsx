@@ -4,8 +4,8 @@ import { useProfileFlow, useProfileBusy } from "./onboarding-context";
 import { useState, useTransition } from "react";
 import { Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/design/components/ui/button";
+import { Input } from "@/design/components/ui/input";
 import { updateBusinessProfileAction } from "@/features/business/actions/update-business-profile.action";
 
 const PLATFORM_OPTIONS = [

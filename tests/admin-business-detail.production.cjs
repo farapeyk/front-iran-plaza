@@ -11,6 +11,8 @@ const { SignJWT } = require('jose');
 async function main() {
   const id = 'cmsfz4qtl00027msz3yr5z4nl';
   const mainPath = '/api/businesses/' + id;
+  const publicSlug='نمایشگاه-ماشین-e823cb';
+  const publicPath='/api/businesses/slug/'+encodeURIComponent(publicSlug);
   const fixtures = {
     [mainPath]: { id, name: 'کسب‌وکار آزمایشی مدیر', phone: '09120000000', status: 'PENDING', planType: 'FREE', aboutText: 'معرفی آزمایشی' },
     [mainPath + '/documents']: [],
@@ -23,10 +25,17 @@ async function main() {
     [mainPath + '/working-hours']: [],
     [mainPath + '/installment-plan']: null,
   };
+  fixtures[publicPath]={id:'public-fixture',slug:publicSlug,name:'کسب‌وکار فارسی آزمایشی',description:'Public fixture',aboutText:null,logoId:null,introVideoId:null,phone:'09120000000',phone2:null,whatsapp:null,website:null,socialMedia:null,address:null,latitude:null,longitude:null,businessType:'SOLE_PROPRIETOR',viewCount:0,categories:[],gallery:[],services:[],productCategories:[],products:[],workingHours:[],branches:[],installmentPlan:null};
+  fixtures['/api/businesses/public-fixture/reviews']=[];
+  fixtures['/api/businesses/public-fixture/features']=[];
+  fixtures['/api/users/me']={id:'fixture-customer',userType:'CUSTOMER',fullName:'کاربر آزمایشی',phone:'09120000001',isProfileCompleted:true};
+  fixtures['/api/businesses/mine']=[];
+  const requestedPaths=[];
   const backend = http.createServer((req, res) => {
+    requestedPaths.push(req.url);
     res.setHeader('Content-Type', 'application/json');
     if (!(req.url in fixtures)) { res.statusCode = 404; return res.end('{}'); }
-    if (!req.headers.authorization?.startsWith('Bearer ')) { res.statusCode = 401; return res.end('{}'); }
+    if (req.url!==publicPath&&!req.url.startsWith('/api/businesses/public-fixture/')&&!req.headers.authorization?.startsWith('Bearer ')) { res.statusCode = 401; return res.end('{}'); }
     res.end(JSON.stringify(fixtures[req.url]));
   });
   let child;
@@ -50,6 +59,24 @@ async function main() {
       await new Promise(resolve => setTimeout(resolve, 200));
     }
     assert.ok(ready, 'Production server did not start.');
+    const publicResponse=await fetch(origin+'/businesses/'+encodeURIComponent(publicSlug));
+    const publicHtml=await publicResponse.text();
+    assert.equal(publicResponse.status,200,'Encoded Persian slug must resolve in the production page');
+    assert.match(publicHtml,/<h1[^>]*>کسب‌وکار فارسی آزمایشی<\/h1>/);
+    console.log('PASS: production public page resolves encoded Persian slug against unchanged backend response shape.');
+    const articleList=await fetch(origin+'/articles');
+    assert.equal(articleList.status,200);
+    assert.ok((await articleList.text()).includes('بخش مقالات در حال حاضر در دسترس نیست.'));
+    const missingArticle=await fetch(origin+'/articles/unavailable-article');
+    assert.equal(missingArticle.status,404);await missingArticle.text();
+    const customerToken=await new SignJWT({sub:'fixture-customer',userType:'CUSTOMER'}).setProtectedHeader({alg:'HS256'}).setExpirationTime('5m').sign(new TextEncoder().encode(secret));
+    for(const [route,text] of [['/dashboard/support','ثبت و پیگیری پیام پشتیبانی در حال حاضر در دسترس نیست.'],['/dashboard/payments','نمایش سوابق پرداخت در حال حاضر در دسترس نیست.']]) {
+      const unavailable=await fetch(origin+route,{headers:{cookie:'access_token='+customerToken},redirect:'manual'});
+      assert.equal(unavailable.status,200,route);
+      assert.ok((await unavailable.text()).includes(text),route);
+    }
+    assert.equal(requestedPaths.some(route=>/^\/api\/(articles|support\/tickets|invoices\?)/.test(route)),false);
+    console.log('PASS: unavailable articles, tickets and payment history render without calling removed backend routes.');
     const token = await new SignJWT({ sub: 'fixture-admin', userType: 'ADMIN' }).setProtectedHeader({ alg: 'HS256' }).setExpirationTime('5m').sign(new TextEncoder().encode(secret));
     const headers = { cookie: 'access_token=' + token };
     for (const role of ['ADMIN', 'SUPER_ADMIN']) {

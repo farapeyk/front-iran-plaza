@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
  
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/design/components/ui/button";
+import { Input } from "@/design/components/ui/input";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";

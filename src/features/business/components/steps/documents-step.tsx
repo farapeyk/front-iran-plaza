@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { UploadCloud, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/design/components/ui/button";
 import { uploadFileAction } from "@/features/business/actions/upload-file.action";
 import { submitBusinessDocumentAction } from "@/features/business/actions/submit-document.action";
 import type { IdentityInput } from "@/features/business/schemas/identity.schema";

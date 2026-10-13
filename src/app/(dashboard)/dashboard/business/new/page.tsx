@@ -36,11 +36,5 @@ export default async function NewBusinessPage() {
   const business = await getMyBusiness();
   const documents = business && accessToken ? await getRegistrationDocuments(accessToken, business.id) : [];
 
-  return (
-    <div className="min-h-screen bg-[#FBF1E8] px-4 py-8" dir="rtl">
-      <div className="max-w-md mx-auto bg-white border border-neutral-200 rounded-lg shadow-sm p-6">
-        <BusinessWizard user={user} categories={categories} business={business} documents={documents} />
-      </div>
-    </div>
-  );
+  return <BusinessWizard user={user} categories={categories} business={business} documents={documents} />;
 }

@@ -1,14 +1,3 @@
-// src/app/(public)/layout.tsx
-import { SiteHeader } from "@/features/public/components/site-header";
-import { getCurrentUser } from "@/lib/auth/get-current-user";
-
-export default async function PublicLayout({ children }: { children: React.ReactNode }) {
-  const user = await getCurrentUser(); 
-
-  return (
-    <div className="min-h-screen bg-[#FBF1E8]">
-      <SiteHeader user={user} /> 
-      {children}
-    </div>
-  );
-}
+import { DesignProvider } from '@/design/provider';
+import { getCurrentUser } from '@/lib/auth/get-current-user';
+export default async function Layout({children}:{children:React.ReactNode}) { return <DesignProvider user={await getCurrentUser()}>{children}</DesignProvider>; }

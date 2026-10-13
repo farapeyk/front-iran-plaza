@@ -1,0 +1,154 @@
+{
+  "schemas": [
+    "AddGalleryImageDto",
+    "AdvanceOnboardingDto",
+    "AssignRoleDto",
+    "ChargeWalletDto",
+    "CreateBranchDto",
+    "CreateBusinessDto",
+    "CreateBusinessFeatureDto",
+    "CreateCategoryDto",
+    "CreateCouponDto",
+    "CreateInvoiceDto",
+    "CreateManualBusinessDto",
+    "CreateNotificationDto",
+    "CreatePlanDto",
+    "CreateProductCategoryDto",
+    "CreateProductDto",
+    "CreateReplyDto",
+    "CreateReviewDto",
+    "CreateRoleDto",
+    "CreateServiceDto",
+    "CreateTaxRuleDto",
+    "GrantPlanDto",
+    "LoginWithPasswordDto",
+    "RefreshTokenDto",
+    "RejectBusinessDto",
+    "RejectDocumentDto",
+    "RejectWithdrawDto",
+    "RequestOtpDto",
+    "RequestWithdrawDto",
+    "SendBusinessMessageDto",
+    "SetPasswordDto",
+    "SocialMediaDto",
+    "SubmitBusinessDocumentDto",
+    "SuspendUserDto",
+    "TrackEventDto",
+    "UpdateBranchDto",
+    "UpdateBusinessDto",
+    "UpdateBusinessFeatureDto",
+    "UpdateCategoryDto",
+    "UpdateCouponDto",
+    "UpdateInstallmentPlanDto",
+    "UpdatePlanDto",
+    "UpdateProductCategoryDto",
+    "UpdateProductDto",
+    "UpdateProfileDto",
+    "UpdateReportDto",
+    "UpdateReviewStatusDto",
+    "UpdateServiceDto",
+    "UpdateSettingDto",
+    "UpdateWorkingHoursDto",
+    "VerifyOtpDto",
+    "WorkingHourItemDto"
+  ],
+  "enums": {
+    "schemas/UpdateProfileDto/properties/gender": [
+      "MALE",
+      "FEMALE"
+    ],
+    "schemas/CreateBusinessDto/properties/businessType": [
+      "SOLE_PROPRIETOR",
+      "COMPANY",
+      "BRANCH"
+    ],
+    "schemas/WorkingHourItemDto/properties/weekday": [
+      "SATURDAY",
+      "SUNDAY",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "schemas/SubmitBusinessDocumentDto/properties/type": [
+      "NATIONAL_ID_FRONT",
+      "NATIONAL_ID_BACK",
+      "BUSINESS_LICENSE_PHOTO"
+    ],
+    "schemas/ChargeWalletDto/properties/type": [
+      "DEPOSIT",
+      "WITHDRAW",
+      "SUBSCRIPTION",
+      "REFUND"
+    ],
+    "schemas/CreateInvoiceDto/properties/status": [
+      "PENDING",
+      "PAID",
+      "CANCELED",
+      "EXPIRED"
+    ],
+    "schemas/CreatePlanDto/properties/tier": [
+      "FREE",
+      "VIP"
+    ],
+    "schemas/UpdatePlanDto/properties/tier": [
+      "FREE",
+      "VIP"
+    ],
+    "schemas/CreateNotificationDto/properties/type": [
+      "SYSTEM",
+      "FINANCIAL",
+      "BUSINESS",
+      "REVIEW",
+      "REPORT",
+      "SUBSCRIPTION"
+    ],
+    "schemas/CreateNotificationDto/properties/channel": [
+      "SMS",
+      "EMAIL",
+      "IN_APP",
+      "PUSH"
+    ],
+    "schemas/TrackEventDto/properties/type": [
+      "LOGIN",
+      "LOGOUT",
+      "REGISTER",
+      "VERIFY_OTP",
+      "SEARCH",
+      "FILTER",
+      "SORT",
+      "VIEW_BUSINESS",
+      "VIEW_PRODUCT",
+      "VIEW_GALLERY",
+      "CLICK_PHONE",
+      "CLICK_WEBSITE",
+      "CLICK_LOCATION",
+      "ADD_FAVORITE",
+      "REMOVE_FAVORITE",
+      "SUBMIT_REVIEW",
+      "REPORT_BUSINESS",
+      "VIEW_PLAN",
+      "PURCHASE_SUBSCRIPTION",
+      "PAYMENT_INITIATED",
+      "PAYMENT_COMPLETED"
+    ],
+    "schemas/SendBusinessMessageDto/properties/channel": [
+      "SMS",
+      "EMAIL",
+      "IN_APP",
+      "PUSH"
+    ],
+    "schemas/CreateManualBusinessDto/properties/businessType": [
+      "SOLE_PROPRIETOR",
+      "COMPANY",
+      "BRANCH"
+    ],
+    "schemas/CreateManualBusinessDto/properties/registrationType": [
+      "USER_SELF",
+      "ADMIN_MANUAL",
+      "IN_PERSON",
+      "TELEPHONE"
+    ]
+  }
+}

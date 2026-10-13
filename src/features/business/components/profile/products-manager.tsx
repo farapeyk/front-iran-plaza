@@ -2,11 +2,12 @@
 import { useProfileBusy } from "./onboarding-context";
 
 import Image from "next/image";
+import Link from 'next/link';
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Trash2, Plus, UploadCloud } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/design/components/ui/button";
+import { Input } from "@/design/components/ui/input";
 import {
   addProductCategoryAction,
   removeProductCategoryAction,
@@ -131,6 +132,7 @@ export function ProductsManager({
 
   return (
     <div dir="rtl" className="space-y-5">
+      <Link href="/dashboard/business/profile/products/new" className="inline-flex rounded-md bg-primary-700 px-5 py-3 text-white">افزودن محصول جدید</Link>
       {categories.length === 0 && !showAddCategory && (
         <p className="text-sm text-neutral-500">هنوز دسته‌بندی‌ای نساخته‌اید.</p>
       )}

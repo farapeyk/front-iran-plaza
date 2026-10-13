@@ -1,0 +1,58 @@
+.plaza-design .reference-listing { background: #fcf9f5; }
+.plaza-design .reference-listing .listing-container { width: min(1200px, calc(100% - 48px)); margin-inline: auto; }
+.plaza-design .reference-listing .listing-breadcrumb { padding-block: 24px 64px; font-size: 12px; color: var(--text-muted); }
+.plaza-design .reference-listing .listing-heading { display: flex; align-items: center; justify-content: space-between; gap: 32px; margin-bottom: 56px; }
+.plaza-design .reference-listing .listing-heading h1 { font-size: 30px; font-weight: 900; }
+.plaza-design .reference-listing .listing-heading p { margin-top: 12px; color: var(--text-muted); font-size: 14px; }
+.plaza-design .reference-listing .listing-heading > form { width: 500px; max-width: 100%; }
+.plaza-design .reference-listing .listing-filters { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px; margin-bottom: 40px; }
+.plaza-design .reference-listing :is(.listing-filter-pills, .listing-switches) { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.plaza-design .reference-listing .listing-filter { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; padding: 10px 20px; border: 1px solid var(--border-default); border-radius: 9999px; font-size: 14px; color: var(--text-body); background: transparent; cursor: pointer; }
+.plaza-design .reference-listing summary { list-style: none; }
+.plaza-design .reference-listing summary::-webkit-details-marker { display: none; }
+.plaza-design .reference-listing .listing-location-filter { position: relative; }
+.plaza-design .reference-listing .listing-filter-popover { position: absolute; inset-inline-start: 0; top: calc(100% + 8px); z-index: 30; width: 240px; padding: 20px; border: 1px solid var(--border-default); border-radius: 8px; background: var(--surface); box-shadow: var(--shadow-lg); }
+.plaza-design .reference-listing .listing-filter-popover input { display: block; width: 100%; min-height: 44px; margin-block: 8px 16px; padding: 8px 12px; border: 1px solid var(--border-default); border-radius: 4px; }
+.plaza-design .reference-listing .listing-switches { flex-direction: row; gap: 40px; }
+.plaza-design .reference-listing .listing-switches label { display: flex; flex-direction: row-reverse; align-items: center; gap: 8px; color: var(--text-body); font-size: 14px; }
+.plaza-design .reference-listing .listing-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.plaza-design .reference-listing .listing-card { position: relative; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; min-height: 264px; padding: 44px 24px 20px; border: 1px solid var(--border-subtle); border-radius: 4px; background: var(--surface); }
+.plaza-design .reference-listing .listing-vip { position: absolute; top: 24px; left: 24px; }
+.plaza-design .reference-listing .listing-card-heading { display: flex; align-items: center; gap: 20px; }
+.plaza-design .reference-listing .listing-logo { width: 100px; height: 100px; flex-shrink: 0; border-radius: 50%; overflow: hidden; }
+.plaza-design .reference-listing .listing-logo img { width: 100%; height: 100%; object-fit: cover; }
+.plaza-design .reference-listing .listing-card h2 { font-size: 22px; font-weight: 700; color: var(--text-title); }
+.plaza-design .reference-listing .listing-card-heading p { margin-top: 8px; font-size: 14px; color: var(--text-body); line-height: 1.9; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.plaza-design .reference-listing .listing-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid var(--border-subtle); padding-top: 16px; margin-top: 32px; }
+.plaza-design .reference-listing .listing-location { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 14px; color: var(--text-muted); }
+.plaza-design .reference-listing .listing-location span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.plaza-design .reference-listing .listing-location img { flex-shrink: 0; }
+.plaza-design .reference-listing .listing-profile { height: 40px; padding-inline: 16px; font-size: 12px; background: var(--opacity-dark-8); color: var(--text-title); }
+.plaza-design .reference-listing .listing-banner { grid-column: 1 / -1; min-height: 96px; padding-block: 20px; border-radius: 48px 4px 4px 48px; }
+.plaza-design .reference-listing .listing-banner::before { content: ""; position: absolute; inset: 0 25% 0 auto; width: 240px; background: url('/design/home/hero-loop-2.svg') center / contain no-repeat; opacity: .12; pointer-events: none; }
+.plaza-design .reference-listing .listing-banner p:first-child { font-size: 24px; }
+.plaza-design .reference-listing .listing-banner p:nth-child(2) { font-size: 16px; }
+.plaza-design .reference-listing .listing-short-banner { margin-top: 24px; }
+.plaza-design .reference-listing .listing-pagination { display: flex; justify-content: center; margin-block: 48px 0; }
+.plaza-design .reference-listing .listing-empty { display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 64px 24px; }
+.plaza-design .reference-listing .listing-members { background: transparent; padding-inline: max(24px, calc((100vw - 1200px) / 2)); padding-block: 160px 100px; }
+.plaza-design .reference-listing .listing-about { padding-block: 64px 160px; text-align: right; color: var(--text-body); font-size: 14px; line-height: 1.9; }
+.plaza-design .reference-listing .listing-about h2 { font-weight: 700; margin-bottom: 16px; }
+.plaza-design .reference-listing .listing-about > a { display: inline-block; margin-top: 12px; color: var(--primary-500); }
+@media (max-width: 1023px) {
+  .plaza-design .reference-listing .listing-heading { flex-direction: column; align-items: stretch; gap: 24px; margin-bottom: 32px; }
+  .plaza-design .reference-listing .listing-breadcrumb { padding-bottom: 32px; }
+  .plaza-design .reference-listing .listing-heading > form { width: 100%; }
+  .plaza-design .reference-listing .listing-card h2 { font-size: 18px; }
+  .plaza-design .reference-listing .listing-logo { width: 72px; height: 72px; }
+  .plaza-design .reference-listing .listing-members { padding-top: 80px; }
+}
+@media (max-width: 767px) {
+  .plaza-design .reference-listing .listing-grid { grid-template-columns: minmax(0, 1fr); }
+  .plaza-design .reference-listing .listing-filter-pills { gap: 8px; }
+  .plaza-design .reference-listing .listing-filter { padding-inline: 12px; font-size: 12px; }
+  .plaza-design .reference-listing .listing-switches { gap: 20px; }
+  .plaza-design .reference-listing .listing-card { min-height: 240px; padding-inline: 20px; }
+  .plaza-design .reference-listing .listing-filter-popover { width: 200px; }
+  .plaza-design .reference-listing .listing-about { padding-bottom: 80px; }
+}

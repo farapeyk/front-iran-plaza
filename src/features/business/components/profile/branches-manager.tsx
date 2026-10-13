@@ -4,8 +4,8 @@ import { useProfileBusy } from "./onboarding-context";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Trash2, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/design/components/ui/button";
+import { Input } from "@/design/components/ui/input";
 import { addBranchAction, removeBranchAction } from "@/features/business/actions/branches.action";
 import type { BranchLocation } from "@/features/business/types/business-extras";
 

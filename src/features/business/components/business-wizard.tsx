@@ -10,6 +10,7 @@ import type { CurrentUser } from "@/types/auth";
 import type { BusinessInfoInput } from '../schemas/business-info.schema';
 import { acceptedDocuments, registrationIncomplete, type RegistrationBusiness, type RegistrationDocument } from '../lib/registration';
 import { gregorianToJalali } from '@/lib/utils/jalali';
+import { WizardFrame } from '@/design/pages/registration-live';
 
 type WizardStep =
   | { name: "business-info" }
@@ -39,7 +40,7 @@ export function BusinessWizard({ user, categories, business, documents = [] }: B
   });
   const [savedDocuments, setSavedDocuments] = useState(documents);
 
-  switch (step.name) {
+  const renderStep = () => { switch (step.name) {
     case "business-info":
       return <BusinessInfoStep categories={categories} existingBusinessId={draft?.businessId} initialValues={draft?.values} onNext={(businessId, values) => {
         setDraft({ businessId, values });
@@ -62,5 +63,6 @@ export function BusinessWizard({ user, categories, business, documents = [] }: B
         onDone={() => setStep({ name: "success" })} />;
     case "success":
       return <SuccessStep />;
-  }
+  } };
+  return <WizardFrame step={step.name}>{renderStep()}</WizardFrame>;
 }

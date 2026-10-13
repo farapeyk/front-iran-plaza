@@ -3,7 +3,7 @@ import { useProfileFlow, useProfileBusy } from "./onboarding-context";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/design/components/ui/button";
 import { updateWorkingHoursAction } from "@/features/business/actions/working-hours.action";
 import { WEEKDAYS, type WorkingHoursEntry, type Weekday } from "@/features/business/types/business-profile";
 

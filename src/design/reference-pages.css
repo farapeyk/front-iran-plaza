@@ -1,0 +1,119 @@
+/* Layout of the supplied home and business references. Keep admin styles isolated. */
+.plaza-design .reference-home,
+.plaza-design .reference-business { background: #fcf9f5; }
+.plaza-design :is(.reference-home, .reference-business, .reference-listing) [data-slot="site-header"] > div {
+  width: min(1200px, calc(100% - 64px));
+  max-width: 1200px;
+  padding-inline: 0;
+}
+.plaza-design :is(.reference-home, .reference-business, .reference-listing) [data-slot="site-header"] nav { margin-inline-end: auto; }
+.plaza-design :is(.reference-home, .reference-business, .reference-listing) [data-slot="site-header"] a[href="/login"] {
+  border: 1px solid var(--primary-500);
+  border-radius: 9999px;
+  padding-inline: 16px;
+}
+.plaza-design .reference-home [data-slot="site-header"] { background: #f5edda; }
+.plaza-design .reference-home .home-hero { background: linear-gradient(160deg, #f5edda, #e8d7ad); }
+.plaza-design .reference-home :is(.home-categories, .home-registration, .home-process, .home-faq) {
+  max-width: 1440px;
+  margin-inline: auto;
+}
+.plaza-design .reference-home .home-members {
+  padding-inline: max(24px, calc((100vw - 1200px) / 2));
+}
+.plaza-design .reference-home .home-registration { position: relative; overflow: clip; }
+.plaza-design .reference-home .home-registration::before {
+  content: "";
+  position: absolute;
+  inset: 0 -80px 0 auto;
+  width: 320px;
+  background: url('/design/home/hero-loop-1.svg') center / contain no-repeat;
+  transform: rotate(-30deg);
+  pointer-events: none;
+}
+.plaza-design .reference-home .home-registration > div { background: linear-gradient(145deg, #277749, #0c2e20); }
+.plaza-design .reference-home .home-registration > div > div:last-child > div { margin-top: 0; }
+.plaza-design .reference-home .home-categories a:has(img[src="/design/icons/cat-clock.svg"]) > span:first-child > span { background: var(--primary-700); }
+.plaza-design .reference-home .home-members article { width: 260px; }
+.plaza-design .reference-home .home-testimonials > div > div:first-child { height: 160px; }
+.plaza-design .reference-business .business-container {
+  width: min(1200px, calc(100% - 48px));
+  margin-inline: auto;
+}
+.plaza-design .reference-business .business-breadcrumb { padding-block: 24px; color: var(--text-muted); font-size: 12px; }
+.plaza-design .reference-business .business-header { min-height: 400px; padding-block: 56px; }
+.plaza-design .reference-business .business-header h1 { font-size: 30px; }
+.plaza-design .reference-business .business-header p { max-width: 520px; color: var(--text-body); font-size: 14px; line-height: 1.9; }
+.plaza-design .reference-business .business-tabs { background: #fcf9f5; }
+.plaza-design .reference-business .business-tabs > div { justify-content: flex-start; }
+.plaza-design .reference-business .business-gallery { padding-block: 24px 72px; }
+.plaza-design .reference-business .gallery-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; }
+.plaza-design .reference-business .business-section { padding-block: 0 48px; border-bottom: 1px solid var(--border-subtle); }
+.plaza-design .reference-business .business-section h2 { font-size: 22px; }
+.plaza-design .reference-business .business-section :is(p, li) { color: var(--text-body); font-size: 14px; line-height: 1.9; }
+.plaza-design .reference-business .business-products { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.plaza-design .reference-business .business-products article { padding: 12px; border-color: var(--border-subtle); background: var(--surface); }
+.plaza-design .reference-business .business-products h3 { font-size: 14px; }
+.plaza-design .reference-business .business-products p { font-size: 12px; }
+.plaza-design .reference-business .business-products img { background: var(--secondary-50); }
+.plaza-design .reference-business .business-hours li { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+.plaza-design .reference-business .business-hours span { text-align: left; }
+.plaza-design .reference-business .business-sidebar-card { background: #f6eddd; padding: 24px; text-align: right; }
+.plaza-design .reference-business .business-sidebar-card > img { margin-inline-end: auto; margin-inline-start: 0; margin-bottom: 20px; }
+.plaza-design .reference-business .business-sidebar-card h2 { font-size: 22px; font-weight: 900; }
+.plaza-design .reference-business .business-sidebar-card p { margin-top: 12px; color: var(--text-body); font-size: 13px; line-height: 1.9; }
+.plaza-design .reference-business .business-sidebar [data-slot="scoring"] { margin-top: 24px; flex-direction: column-reverse; }
+.plaza-design .reference-business .business-sidebar [data-slot="scoring"] p { font-size: 14px; }
+.plaza-design .reference-business .business-sidebar [data-slot="scoring"] button { width: 24px; height: 24px; }
+.plaza-design .reference-business .business-similar { background: transparent; padding-top: 100px; }
+@media (min-width: 1024px) {
+  .plaza-design :is(.reference-home, .reference-business, .reference-listing) footer > div:nth-child(2) > div:first-child { grid-template-columns: 1.2fr .7fr .7fr 1.4fr; }
+  .plaza-design :is(.reference-home, .reference-business, .reference-listing) footer > div:nth-child(2) > div:first-child > div:last-child { columns: 2; column-gap: 24px; }
+  .plaza-design :is(.reference-home, .reference-business, .reference-listing) footer > div:nth-child(2) > div:first-child > div:last-child a { break-inside: avoid; }
+  .plaza-design :is(.reference-home, .reference-business, .reference-listing) footer > div:nth-child(2) > div:last-child { flex-direction: row-reverse; }
+  .plaza-design :is(.reference-home, .reference-business, .reference-listing) footer img[src*="logo-secondary"] { width: 160px; height: 32px; }
+  .plaza-design .reference-home .home-hero { min-height: 555px; padding: 120px max(32px, calc((100vw - 1200px) / 2)) 180px; }
+  .plaza-design .reference-home .home-hero-content { width: 500px; margin: 0 0 0 auto; align-items: flex-start; }
+  .plaza-design .reference-home .home-hero-content h1 { font-size: 40px; }
+  .plaza-design .reference-home .home-hero-content h1 + p { font-size: 32px; }
+  .plaza-design .reference-home .home-hero-loop { right: auto; left: 0; top: 12%; width: 46%; }
+  .plaza-design .reference-home .home-hero-city { right: auto; left: 8%; width: 48%; height: 45%; }
+  .plaza-design .reference-home .home-hero-city img:first-child { inset-inline: 0; width: 100%; max-width: none; }
+  .plaza-design .reference-home .home-hero-city img:last-child { inset-inline: 15%; max-width: 70%; }
+  .plaza-design .reference-home :is(.home-categories, .home-registration, .home-process, .home-faq) { padding-inline: 120px; }
+  .plaza-design .reference-home .home-categories { padding-top: 120px; padding-bottom: 80px; }
+  .plaza-design .reference-home .home-categories a { min-width: 0; }
+  .plaza-design .reference-home .home-categories a > span:first-child > span { width: 64px; height: 64px; }
+  .plaza-design .reference-home .home-categories a > span:last-child { font-size: 14px; }
+  .plaza-design .reference-home .home-registration { padding-block: 80px; }
+  .plaza-design .reference-home .home-registration > div { padding: 80px; gap: 80px; }
+  .plaza-design .reference-home .home-registration > div > div:last-child { width: 400px; }
+  .plaza-design .reference-home .home-process { padding-block: 80px 120px; }
+  .plaza-design .reference-home .home-process > div:last-child { gap: 28px; padding: 48px 32px; }
+  .plaza-design .reference-home .home-process > div:last-child > div { min-width: 0; }
+  .plaza-design .reference-home .home-testimonials { padding-top: 120px; }
+  .plaza-design .reference-home .home-testimonials article { max-width: 584px; }
+  .plaza-design .reference-home .home-faq { padding-block: 120px 180px; }
+  .plaza-design .reference-business .business-columns { display: grid; grid-template-columns: minmax(0, 1fr) 350px; gap: 80px; }
+  .plaza-design .reference-business .business-sidebar { grid-column: 2; grid-row: 1; }
+  .plaza-design .reference-business .business-content { grid-column: 1; grid-row: 1; }
+  .plaza-design .reference-business .business-content [data-slot="scoring"] { display: none; }
+}
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .plaza-design .reference-home :is(.home-categories, .home-registration, .home-process, .home-faq) { padding-inline: 48px; }
+  .plaza-design .reference-home .home-registration > div { padding: 48px; gap: 40px; }
+  .plaza-design .reference-home .home-registration > div > div:last-child { width: 300px; }
+  .plaza-design .reference-home .home-hero-content { width: 44vw; }
+  .plaza-design .reference-business .business-columns { grid-template-columns: minmax(0, 1fr) 280px; gap: 40px; }
+}
+@media (max-width: 1023px) {
+  .plaza-design .reference-home .home-hero { padding-top: 64px; padding-bottom: 250px; }
+  .plaza-design .reference-home .home-hero-city { height: 180px; }
+  .plaza-design .reference-home .home-hero-city img:first-child { left: 5%; right: auto; width: 90%; max-width: none; }
+  .plaza-design .reference-home .home-hero-city img:last-child { left: 15%; right: auto; max-width: 70%; }
+  .plaza-design .reference-home .home-registration::before { display: none; }
+  .plaza-design .reference-business .business-header { min-height: auto; padding-block: 32px; }
+  .plaza-design .reference-business .business-header h1 { font-size: 26px; }
+  .plaza-design .reference-business .business-gallery { padding-bottom: 32px; }
+  .plaza-design .reference-business .business-products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

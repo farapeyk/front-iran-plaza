@@ -3,10 +3,10 @@ import { getAccessTokenCookie } from '@/lib/auth/cookies';
 import { verifyAccessToken } from '@/lib/auth/verify-access-token';
 import { refreshSession } from '@/lib/auth/refresh-session';
 import { safeRedirect } from '@/lib/auth/safe-redirect';
+import { isSameOrigin } from '@/lib/auth/same-origin';
 
 export async function POST(request: NextRequest) {
-  const origin = request.headers.get('origin');
-  if (origin && origin !== request.nextUrl.origin) return NextResponse.json({ success: false }, { status: 403 });
+  if (!isSameOrigin(request)) return NextResponse.json({ success: false }, { status: 403 });
   const payload = await verifyAccessToken(await getAccessTokenCookie());
   if (payload?.exp && payload.exp > Date.now() / 1000 + 30) {
     return NextResponse.json({ success: true }, { headers: { 'Cache-Control': 'no-store' } });

@@ -2,6 +2,7 @@ import { backendGet } from '@/lib/api/backend-get';
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import { NotificationRow } from "@/features/notifications/components/notification-row";
 import type { NotificationItem } from "@/features/notifications/types";
+import { DashboardAccountLayout } from '@/design/components/dashboard-account-layout';
 
 async function getNotifications(accessToken: string): Promise<NotificationItem[]> {
   const data = await backendGet<NotificationItem[] | { data: NotificationItem[] }>('/api/notifications?page=1&limit=50', accessToken);
@@ -13,9 +14,8 @@ export default async function NotificationsPage() {
   const notifications = accessToken ? await getNotifications(accessToken) : [];
 
   return (
-    <div className="min-h-screen bg-[#FBF1E8] px-4 py-8" dir="rtl">
-      <div className="max-w-md mx-auto">
-        <h1 className="text-lg font-bold text-neutral-900 mb-6">اعلان‌ها</h1>
+    <DashboardAccountLayout title="اعلان‌ها">
+      <div className="w-full">
 
         {notifications.length === 0 ? (
           <p className="text-sm text-neutral-500 text-center py-16">اعلانی وجود ندارد.</p>
@@ -27,6 +27,6 @@ export default async function NotificationsPage() {
           </div>
         )}
       </div>
-    </div>
+    </DashboardAccountLayout>
   );
 }

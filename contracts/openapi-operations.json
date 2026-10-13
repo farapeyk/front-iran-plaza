@@ -1,0 +1,572 @@
+[
+  {
+    "route": "/api/auth/request-otp",
+    "method": "post",
+    "operationId": "AuthController_requestOtp"
+  },
+  {
+    "route": "/api/auth/verify-otp",
+    "method": "post",
+    "operationId": "AuthController_verifyOtp"
+  },
+  {
+    "route": "/api/auth/login-password",
+    "method": "post",
+    "operationId": "AuthController_loginWithPassword"
+  },
+  {
+    "route": "/api/auth/set-password",
+    "method": "post",
+    "operationId": "AuthController_setPassword"
+  },
+  {
+    "route": "/api/auth/logout",
+    "method": "post",
+    "operationId": "AuthController_logout"
+  },
+  {
+    "route": "/api/auth/refresh",
+    "method": "post",
+    "operationId": "AuthController_refresh"
+  },
+  {
+    "route": "/api/users/me",
+    "method": "get",
+    "operationId": "UsersController_getMe"
+  },
+  {
+    "route": "/api/users/me",
+    "method": "patch",
+    "operationId": "UsersController_updateMe"
+  },
+  {
+    "route": "/api/admin/users",
+    "method": "get",
+    "operationId": "UsersAdminController_list"
+  },
+  {
+    "route": "/api/admin/users/{id}",
+    "method": "get",
+    "operationId": "UsersAdminController_getById"
+  },
+  {
+    "route": "/api/admin/users/{id}/suspend",
+    "method": "patch",
+    "operationId": "UsersAdminController_suspend"
+  },
+  {
+    "route": "/api/admin/users/{id}/reinstate",
+    "method": "patch",
+    "operationId": "UsersAdminController_reinstate"
+  },
+  {
+    "route": "/api/files/upload",
+    "method": "post",
+    "operationId": "FileAssetController_upload"
+  },
+  {
+    "route": "/api/files/{id}",
+    "method": "delete",
+    "operationId": "FileAssetController_delete"
+  },
+  {
+    "route": "/api/files/{id}",
+    "method": "get",
+    "operationId": "FileAssetController_serveFile"
+  },
+  {
+    "route": "/api/businesses/{id}/onboarding/advance",
+    "method": "post",
+    "operationId": "BusinessController_advanceOnboarding"
+  },
+  {
+    "route": "/api/businesses",
+    "method": "post",
+    "operationId": "BusinessController_create"
+  },
+  {
+    "route": "/api/businesses",
+    "method": "get",
+    "operationId": "BusinessController_listPublic"
+  },
+  {
+    "route": "/api/businesses/mine",
+    "method": "get",
+    "operationId": "BusinessController_getMine"
+  },
+  {
+    "route": "/api/businesses/admin",
+    "method": "get",
+    "operationId": "BusinessController_getAllBusinesses"
+  },
+  {
+    "route": "/api/businesses/admin/pending",
+    "method": "get",
+    "operationId": "BusinessController_getPending"
+  },
+  {
+    "route": "/api/businesses/{id}/approve",
+    "method": "post",
+    "operationId": "BusinessController_approve"
+  },
+  {
+    "route": "/api/businesses/{id}/reject",
+    "method": "post",
+    "operationId": "BusinessController_reject"
+  },
+  {
+    "route": "/api/businesses/{id}/suspend",
+    "method": "post",
+    "operationId": "BusinessController_suspend"
+  },
+  {
+    "route": "/api/businesses/slug/{slug}",
+    "method": "get",
+    "operationId": "BusinessController_getFullBySlug"
+  },
+  {
+    "route": "/api/businesses/{id}",
+    "method": "get",
+    "operationId": "BusinessController_getById"
+  },
+  {
+    "route": "/api/businesses/{id}",
+    "method": "patch",
+    "operationId": "BusinessController_update"
+  },
+  {
+    "route": "/api/businesses/{id}/full",
+    "method": "get",
+    "operationId": "BusinessController_getFull"
+  },
+  {
+    "route": "/api/businesses/{id}/gallery",
+    "method": "post",
+    "operationId": "BusinessProfileController_addGalleryImage"
+  },
+  {
+    "route": "/api/businesses/{id}/gallery",
+    "method": "get",
+    "operationId": "BusinessProfileController_getGalleryImages"
+  },
+  {
+    "route": "/api/businesses/{id}/gallery/{imageId}",
+    "method": "delete",
+    "operationId": "BusinessProfileController_deleteGalleryImage"
+  },
+  {
+    "route": "/api/businesses/{id}/branches",
+    "method": "post",
+    "operationId": "BusinessProfileController_createBranch"
+  },
+  {
+    "route": "/api/businesses/{id}/branches",
+    "method": "get",
+    "operationId": "BusinessProfileController_getBranches"
+  },
+  {
+    "route": "/api/businesses/{id}/branches/{branchId}",
+    "method": "patch",
+    "operationId": "BusinessProfileController_updateBranch"
+  },
+  {
+    "route": "/api/businesses/{id}/branches/{branchId}",
+    "method": "delete",
+    "operationId": "BusinessProfileController_deleteBranch"
+  },
+  {
+    "route": "/api/businesses/{id}/services",
+    "method": "post",
+    "operationId": "BusinessProfileController_createService"
+  },
+  {
+    "route": "/api/businesses/{id}/services",
+    "method": "get",
+    "operationId": "BusinessProfileController_getServices"
+  },
+  {
+    "route": "/api/businesses/{id}/services/{serviceId}",
+    "method": "patch",
+    "operationId": "BusinessProfileController_updateService"
+  },
+  {
+    "route": "/api/businesses/{id}/services/{serviceId}",
+    "method": "delete",
+    "operationId": "BusinessProfileController_deleteService"
+  },
+  {
+    "route": "/api/businesses/{id}/product-categories",
+    "method": "post",
+    "operationId": "BusinessProfileController_createProductCategory"
+  },
+  {
+    "route": "/api/businesses/{id}/product-categories",
+    "method": "get",
+    "operationId": "BusinessProfileController_getProductCategories"
+  },
+  {
+    "route": "/api/businesses/{id}/product-categories/{catId}",
+    "method": "patch",
+    "operationId": "BusinessProfileController_updateProductCategory"
+  },
+  {
+    "route": "/api/businesses/{id}/product-categories/{catId}",
+    "method": "delete",
+    "operationId": "BusinessProfileController_deleteProductCategory"
+  },
+  {
+    "route": "/api/businesses/{id}/products",
+    "method": "post",
+    "operationId": "BusinessProfileController_createProduct"
+  },
+  {
+    "route": "/api/businesses/{id}/products",
+    "method": "get",
+    "operationId": "BusinessProfileController_getProducts"
+  },
+  {
+    "route": "/api/businesses/{id}/products/{productId}",
+    "method": "patch",
+    "operationId": "BusinessProfileController_updateProduct"
+  },
+  {
+    "route": "/api/businesses/{id}/products/{productId}",
+    "method": "delete",
+    "operationId": "BusinessProfileController_deleteProduct"
+  },
+  {
+    "route": "/api/businesses/{id}/working-hours",
+    "method": "get",
+    "operationId": "BusinessProfileController_getWorkingHours"
+  },
+  {
+    "route": "/api/businesses/{id}/working-hours",
+    "method": "patch",
+    "operationId": "BusinessProfileController_updateWorkingHours"
+  },
+  {
+    "route": "/api/businesses/{id}/installment-plan",
+    "method": "get",
+    "operationId": "BusinessProfileController_getInstallmentPlan"
+  },
+  {
+    "route": "/api/businesses/{id}/installment-plan",
+    "method": "patch",
+    "operationId": "BusinessProfileController_updateInstallmentPlan"
+  },
+  {
+    "route": "/api/businesses/{id}/features",
+    "method": "post",
+    "operationId": "BusinessProfileController_createFeature"
+  },
+  {
+    "route": "/api/businesses/{id}/features",
+    "method": "get",
+    "operationId": "BusinessProfileController_getFeatures"
+  },
+  {
+    "route": "/api/businesses/{id}/features/{featureId}",
+    "method": "patch",
+    "operationId": "BusinessProfileController_updateFeature"
+  },
+  {
+    "route": "/api/businesses/{id}/features/{featureId}",
+    "method": "delete",
+    "operationId": "BusinessProfileController_deleteFeature"
+  },
+  {
+    "route": "/api/businesses/{id}/analytics",
+    "method": "get",
+    "operationId": "BusinessProfileController_getAnalytics"
+  },
+  {
+    "route": "/api/businesses/{businessId}/documents",
+    "method": "post",
+    "operationId": "BusinessDocumentController_submit"
+  },
+  {
+    "route": "/api/businesses/{businessId}/documents",
+    "method": "get",
+    "operationId": "BusinessDocumentController_getDocuments"
+  },
+  {
+    "route": "/api/admin/documents/pending",
+    "method": "get",
+    "operationId": "BusinessDocumentAdminController_getPending"
+  },
+  {
+    "route": "/api/admin/documents/{documentId}/approve",
+    "method": "post",
+    "operationId": "BusinessDocumentAdminController_approve"
+  },
+  {
+    "route": "/api/admin/documents/{documentId}/reject",
+    "method": "post",
+    "operationId": "BusinessDocumentAdminController_reject"
+  },
+  {
+    "route": "/api/categories",
+    "method": "get",
+    "operationId": "CategoriesController_getCategories"
+  },
+  {
+    "route": "/api/categories/{id}",
+    "method": "get",
+    "operationId": "CategoriesController_getOne"
+  },
+  {
+    "route": "/api/admin/categories",
+    "method": "post",
+    "operationId": "AdminCategoriesController_create"
+  },
+  {
+    "route": "/api/admin/categories",
+    "method": "get",
+    "operationId": "CategoriesAdminController_getAll"
+  },
+  {
+    "route": "/api/admin/categories/{id}",
+    "method": "patch",
+    "operationId": "CategoriesAdminController_update"
+  },
+  {
+    "route": "/api/admin/categories/{id}",
+    "method": "delete",
+    "operationId": "CategoriesAdminController_delete"
+  },
+  {
+    "route": "/api/wallets/charge",
+    "method": "post",
+    "operationId": "WalletController_charge"
+  },
+  {
+    "route": "/api/wallets/withdraw",
+    "method": "post",
+    "operationId": "WalletController_requestWithdraw"
+  },
+  {
+    "route": "/api/admin/wallets/transactions/{transactionId}/approve",
+    "method": "post",
+    "operationId": "WalletAdminController_approve"
+  },
+  {
+    "route": "/api/admin/wallets/transactions/{transactionId}/reject",
+    "method": "post",
+    "operationId": "WalletAdminController_reject"
+  },
+  {
+    "route": "/admin/rbac/roles",
+    "method": "post",
+    "operationId": "RbacController_createRole"
+  },
+  {
+    "route": "/admin/rbac/assign",
+    "method": "post",
+    "operationId": "RbacController_assignRole"
+  },
+  {
+    "route": "/api/invoices",
+    "method": "post",
+    "operationId": "InvoiceController_create"
+  },
+  {
+    "route": "/api/invoices/{id}",
+    "method": "get",
+    "operationId": "InvoiceController_getOne"
+  },
+  {
+    "route": "/api/plans",
+    "method": "get",
+    "operationId": "PlanController_getActivePlans"
+  },
+  {
+    "route": "/api/admin/plans",
+    "method": "post",
+    "operationId": "PlanAdminController_create"
+  },
+  {
+    "route": "/api/admin/plans/{id}",
+    "method": "patch",
+    "operationId": "PlanAdminController_update"
+  },
+  {
+    "route": "/api/admin/plans/{id}/deactivate",
+    "method": "patch",
+    "operationId": "PlanAdminController_deactivate"
+  },
+  {
+    "route": "/api/payments/request/{invoiceId}",
+    "method": "post",
+    "operationId": "PaymentController_requestPayment"
+  },
+  {
+    "route": "/api/payments/verify",
+    "method": "get",
+    "operationId": "PaymentController_verifyCallback"
+  },
+  {
+    "route": "/api/subscriptions/free-trial/{businessId}",
+    "method": "post",
+    "operationId": "SubscriptionController_startFreeTrial"
+  },
+  {
+    "route": "/notifications",
+    "method": "get",
+    "operationId": "NotificationController_getMine_legacy"
+  },
+  {
+    "route": "/api/notifications",
+    "method": "get",
+    "operationId": "NotificationController_getMine"
+  },
+  {
+    "route": "/notifications/{id}/read",
+    "method": "patch",
+    "operationId": "NotificationController_markAsRead_legacy"
+  },
+  {
+    "route": "/api/notifications/{id}/read",
+    "method": "patch",
+    "operationId": "NotificationController_markAsRead"
+  },
+  {
+    "route": "/notifications/send",
+    "method": "post",
+    "operationId": "NotificationController_sendNotification_legacy"
+  },
+  {
+    "route": "/api/notifications/send",
+    "method": "post",
+    "operationId": "NotificationController_sendNotification"
+  },
+  {
+    "route": "/api/tracking/events",
+    "method": "post",
+    "operationId": "TrackingController_track"
+  },
+  {
+    "route": "/admin/messages",
+    "method": "post",
+    "operationId": "AdminMessageController_sendMessage"
+  },
+  {
+    "route": "/api/admin/invoices",
+    "method": "get",
+    "operationId": "AdminPanelController_getInvoices"
+  },
+  {
+    "route": "/api/admin/payments",
+    "method": "get",
+    "operationId": "AdminPanelController_getPayments"
+  },
+  {
+    "route": "/api/admin/coupons",
+    "method": "get",
+    "operationId": "AdminPanelController_getCoupons"
+  },
+  {
+    "route": "/api/admin/coupons",
+    "method": "post",
+    "operationId": "AdminPanelController_createCoupon"
+  },
+  {
+    "route": "/api/admin/coupons/{id}",
+    "method": "patch",
+    "operationId": "AdminPanelController_updateCoupon"
+  },
+  {
+    "route": "/api/admin/tax-rules",
+    "method": "get",
+    "operationId": "AdminPanelController_getTaxRules"
+  },
+  {
+    "route": "/api/admin/tax-rules",
+    "method": "post",
+    "operationId": "AdminPanelController_createTaxRule"
+  },
+  {
+    "route": "/api/admin/reports",
+    "method": "get",
+    "operationId": "AdminPanelController_getReports"
+  },
+  {
+    "route": "/api/admin/reports/{id}",
+    "method": "patch",
+    "operationId": "AdminPanelController_updateReport"
+  },
+  {
+    "route": "/api/admin/reviews",
+    "method": "get",
+    "operationId": "AdminPanelController_getReviews"
+  },
+  {
+    "route": "/api/admin/reviews/{id}",
+    "method": "patch",
+    "operationId": "AdminPanelController_updateReviewStatus"
+  },
+  {
+    "route": "/api/admin/reviews/{id}",
+    "method": "delete",
+    "operationId": "AdminPanelController_deleteReview"
+  },
+  {
+    "route": "/api/admin/settings",
+    "method": "get",
+    "operationId": "AdminPanelController_getSettings"
+  },
+  {
+    "route": "/api/admin/settings/{key}",
+    "method": "patch",
+    "operationId": "AdminPanelController_updateSetting"
+  },
+  {
+    "route": "/api/admin/sensitive-logs",
+    "method": "get",
+    "operationId": "AdminPanelController_getSensitiveLogs"
+  },
+  {
+    "route": "/api/businesses/{id}/reviews",
+    "method": "post",
+    "operationId": "ReviewController_create"
+  },
+  {
+    "route": "/api/businesses/{id}/reviews",
+    "method": "get",
+    "operationId": "ReviewController_getApproved"
+  },
+  {
+    "route": "/api/reviews/{reviewId}/replies",
+    "method": "post",
+    "operationId": "ReviewController_reply"
+  },
+  {
+    "route": "/api/businesses/{id}/favorite",
+    "method": "post",
+    "operationId": "FavoriteController_toggle"
+  },
+  {
+    "route": "/api/users/me/favorites",
+    "method": "get",
+    "operationId": "FavoriteController_getMine"
+  },
+  {
+    "route": "/api/admin/businesses",
+    "method": "post",
+    "operationId": "AdminBusinessController_createManual"
+  },
+  {
+    "route": "/api/admin/businesses/{id}/plan",
+    "method": "patch",
+    "operationId": "AdminBusinessController_grantPlan"
+  },
+  {
+    "route": "/api/admin/businesses/{id}/plan/downgrade",
+    "method": "patch",
+    "operationId": "AdminBusinessController_downgradeToFree"
+  },
+  {
+    "route": "/api/settings/tracking-enabled",
+    "method": "get",
+    "operationId": "PublicSettingsController_getTrackingEnabled"
+  }
+]

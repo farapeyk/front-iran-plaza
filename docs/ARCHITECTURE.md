@@ -1,13 +1,15 @@
 # معماری پروژه
 
+طراحی در `src/design` و کلاینت Orval طبق [گزارش انتقال](DESIGN-TRANSFER.md) اضافه شده‌اند. مقالات، تیکت و سوابق پرداخت با توجه به API فعلی حالت عدم دسترسی دارند؛ خرید اشتراک از endpointهای موجود استفاده می‌کند.
+
 ## پشته و تنظیمات
 
 نسخه‌های زیر از `package.json` خوانده شده‌اند؛ بازه‌هایی که با `^` مشخص شده‌اند الزاماً نسخه دقیق نصب‌شده نیستند.
 
 | جزء | نسخه/وضعیت در پروژه |
 | --- | --- |
-| Next.js | `16.2.12`، App Router و پوشه `src/app` |
-| React / React DOM | `19.2.4` |
+| Next.js | `16.4.0`، App Router و پوشه `src/app` |
+| React / React DOM | `19.2.8` |
 | TypeScript | `^5`، `strict: true` و `noEmit: true` |
 | Tailwind CSS | `^4` و افزونه PostCSS |
 | فرم و اعتبارسنجی | React Hook Form `^7.83.0`، Zod `^4.4.3`، resolvers |

@@ -2,6 +2,8 @@ import { pageFetch } from '@/lib/api/page-fetch';
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import { CompleteProfileForm } from "@/features/profile/components/complete-profile-form";
 import type { CurrentUser } from "@/types/auth";
+import { DesignProvider } from '@/design/provider';
+import { WizardFrame } from '@/design/pages/registration-live';
 
 async function getCurrentUser(): Promise<CurrentUser | null> {
   const accessToken = await getAccessTokenCookie();
@@ -20,8 +22,8 @@ export default async function CompleteProfilePage() {
   const user = await getCurrentUser();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4 py-10" dir="rtl">
-      <div className="w-full max-w-md bg-white border border-neutral-200 rounded-lg shadow-sm p-8">
+    <DesignProvider user={user}><WizardFrame step="identity">
+      <div className="w-full rounded-[var(--radius-xs)] border border-[var(--opacity-dark-16)] bg-[var(--surface)] p-6">
         <div className="mb-6 text-center">
           <h1 className="text-xl font-semibold text-neutral-900">تکمیل اطلاعات حساب کاربری</h1>
           <p className="mt-1 text-sm text-neutral-500">
@@ -31,6 +33,6 @@ export default async function CompleteProfilePage() {
 
         <CompleteProfileForm phone={user?.phone ?? ""} />
       </div>
-    </div>
+    </WizardFrame></DesignProvider>
   );
 }

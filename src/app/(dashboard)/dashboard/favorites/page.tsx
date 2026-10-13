@@ -2,6 +2,7 @@ import { pageFetch } from '@/lib/api/page-fetch';
 import Link from "next/link";
 import { Heart } from "lucide-react";
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
+import { DashboardAccountLayout } from '@/design/components/dashboard-account-layout';
 
 interface FavoriteBusiness {
   id: string;
@@ -28,9 +29,8 @@ export default async function FavoritesPage() {
   const favorites = accessToken ? await getFavorites(accessToken) : [];
 
   return (
-    <div className="min-h-screen bg-[#FBF1E8] px-4 py-8" dir="rtl">
-      <div className="max-w-md mx-auto">
-        <h1 className="text-lg font-bold text-neutral-900 mb-1">علاقه‌مندی‌ها</h1>
+    <DashboardAccountLayout title="علاقه‌مندی‌ها">
+      <div className="w-full space-y-4">
         <p className="text-sm text-neutral-500 mb-6">{favorites.length} کسب‌وکار</p>
 
         {favorites.length === 0 ? (
@@ -54,6 +54,6 @@ export default async function FavoritesPage() {
           </div>
         )}
       </div>
-    </div>
+    </DashboardAccountLayout>
   );
 }

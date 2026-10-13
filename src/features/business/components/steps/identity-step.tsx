@@ -3,8 +3,8 @@
 import { Lock } from "lucide-react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/design/components/ui/button";
+import { Input } from "@/design/components/ui/input";
 import { JalaliDateSelect } from "@/features/business/components/jalali-date-select";
 import { identitySchema, type IdentityInput } from "@/features/business/schemas/identity.schema";
 import { gregorianToJalali } from "@/lib/utils/jalali";

@@ -5,8 +5,8 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/design/components/ui/button";
+import { Input } from "@/design/components/ui/input";
 import { fieldClass } from "@/features/business/components/jalali-date-select";
 
 import { businessInfoSchema, type BusinessInfoInput } from "@/features/business/schemas/business-info.schema";

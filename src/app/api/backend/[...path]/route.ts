@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAccessTokenCookie } from '@/lib/auth/cookies';
 import { refreshSession } from '@/lib/auth/refresh-session';
+import { isSameOrigin } from '@/lib/auth/same-origin';
 
 const HOP_HEADERS = ['connection', 'keep-alive', 'proxy-authenticate', 'proxy-authorization', 'te', 'trailer', 'transfer-encoding', 'upgrade'];
 async function proxy(request: NextRequest, path: string[]) {
   const mutation = !['GET', 'HEAD'].includes(request.method);
-  const origin = request.headers.get('origin');
-  if (mutation && origin && origin !== request.nextUrl.origin) return NextResponse.json({ message: 'مبدأ درخواست معتبر نیست.' }, { status: 403 });
+  if (mutation && !isSameOrigin(request)) return NextResponse.json({ message: 'مبدأ درخواست معتبر نیست.' }, { status: 403 });
   if (!process.env.BACKEND_INTERNAL_URL) return NextResponse.json({ message: 'سرویس در دسترس نیست.' }, { status: 503 });
   if (path.some(segment => !segment || segment === '.' || segment === '..' || /[/\\]/.test(segment))) return NextResponse.json({ message: 'مسیر معتبر نیست.' }, { status: 400 });
   try {
@@ -23,10 +23,10 @@ async function proxy(request: NextRequest, path: string[]) {
     let response = await forward(await getAccessTokenCookie());
     if (response.status === 401) {
       const refreshed = await refreshSession();
-      if (refreshed.success) {
+      if (refreshed.success && !mutation) {
         await response.body?.cancel();
         response = await forward(refreshed.accessToken);
-      } else if (refreshed.status === 503) {
+      } else if (!refreshed.success && refreshed.status === 503) {
         await response.body?.cancel();
         return NextResponse.json({ message: 'تمدید نشست موقتاً انجام نشد.' }, { status: 503 });
       }
