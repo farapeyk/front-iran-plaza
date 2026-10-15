@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { Star } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,7 @@ export function ReviewForm({ businessId, isLoggedIn }: { businessId: string; isL
   if (!isLoggedIn) {
     return (
       <p className="text-sm text-neutral-500">
-        برای ثبت نظر <a href="/login" className="text-emerald-800 font-medium">وارد حساب کاربری</a> شوید.
+        برای ثبت نظر <Link href="/login" className="text-emerald-800 font-medium">وارد حساب کاربری</Link> شوید.
       </p>
     );
   }

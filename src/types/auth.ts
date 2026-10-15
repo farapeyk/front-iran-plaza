@@ -7,6 +7,7 @@ export interface CurrentUser {
   birthDate?: string | null;
   email?: string | null;
   fatherName?: string | null;
+  contentAccess?: { canWrite: boolean; canPublish: boolean };
 }
 
 export interface VerifyOtpResponse {

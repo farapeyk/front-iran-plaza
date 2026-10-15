@@ -26,7 +26,7 @@ QA این اصلاح: `pnpm typecheck` و `pnpm lint` موفق؛ `pnpm test` ش�
 
 ## مسیرها
 
-- عمومی: `/`، `/login`، `/categories`، `/businesses`، `/businesses/[slug]`، `/business-registration`، `/articles`، `/articles/[slug]`، `/about`، `/contact`، `/faq` و `/terms`.
+- عمومی: `/`، `/login`، `/categories`، `/businesses`، `/businesses/[slug]`، `/business-registration`، `/articles/`، URL ریشه‌ای مقاله `/<slug>/`، دسته‌های سلسله‌مراتبی `/category/.../`، `/about`، `/contact`، `/faq` و `/terms`.
 - حساب: `/dashboard`، `/dashboard/profile`، `/dashboard/favorites`، `/dashboard/notifications`، `/dashboard/support`، `/dashboard/subscription` و `/dashboard/payments`.
 - ثبت و ویرایش: مسیرهای موجود `/dashboard/business/new` و `/dashboard/business/profile/*` با اجزای طراحی و حفظ ذخیره مرحله‌ای؛ `/products/new` فرم ایجاد محصول واقعی است.
 - لینک‌های طراحی `/profile`، `/user-info`، `/subscription`، `/payments` و `/support` به مسیرهای محافظت‌شده اصلی هدایت می‌شوند.

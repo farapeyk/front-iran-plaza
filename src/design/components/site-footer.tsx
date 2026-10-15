@@ -118,15 +118,15 @@ function SiteFooter({ className }: { className?: string }) {
             </div>
             <div className="space-y-1 pt-2">
               <p className="text-sm text-secondary-200">پشتیبانی :</p>
-              <a
-                href="/dashboard/support"
+              <Link
+                to="/dashboard/support"
                 className="inline-flex items-center gap-2 text-lg text-secondary-100"
               >
                 پشتیبانی
                 <span className="size-4 overflow-clip">
                   <img alt="" className="size-full" height={16} src={callIcon} width={16} />
                 </span>
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -206,12 +206,12 @@ function SiteFooter({ className }: { className?: string }) {
           </p>
           <div className="space-y-1">
             <p className="text-sm text-secondary-200">پشتیبانی :</p>
-            <a href="/dashboard/support" className="inline-flex items-center gap-2 text-lg text-secondary-100">
+            <Link to="/dashboard/support" className="inline-flex items-center gap-2 text-lg text-secondary-100">
               پشتیبانی
               <span className="size-4 overflow-clip">
                 <img alt="" className="size-full" height={16} src={callIcon} width={16} />
               </span>
-            </a>
+            </Link>
           </div>
           <div className="flex gap-4">
             <div className="flex h-28 flex-1 items-center justify-center rounded border border-[var(--opacity-light-8)] p-4">

@@ -61,3 +61,25 @@ test('invalid action payload fails before any network request', async () => {
     assert.equal(response.status,400);assert.equal(calls,0);
   } finally {global.fetch=fetchOriginal;if(previous===undefined)delete process.env.BACKEND_INTERNAL_URL;else process.env.BACKEND_INTERNAL_URL=previous;}
 });
+
+test('valid CMS create mutations pass validation and reach the network layer', async () => {
+  const previous=process.env.BACKEND_INTERNAL_URL,fetchOriginal=global.fetch;const calls=[];
+  process.env.BACKEND_INTERNAL_URL='http://backend.invalid';
+  const validation=load('src/lib/api/mutation-validation.ts');
+  const {actionFetch}=load('src/lib/api/action-fetch.ts',{'./mutation-validation':validation});
+  try {
+    global.fetch=async(url,options)=>{calls.push({url,options});return Response.json({id:'created_1'},{status:201});};
+    const article=await actionFetch('http://backend.invalid/api/content/articles',{
+      method:'POST',
+      body:JSON.stringify({title:'Best restaurants in Shiraz',slug:'best-restaurants-shiraz',excerpt:'A useful guide to restaurants in Shiraz.',bodyBlocks:[]}),
+    });
+    const category=await actionFetch('http://backend.invalid/api/content/categories',{
+      method:'POST',
+      body:JSON.stringify({name:'Restaurants',slug:'restaurants'}),
+    });
+    assert.equal(article.status,201);assert.equal(category.status,201);
+    assert.equal(calls.length,2);
+    assert.equal(calls[0].url,'http://backend.invalid/api/content/articles');
+    assert.equal(calls[1].url,'http://backend.invalid/api/content/categories');
+  } finally {global.fetch=fetchOriginal;if(previous===undefined)delete process.env.BACKEND_INTERNAL_URL;else process.env.BACKEND_INTERNAL_URL=previous;}
+});

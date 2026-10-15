@@ -11,7 +11,5 @@ export interface AssignRoleDto {
   userId: string;
   /** شناسه نقش */
   roleId: string;
-  /** شناسه کاربری ادمین که نقش را اختصاص می‌دهد */
-  assignedBy: string;
   expiresAt?: string;
 }

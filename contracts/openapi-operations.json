@@ -568,5 +568,150 @@
     "route": "/api/settings/tracking-enabled",
     "method": "get",
     "operationId": "PublicSettingsController_getTrackingEnabled"
+  },
+  {
+    "route": "/api/articles",
+    "method": "get",
+    "operationId": "ArticlesController_list"
+  },
+  {
+    "route": "/api/articles/categories",
+    "method": "get",
+    "operationId": "ArticlesController_categories"
+  },
+  {
+    "route": "/api/articles/random",
+    "method": "get",
+    "operationId": "ArticlesController_random"
+  },
+  {
+    "route": "/api/articles/{slug}",
+    "method": "get",
+    "operationId": "ArticlesController_getBySlug"
+  },
+  {
+    "route": "/api/articles/{slug}/feedback",
+    "method": "post",
+    "operationId": "ArticlesController_feedback"
+  },
+  {
+    "route": "/api/content/me",
+    "method": "get",
+    "operationId": "ContentController_identity"
+  },
+  {
+    "route": "/api/content/articles",
+    "method": "get",
+    "operationId": "ContentController_list"
+  },
+  {
+    "route": "/api/content/articles",
+    "method": "post",
+    "operationId": "ContentController_create"
+  },
+  {
+    "route": "/api/content/articles/{id}",
+    "method": "get",
+    "operationId": "ContentController_get"
+  },
+  {
+    "route": "/api/content/articles/{id}",
+    "method": "patch",
+    "operationId": "ContentController_update"
+  },
+  {
+    "route": "/api/content/articles/{id}/submit",
+    "method": "post",
+    "operationId": "ContentController_submit"
+  },
+  {
+    "route": "/api/content/articles/{id}/request-changes",
+    "method": "post",
+    "operationId": "ContentController_requestChanges"
+  },
+  {
+    "route": "/api/content/articles/{id}/approve",
+    "method": "post",
+    "operationId": "ContentController_approve"
+  },
+  {
+    "route": "/api/content/articles/{id}/publish",
+    "method": "post",
+    "operationId": "ContentController_publish"
+  },
+  {
+    "route": "/api/content/articles/{id}/unpublish",
+    "method": "post",
+    "operationId": "ContentController_unpublish"
+  },
+  {
+    "route": "/api/content/articles/{id}/archive",
+    "method": "post",
+    "operationId": "ContentController_archive"
+  },
+  {
+    "route": "/api/content/categories",
+    "method": "get",
+    "operationId": "ContentController_categories"
+  },
+  {
+    "route": "/api/content/categories",
+    "method": "post",
+    "operationId": "ContentController_createCategory"
+  },
+  {
+    "route": "/api/content/categories/{id}",
+    "method": "patch",
+    "operationId": "ContentController_updateCategory"
+  },
+  {
+    "route": "/api/content/banners",
+    "method": "get",
+    "operationId": "ContentController_banners"
+  },
+  {
+    "route": "/api/content/banners",
+    "method": "post",
+    "operationId": "ContentController_createBanner"
+  },
+  {
+    "route": "/api/content/banners/{id}",
+    "method": "patch",
+    "operationId": "ContentController_updateBanner"
+  },
+  {
+    "route": "/api/content/banners/{id}",
+    "method": "delete",
+    "operationId": "ContentController_deleteBanner"
+  },
+  {
+    "route": "/api/content/businesses",
+    "method": "get",
+    "operationId": "ContentController_businesses"
+  },
+  {
+    "route": "/api/content/feedback",
+    "method": "get",
+    "operationId": "ContentController_feedback"
+  },
+  {
+    "route": "/api/content/feedback/{id}",
+    "method": "patch",
+    "operationId": "ContentController_moderateFeedback"
+  },
+  {
+    "route": "/api/admin/content/authors",
+    "method": "get",
+    "operationId": "ContentAdminController_list"
+  },
+  {
+    "route": "/api/admin/content/authors",
+    "method": "post",
+    "operationId": "ContentAdminController_assign"
+  },
+  {
+    "route": "/api/admin/content/authors/{userId}",
+    "method": "delete",
+    "operationId": "ContentAdminController_revoke"
   }
 ]

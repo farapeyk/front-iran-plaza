@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const { NextRequest } = require('next/server');
 const { load } = require('./helpers.cjs');
 const roles = load('src/lib/auth/roles.ts');
+const publicPaths = load('src/features/content/lib/public-paths.ts');
 
 test('public desktop and mobile navigation use admin panel and manual registration links for admins', () => {
   const React = require('react');
@@ -30,6 +31,7 @@ test('public desktop and mobile navigation use admin panel and manual registrati
 
 test('admin sessions bypass ordinary-user pages and login screens without redirect loops', async () => {
   const proxy = load('src/proxy.ts', {
+    '@/features/content/lib/public-paths': publicPaths,
     '@/lib/auth/roles': roles,
     '@/lib/constants/auth': { ACCESS_TOKEN_COOKIE: 'access_token' },
     '@/lib/auth/verify-access-token': { verifyAccessToken: async token => token ? { userType: token } : null },
@@ -43,18 +45,36 @@ test('admin sessions bypass ordinary-user pages and login screens without redire
       assert.equal(response.status, 307, role + route);
       assert.equal(response.headers.get('location'), 'http://frontend.invalid/admin');
     }
-    for (const route of ['/admin', '/admin/businesses/business_1', '/businesses', '/dashboardish']) {
+    for (const route of ['/admin', '/admin/businesses/business_1', '/content', '/content/articles/article_1', '/businesses', '/dashboardish/']) {
       assert.equal((await request(route, role)).status, 200, role + route);
     }
   }
   for (const role of ['CUSTOMER', 'BUSINESS_OWNER']) {
     assert.equal((await request('/dashboard', role)).status, 200);
     assert.equal((await request('/complete-profile', role)).status, 200);
+    assert.equal((await request('/content', role)).status, 200);
     assert.equal((await request('/admin', role)).headers.get('location'), 'http://frontend.invalid/dashboard');
   }
   assert.equal((await request('/login')).status, 200);
   assert.equal((await request('/admin/login')).status, 200);
   assert.ok((await request('/dashboard')).headers.get('location').includes('/api/auth/silent-refresh'));
+  assert.ok((await request('/content')).headers.get('location').includes('/api/auth/silent-refresh'));
+});
+
+test('legacy article and category URLs keep their trailing-slash canonical shape', async () => {
+  const proxy = load('src/proxy.ts', {
+    '@/features/content/lib/public-paths': publicPaths,
+    '@/lib/auth/roles': roles,
+    '@/lib/constants/auth': { ACCESS_TOKEN_COOKIE: 'access_token' },
+    '@/lib/auth/verify-access-token': { verifyAccessToken: async () => null },
+  }).default;
+  for (const route of ['/sadra-design-and-sewing-school', '/category/schools-educational-centers/sewingandclothingdesignschool']) {
+    const response = await proxy(new NextRequest('http://frontend.invalid' + route + '?source=test'));
+    assert.equal(response.status, 308);
+    assert.equal(response.headers.get('location'), 'http://frontend.invalid' + route + '/?source=test');
+  }
+  assert.equal((await proxy(new NextRequest('http://frontend.invalid/sadra-design-and-sewing-school/'))).status, 200);
+  assert.equal((await proxy(new NextRequest('http://frontend.invalid/about'))).status, 200);
 });
 
 test('OTP and password login send both admin roles straight to admin, including incomplete profiles', async () => {

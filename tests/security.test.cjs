@@ -1,6 +1,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { load } = require('./helpers.cjs');
+const publicPaths = load('src/features/content/lib/public-paths.ts');
 
 test('redirects reject external URLs, backslashes and control-character tricks', () => {
   const { safeRedirect } = load('src/lib/auth/safe-redirect.ts');
@@ -8,9 +9,23 @@ test('redirects reject external URLs, backslashes and control-character tricks',
   assert.equal(safeRedirect('/dashboard?tab=1'), '/dashboard?tab=1');
 });
 
+test('public CMS paths reproduce the legacy WordPress URL hierarchy', () => {
+  const { articlePath, categoryPath, findCategoryBySegments, RESERVED_ROOT_SLUGS } = publicPaths;
+  const categories = [
+    { id: 'parent', parentId: null, slug: 'schools-educational-centers' },
+    { id: 'child', parentId: 'parent', slug: 'sewingandclothingdesignschool' },
+  ];
+  assert.equal(articlePath('sadra-design-and-sewing-school'), '/sadra-design-and-sewing-school/');
+  assert.equal(categoryPath(categories[1], categories), '/category/schools-educational-centers/sewingandclothingdesignschool/');
+  assert.equal(findCategoryBySegments(categories, ['schools-educational-centers', 'sewingandclothingdesignschool']).id, 'child');
+  assert.equal(findCategoryBySegments(categories, ['wrong-parent', 'sewingandclothingdesignschool']), undefined);
+  assert.equal(RESERVED_ROOT_SLUGS.has('about'), true);
+});
+
 test('page protection uses segment boundaries and an exact admin-login exception', async () => {
   const { NextRequest } = require('next/server');
   const proxy = load('src/proxy.ts', {
+    '@/features/content/lib/public-paths': publicPaths,
     '@/lib/auth/verify-access-token': { verifyAccessToken: async token => token === 'customer' ? { userType: 'CUSTOMER' } : null },
     '@/lib/constants/auth': { ACCESS_TOKEN_COOKIE: 'access_token' },
     '@/lib/auth/roles': load('src/lib/auth/roles.ts'),
@@ -18,7 +33,7 @@ test('page protection uses segment boundaries and an exact admin-login exception
   assert.equal((await proxy(new NextRequest('http://frontend.invalid/admin/login'))).status,200);
   const similar = await proxy(new NextRequest('http://frontend.invalid/admin/login-extra'));
   assert.equal(similar.status,307);assert.ok(similar.headers.get('location').includes('/api/auth/silent-refresh'));
-  assert.equal((await proxy(new NextRequest('http://frontend.invalid/dashboardish'))).status,200);
+  assert.equal((await proxy(new NextRequest('http://frontend.invalid/dashboardish/'))).status,200);
   const customer = await proxy(new NextRequest('http://frontend.invalid/admin',{headers:{cookie:'access_token=customer'}}));
   assert.equal(customer.headers.get('location'),'http://frontend.invalid/dashboard');
 });
@@ -42,6 +57,88 @@ test('mutation schemas reject forged identifiers, invalid content and unknown fi
   assert.equal(validateMutation('/api/notifications/id/read','PATCH',undefined), null);
   assert.equal(validateMutation('/api/businesses/id/documents','POST',{ type:'BUSINESS_LICENSE_PHOTO', fileId:'file_1', issueDate:'2024-03-20T00:00:00.000Z' }), null);
   assert.equal(validateMutation('/api/businesses/id/documents','POST',{ type:'BUSINESS_LICENSE_PHOTO', fileId:'file_1', issueDate:'2024-03-20' }), null);
+});
+
+test('content CMS mutations are allowlisted and validated before reaching the backend', () => {
+  const { validateMutation } = load('src/lib/api/mutation-validation.ts');
+  const article = {
+    title: 'Best restaurants in Shiraz',
+    slug: 'best-restaurants-shiraz',
+    excerpt: 'A useful guide to the best registered restaurants in Shiraz.',
+    bodyBlocks: [
+      { id: 'intro', type: 'paragraph', text: 'Article introduction', richText: { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Article introduction', marks: [{ type: 'bold' }] }] }] } },
+      { id: 'places', type: 'business-list', businessIds: ['business_1'] },
+      { id: 'table', type: 'table', table: { headers: ['Name', 'Address'], rows: [{ cells: ['Restaurant', 'Shiraz'], phone: '07132345678' }], showContactColumn: true, contactLabel: 'Call' } },
+    ],
+    faqs: [{ question: 'Which restaurant is best?', answer: 'It depends on your preferred food and location.' }],
+    robotsIndex: true,
+    robotsFollow: true,
+    showBanners: true,
+  };
+
+  assert.equal(validateMutation('/api/content/articles', 'POST', article), null);
+  assert.equal(validateMutation('/api/content/articles', 'POST', { ...article, slug: 'مقاله-خوب' }), null);
+  assert.equal(validateMutation('/api/content/articles', 'POST', {
+    ...article,
+    bodyBlocks: Array.from({ length: 500 }, (_, index) => ({ id: `block-${index}`, type: 'paragraph', text: 'Valid paragraph' })),
+  }), null);
+  assert.equal(validateMutation('/api/content/articles/article_1', 'PATCH', { ...article, expectedRevision: 1 }), null);
+  assert.equal(validateMutation('/api/content/categories', 'POST', { name: 'Restaurants', slug: 'restaurants' }), null);
+  assert.equal(validateMutation('/api/content/categories/category_1', 'PATCH', { isActive: false }), null);
+  assert.equal(validateMutation('/api/content/articles/article_1/submit', 'POST', undefined), null);
+  assert.equal(validateMutation('/api/content/articles/article_1/request-changes', 'POST', { note: 'Please add sources.' }), null);
+  assert.equal(validateMutation('/api/content/articles/article_1/approve', 'POST', {}), null);
+  assert.equal(validateMutation('/api/content/articles/article_1/publish', 'POST', undefined), null);
+  assert.equal(validateMutation('/api/content/feedback/feedback_1', 'PATCH', { status: 'APPROVED' }), null);
+  const banner = { title: 'Article banner', imageId: 'file_1', altText: 'Banner description', targetUrl: 'https://iranplaza.ir/register', placement: 'TOP', isActive: true, startsAt: '2026-10-14T12:00:00.000Z', endsAt: null, sortOrder: 1 };
+  assert.equal(validateMutation('/api/content/banners', 'POST', banner), null);
+  assert.equal(validateMutation('/api/content/banners/banner_1', 'PATCH', { isActive: false }), null);
+  assert.equal(validateMutation('/api/content/banners/banner_1', 'DELETE', undefined), null);
+  assert.equal(validateMutation('/api/admin/content/authors', 'POST', { phone: '09121234567', fullName: 'Content Author' }), null);
+  assert.equal(validateMutation('/api/admin/content/authors/user_1', 'DELETE', undefined), null);
+  assert.equal(validateMutation(`/api/articles/${'a'.repeat(120)}/feedback`, 'POST', { rating: 5 }), null);
+
+  assert.ok(validateMutation('/api/content/articles', 'POST', { ...article, ownerId: 'user_2' }));
+  assert.ok(validateMutation('/api/content/articles', 'POST', {
+    ...article,
+    bodyBlocks: Array.from({ length: 501 }, (_, index) => ({ id: `block-${index}`, type: 'paragraph', text: 'Too many blocks' })),
+  }));
+  assert.ok(validateMutation('/api/content/categories', 'POST', { name: 'Restaurants', slug: 'Not Valid' }));
+  assert.ok(validateMutation('/api/content/articles/article_1/request-changes', 'POST', {}));
+  assert.ok(validateMutation('/api/content/feedback/feedback_1', 'PATCH', { status: 'PENDING' }));
+  assert.ok(validateMutation('/api/content/banners', 'POST', { ...banner, targetUrl: 'javascript:alert(1)' }));
+  assert.ok(validateMutation('/api/content/articles', 'POST', { ...article, bodyBlocks: [{ id: 'bad-table', type: 'table', table: { headers: ['One', 'Two'], rows: [{ cells: ['Only one'] }] } }] }));
+});
+
+test('canonical article URLs gain https when omitted and reject relative or unsafe URLs', () => {
+  const { normalizeCanonicalUrl } = load('src/features/content/lib/canonical-url.ts');
+  assert.equal(normalizeCanonicalUrl(undefined), undefined);
+  assert.equal(normalizeCanonicalUrl('  '), undefined);
+  assert.equal(normalizeCanonicalUrl('iranplaza.ir/example-article/'), 'https://iranplaza.ir/example-article/');
+  assert.equal(normalizeCanonicalUrl('//iranplaza.ir/example-article/'), 'https://iranplaza.ir/example-article/');
+  assert.equal(normalizeCanonicalUrl('http://127.0.0.1:3001/example-article/'), 'http://127.0.0.1:3001/example-article/');
+  assert.equal(normalizeCanonicalUrl('nail'), null);
+  assert.equal(normalizeCanonicalUrl('http://localhost:3001/articles/example'), null);
+  assert.equal(normalizeCanonicalUrl('/articles/example'), null);
+  assert.equal(normalizeCanonicalUrl('ftp://iranplaza.ir/example'), null);
+  assert.equal(normalizeCanonicalUrl('not a url'), null);
+});
+
+test('article actions send normalized canonical URLs and stop invalid ones locally', async () => {
+  const calls=[];
+  const canonical=load('src/features/content/lib/canonical-url.ts');
+  const actions=load('src/features/content/actions/content.action.ts',{
+    '@/features/business/actions/authed-fetch':{authedFetch:async(path,method,body)=>{calls.push({path,method,body});return {success:true,data:{id:'article_1',slug:body.slug}};}},
+    '@/features/content/lib/canonical-url':canonical,
+    '@/features/content/lib/public-paths':publicPaths,
+    'next/cache':{revalidatePath:()=>{}},
+  });
+  const input={title:'Article title',slug:'article-title',excerpt:'A valid article excerpt.',bodyBlocks:[],canonicalUrl:'iranplaza.ir/article-title/'};
+  assert.equal((await actions.createArticleAction(input)).success,true);
+  assert.equal(calls[0].body.canonicalUrl,'https://iranplaza.ir/article-title/');
+  const invalid=await actions.createArticleAction({...input,canonicalUrl:'/articles/article-title'});
+  assert.equal(invalid.success,false);
+  assert.equal(calls.length,1);
 });
 
 test('working hours reject duplicates, reversed shifts and incomplete times', () => {

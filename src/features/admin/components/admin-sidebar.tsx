@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Building2, Wallet, ShieldCheck, Tags, MessageSquare, LogOut, Users, Ban , BookPlusIcon } from "lucide-react"; // ✅ Ban اضافه شد
+import { LayoutDashboard, Building2, Wallet, ShieldCheck, Tags, MessageSquare, LogOut, Users, Ban, BookPlusIcon, PenLine } from "lucide-react"; // ✅ Ban اضافه شد
 import { adminLogoutAction } from "@/features/admin/actions/admin-auth.action";
 
 const NAV_ITEMS = [
@@ -14,6 +14,8 @@ const NAV_ITEMS = [
   { href: "/admin/businesses/rejected", label: "کسب‌وکارهای رد شده", icon: Ban }, 
   { href: "/admin/reviews", label: "نظرات", icon: MessageSquare },
   { href: "/admin/users", label: "کاربران", icon: Users },
+  { href: "/admin/content/authors", label: "نویسندگان محتوا", icon: PenLine },
+  { href: "/content", label: "ورود به تحریریه", icon: BookPlusIcon },
   { href: "/admin/wallet", label: "کیف پول و تراکنش‌ها (به‌زودی)", disabled: true, icon: Wallet },
   { href: "/admin/roles", label: "نقش‌ها (RBAC) (به‌زودی)", disabled: true, icon: ShieldCheck },
   { href: "/admin/plans", label: "پلن‌ها (به‌زودی)", disabled: true, icon: Tags },

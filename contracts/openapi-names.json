@@ -2,8 +2,17 @@
   "schemas": [
     "AddGalleryImageDto",
     "AdvanceOnboardingDto",
+    "ArticleBlockDto",
+    "ArticleFaqDto",
+    "ArticleTableDto",
+    "ArticleTableRowDto",
+    "AssignContentAuthorDto",
     "AssignRoleDto",
     "ChargeWalletDto",
+    "CreateArticleBannerDto",
+    "CreateArticleCategoryDto",
+    "CreateArticleDto",
+    "CreateArticleFeedbackDto",
     "CreateBranchDto",
     "CreateBusinessDto",
     "CreateBusinessFeatureDto",
@@ -22,18 +31,23 @@
     "CreateTaxRuleDto",
     "GrantPlanDto",
     "LoginWithPasswordDto",
+    "ModerateArticleFeedbackDto",
     "RefreshTokenDto",
     "RejectBusinessDto",
     "RejectDocumentDto",
     "RejectWithdrawDto",
     "RequestOtpDto",
     "RequestWithdrawDto",
+    "ReviewArticleDto",
     "SendBusinessMessageDto",
     "SetPasswordDto",
     "SocialMediaDto",
     "SubmitBusinessDocumentDto",
     "SuspendUserDto",
     "TrackEventDto",
+    "UpdateArticleBannerDto",
+    "UpdateArticleCategoryDto",
+    "UpdateArticleDto",
     "UpdateBranchDto",
     "UpdateBusinessDto",
     "UpdateBusinessFeatureDto",
@@ -149,6 +163,32 @@
       "ADMIN_MANUAL",
       "IN_PERSON",
       "TELEPHONE"
+    ],
+    "schemas/ArticleBlockDto/properties/type": [
+      "paragraph",
+      "heading",
+      "image",
+      "quote",
+      "callout",
+      "business-list",
+      "table"
+    ],
+    "schemas/CreateArticleBannerDto/properties/placement": [
+      "TOP",
+      "SIDEBAR"
+    ],
+    "schemas/UpdateArticleBannerDto/properties/placement": [
+      "TOP",
+      "SIDEBAR"
+    ],
+    "schemas/ArticleBlockDto/properties/level": [
+      2,
+      3,
+      4
+    ],
+    "schemas/ModerateArticleFeedbackDto/properties/status": [
+      "APPROVED",
+      "REJECTED"
     ]
   }
 }

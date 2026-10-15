@@ -36,6 +36,15 @@ test('frontend contract keeps the reviewed backend names and operations, with co
   assert.equal(profile.properties.products.type, 'array');
   const upload = schema.paths['/api/files/upload'].post.requestBody.content['multipart/form-data'].schema;
   assert.equal(upload.properties.file.format, 'binary');
+  const articleBlock = schema.components.schemas.ArticleBlockDto;
+  assert.ok(articleBlock.properties.type.enum.includes('business-list'));
+  assert.equal(articleBlock.properties.businessIds.type, 'array');
+  assert.equal(articleBlock.properties.businessIds.items.type, 'string');
+  const createArticle = schema.components.schemas.CreateArticleDto;
+  for (const field of ['title', 'slug', 'excerpt', 'bodyBlocks']) assert.ok(createArticle.required.includes(field));
+  assert.equal(createArticle.properties.bodyBlocks.items.$ref, '#/components/schemas/ArticleBlockDto');
+  const assignAuthor = schema.components.schemas.AssignContentAuthorDto;
+  assert.equal(assignAuthor.properties.assignedBy, undefined);
   for (const {route, method} of operations) {
     for (const match of route.matchAll(/\{([^}]+)\}/g)) {
       const parameter = schema.paths[route][method].parameters.find(item => item.in === 'path' && item.name === match[1]);
@@ -47,5 +56,15 @@ test('frontend contract keeps the reviewed backend names and operations, with co
     const error = schema.paths['/api/auth/refresh'].post.responses[status].content['application/json'].schema;
     assert.ok(error.required.includes('errorCode'));
     assert.ok(error.required.includes('statusCode'));
+  }
+  for (const [route, method, statuses] of [
+    ['/api/content/articles', 'post', ['400', '401', '403', '409']],
+    ['/api/content/articles/{id}/publish', 'post', ['400', '401', '403', '404', '409']],
+    ['/api/articles/{slug}/feedback', 'post', ['400', '401', '404']],
+  ]) {
+    for (const status of statuses) {
+      const error = schema.paths[route][method].responses[status].content['application/json'].schema;
+      assert.ok(error.required.includes('errorCode'), route + ' ' + status);
+    }
   }
 });

@@ -34,6 +34,10 @@ import type {
   AdminPanelControllerUpdateReviewStatus200,
   AdminPanelControllerUpdateSetting200,
   AdvanceOnboardingDto,
+  ArticlesControllerCategories200Item,
+  ArticlesControllerListParams,
+  ArticlesControllerRandomParams,
+  AssignContentAuthorDto,
   AssignRoleDto,
   AuthControllerLoginWithPassword200,
   AuthControllerLogout200,
@@ -93,6 +97,13 @@ import type {
   CategoriesControllerGetCategories200Item,
   CategoriesControllerGetOne200,
   ChargeWalletDto,
+  ContentControllerBusinessesParams,
+  ContentControllerFeedbackParams,
+  ContentControllerListParams,
+  CreateArticleBannerDto,
+  CreateArticleCategoryDto,
+  CreateArticleDto,
+  CreateArticleFeedbackDto,
   CreateBranchDto,
   CreateBusinessDto,
   CreateBusinessFeatureDto,
@@ -118,6 +129,7 @@ import type {
   InvoiceControllerCreate201,
   InvoiceControllerGetOne200,
   LoginWithPasswordDto,
+  ModerateArticleFeedbackDto,
   NotificationControllerGetMine200,
   NotificationControllerGetMineLegacy200,
   NotificationControllerGetMineLegacyParams,
@@ -137,6 +149,7 @@ import type {
   RejectWithdrawDto,
   RequestOtpDto,
   RequestWithdrawDto,
+  ReviewArticleDto,
   ReviewControllerCreate201,
   ReviewControllerGetApproved200Item,
   ReviewControllerReply201,
@@ -147,6 +160,9 @@ import type {
   SuspendUserDto,
   TrackEventDto,
   TrackingControllerTrack201,
+  UpdateArticleBannerDto,
+  UpdateArticleCategoryDto,
+  UpdateArticleDto,
   UpdateBranchDto,
   UpdateBusinessDto,
   UpdateBusinessFeatureDto,
@@ -3648,6 +3664,898 @@ export const publicSettingsControllerGetTrackingEnabled = async ( options?: Para
   {
     ...options,
     method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getArticlesControllerListUrl = (params?: ArticlesControllerListParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/articles?${stringifiedParams}` : `/api/articles`
+}
+
+/**
+ * @summary فهرست مقاله‌های منتشرشده
+ */
+export const articlesControllerList = async (params?: ArticlesControllerListParams, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getArticlesControllerListUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getArticlesControllerCategoriesUrl = () => {
+
+
+
+
+  return `/api/articles/categories`
+}
+
+/**
+ * @summary فهرست دسته‌بندی‌های فعال مقاله
+ */
+export const articlesControllerCategories = async ( options?: Parameters<typeof serverFetch>[1]): Promise<ArticlesControllerCategories200Item[]> => {
+
+  return serverFetch<ArticlesControllerCategories200Item[]>(getArticlesControllerCategoriesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getArticlesControllerRandomUrl = (params?: ArticlesControllerRandomParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/articles/random?${stringifiedParams}` : `/api/articles/random`
+}
+
+/**
+ * @summary چند مقاله تصادفی منتشرشده برای پیشنهاد انتهای مقاله
+ */
+export const articlesControllerRandom = async (params?: ArticlesControllerRandomParams, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getArticlesControllerRandomUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getArticlesControllerGetBySlugUrl = (slug: string,) => {
+
+
+
+
+  return `/api/articles/${encodeURIComponent(String(slug))}`
+}
+
+/**
+ * @summary جزئیات مقاله منتشرشده با بلوک‌های ساختاریافته و کسب‌وکارهای زنده
+ */
+export const articlesControllerGetBySlug = async (slug: string, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getArticlesControllerGetBySlugUrl(slug),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getArticlesControllerFeedbackUrl = (slug: string,) => {
+
+
+
+
+  return `/api/articles/${encodeURIComponent(String(slug))}/feedback`
+}
+
+/**
+ * @summary ثبت یا ویرایش امتیاز و نظر کاربر برای مقاله؛ تا تایید مدیر عمومی نمی‌شود
+ */
+export const articlesControllerFeedback = async (slug: string,
+    createArticleFeedbackDto: CreateArticleFeedbackDto, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return serverFetch<unknown>(getArticlesControllerFeedbackUrl(slug),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createArticleFeedbackDto)
+  }
+);}
+
+
+
+export const getContentControllerIdentityUrl = () => {
+
+
+
+
+  return `/api/content/me`
+}
+
+/**
+ * @summary هویت و سطح دسترسی کاربر پنل محتوا
+ */
+export const contentControllerIdentity = async ( options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getContentControllerIdentityUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getContentControllerListUrl = (params?: ContentControllerListParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/content/articles?${stringifiedParams}` : `/api/content/articles`
+}
+
+/**
+ * @summary فهرست مقاله‌های نویسنده؛ مدیر محتوا همه را می‌بیند
+ */
+export const contentControllerList = async (params?: ContentControllerListParams, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getContentControllerListUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getContentControllerCreateUrl = () => {
+
+
+
+
+  return `/api/content/articles`
+}
+
+/**
+ * @summary ساخت پیش‌نویس مقاله
+ */
+export const contentControllerCreate = async (createArticleDto: CreateArticleDto, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return serverFetch<unknown>(getContentControllerCreateUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createArticleDto)
+  }
+);}
+
+
+
+export const getContentControllerGetUrl = (id: string,) => {
+
+
+
+
+  return `/api/content/articles/${encodeURIComponent(String(id))}`
+}
+
+/**
+ * @summary جزئیات مقاله برای ویرایش
+ */
+export const contentControllerGet = async (id: string, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getContentControllerGetUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getContentControllerUpdateUrl = (id: string,) => {
+
+
+
+
+  return `/api/content/articles/${encodeURIComponent(String(id))}`
+}
+
+/**
+ * @summary ذخیره مقاله با قفل خوش‌بینانه و ثبت نسخه
+ */
+export const contentControllerUpdate = async (id: string,
+    updateArticleDto: UpdateArticleDto, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return serverFetch<unknown>(getContentControllerUpdateUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateArticleDto)
+  }
+);}
+
+
+
+export const getContentControllerSubmitUrl = (id: string,) => {
+
+
+
+
+  return `/api/content/articles/${encodeURIComponent(String(id))}/submit`
+}
+
+/**
+ * @summary ارسال پیش‌نویس به بازبینی
+ */
+export const contentControllerSubmit = async (id: string, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getContentControllerSubmitUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+export const getContentControllerRequestChangesUrl = (id: string,) => {
+
+
+
+
+  return `/api/content/articles/${encodeURIComponent(String(id))}/request-changes`
+}
+
+/**
+ * @summary بازگرداندن مقاله برای اصلاح
+ */
+export const contentControllerRequestChanges = async (id: string,
+    reviewArticleDto: ReviewArticleDto, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return serverFetch<unknown>(getContentControllerRequestChangesUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(reviewArticleDto)
+  }
+);}
+
+
+
+export const getContentControllerApproveUrl = (id: string,) => {
+
+
+
+
+  return `/api/content/articles/${encodeURIComponent(String(id))}/approve`
+}
+
+/**
+ * @summary تایید مقاله
+ */
+export const contentControllerApprove = async (id: string,
+    reviewArticleDto: ReviewArticleDto, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return serverFetch<unknown>(getContentControllerApproveUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(reviewArticleDto)
+  }
+);}
+
+
+
+export const getContentControllerPublishUrl = (id: string,) => {
+
+
+
+
+  return `/api/content/articles/${encodeURIComponent(String(id))}/publish`
+}
+
+/**
+ * @summary انتشار مقاله تاییدشده
+ */
+export const contentControllerPublish = async (id: string, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getContentControllerPublishUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+export const getContentControllerUnpublishUrl = (id: string,) => {
+
+
+
+
+  return `/api/content/articles/${encodeURIComponent(String(id))}/unpublish`
+}
+
+/**
+ * @summary توقف انتشار مقاله
+ */
+export const contentControllerUnpublish = async (id: string, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getContentControllerUnpublishUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+export const getContentControllerArchiveUrl = (id: string,) => {
+
+
+
+
+  return `/api/content/articles/${encodeURIComponent(String(id))}/archive`
+}
+
+/**
+ * @summary بایگانی مقاله منتشرنشده
+ */
+export const contentControllerArchive = async (id: string, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getContentControllerArchiveUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+export const getContentControllerCategoriesUrl = () => {
+
+
+
+
+  return `/api/content/categories`
+}
+
+/**
+ * @summary فهرست همه دسته‌بندی‌های محتوا برای پنل
+ */
+export const contentControllerCategories = async ( options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getContentControllerCategoriesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getContentControllerCreateCategoryUrl = () => {
+
+
+
+
+  return `/api/content/categories`
+}
+
+/**
+ * @summary ساخت دسته‌بندی محتوا
+ */
+export const contentControllerCreateCategory = async (createArticleCategoryDto: CreateArticleCategoryDto, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return serverFetch<unknown>(getContentControllerCreateCategoryUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createArticleCategoryDto)
+  }
+);}
+
+
+
+export const getContentControllerUpdateCategoryUrl = (id: string,) => {
+
+
+
+
+  return `/api/content/categories/${encodeURIComponent(String(id))}`
+}
+
+/**
+ * @summary ویرایش دسته‌بندی محتوا
+ */
+export const contentControllerUpdateCategory = async (id: string,
+    updateArticleCategoryDto: UpdateArticleCategoryDto, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return serverFetch<unknown>(getContentControllerUpdateCategoryUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateArticleCategoryDto)
+  }
+);}
+
+
+
+export const getContentControllerBannersUrl = () => {
+
+
+
+
+  return `/api/content/banners`
+}
+
+/**
+ * @summary فهرست بنرهای مقاله برای مدیریت تحریریه
+ */
+export const contentControllerBanners = async ( options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getContentControllerBannersUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getContentControllerCreateBannerUrl = () => {
+
+
+
+
+  return `/api/content/banners`
+}
+
+/**
+ * @summary ساخت بنر مقاله
+ */
+export const contentControllerCreateBanner = async (createArticleBannerDto: CreateArticleBannerDto, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return serverFetch<unknown>(getContentControllerCreateBannerUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createArticleBannerDto)
+  }
+);}
+
+
+
+export const getContentControllerUpdateBannerUrl = (id: string,) => {
+
+
+
+
+  return `/api/content/banners/${encodeURIComponent(String(id))}`
+}
+
+/**
+ * @summary ویرایش یا فعال و غیرفعال‌کردن بنر مقاله
+ */
+export const contentControllerUpdateBanner = async (id: string,
+    updateArticleBannerDto: UpdateArticleBannerDto, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return serverFetch<unknown>(getContentControllerUpdateBannerUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateArticleBannerDto)
+  }
+);}
+
+
+
+export const getContentControllerDeleteBannerUrl = (id: string,) => {
+
+
+
+
+  return `/api/content/banners/${encodeURIComponent(String(id))}`
+}
+
+/**
+ * @summary حذف بنر مقاله
+ */
+export const contentControllerDeleteBanner = async (id: string, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getContentControllerDeleteBannerUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+export const getContentControllerBusinessesUrl = (params?: ContentControllerBusinessesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/content/businesses?${stringifiedParams}` : `/api/content/businesses`
+}
+
+/**
+ * @summary جستجوی کسب‌وکارهای تاییدشده برای درج زنده در مقاله
+ */
+export const contentControllerBusinesses = async (params?: ContentControllerBusinessesParams, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getContentControllerBusinessesUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getContentControllerFeedbackUrl = (params?: ContentControllerFeedbackParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/content/feedback?${stringifiedParams}` : `/api/content/feedback`
+}
+
+/**
+ * @summary صف بازخوردهای مقاله برای مدیریت
+ */
+export const contentControllerFeedback = async (params?: ContentControllerFeedbackParams, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getContentControllerFeedbackUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getContentControllerModerateFeedbackUrl = (id: string,) => {
+
+
+
+
+  return `/api/content/feedback/${encodeURIComponent(String(id))}`
+}
+
+/**
+ * @summary تایید یا رد بازخورد مقاله
+ */
+export const contentControllerModerateFeedback = async (id: string,
+    moderateArticleFeedbackDto: ModerateArticleFeedbackDto, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return serverFetch<unknown>(getContentControllerModerateFeedbackUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(moderateArticleFeedbackDto)
+  }
+);}
+
+
+
+export const getContentAdminControllerListUrl = () => {
+
+
+
+
+  return `/api/admin/content/authors`
+}
+
+/**
+ * @summary فهرست کاربران دارای نقش نویسنده محتوا
+ */
+export const contentAdminControllerList = async ( options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getContentAdminControllerListUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getContentAdminControllerAssignUrl = () => {
+
+
+
+
+  return `/api/admin/content/authors`
+}
+
+/**
+ * @summary ساخت/بروزرسانی کاربر و اعطای فقط نقش نویسنده محتوا
+ */
+export const contentAdminControllerAssign = async (assignContentAuthorDto: AssignContentAuthorDto, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return serverFetch<unknown>(getContentAdminControllerAssignUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(assignContentAuthorDto)
+  }
+);}
+
+
+
+export const getContentAdminControllerRevokeUrl = (userId: string,) => {
+
+
+
+
+  return `/api/admin/content/authors/${encodeURIComponent(String(userId))}`
+}
+
+/**
+ * @summary لغو نقش نویسنده بدون حذف حساب یا مقاله‌های قبلی
+ */
+export const contentAdminControllerRevoke = async (userId: string, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getContentAdminControllerRevokeUrl(userId),
+  {
+    ...options,
+    method: 'DELETE'
 
 
   }

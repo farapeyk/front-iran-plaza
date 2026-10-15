@@ -30,12 +30,58 @@ async function main() {
   fixtures['/api/businesses/public-fixture/features']=[];
   fixtures['/api/users/me']={id:'fixture-customer',userType:'CUSTOMER',fullName:'کاربر آزمایشی',phone:'09120000001',isProfileCompleted:true};
   fixtures['/api/businesses/mine']=[];
+  const articleSlug='best-restaurants-shiraz';
+  const articleListPath='/api/articles?page=1&limit=12';
+  const categoryParent={id:'category-parent',parentId:null,name:'Educational centers',slug:'schools-educational-centers',description:null,sortOrder:0,isActive:true};
+  const articleCategory={id:'category-child',parentId:categoryParent.id,name:'Sewing schools',slug:'sewingandclothingdesignschool',description:'Sewing school guides',sortOrder:0,isActive:true};
+  const article={
+    id:'article-fixture',title:'Best restaurants in Shiraz',slug:articleSlug,
+    excerpt:'A production fixture article backed by registered Iran Plaza businesses.',
+    bodyBlocks:[
+      {id:'intro',type:'heading',level:2,text:'Live registered businesses'},
+      {id:'rich',type:'paragraph',text:'Rich editorial text',richText:{type:'doc',content:[{type:'paragraph',content:[{type:'text',text:'Rich editorial text',marks:[{type:'bold'}]}]}]}},
+      {id:'businesses',type:'business-list',businessIds:['public-fixture']},
+      {id:'comparison',type:'table',table:{headers:['Restaurant','Location'],rows:[{cells:['Registered Shiraz restaurant','Shiraz'],phone:'09120000000'}],showContactColumn:true,contactLabel:'Call now'}},
+    ],
+    status:'PUBLISHED',category:{id:articleCategory.id,name:articleCategory.name,slug:articleCategory.slug},coverImageId:null,coverImageAlt:null,
+    seoTitle:'Best restaurants in Shiraz | Iran Plaza',seoDescription:'A verified guide to registered restaurants in Shiraz.',
+    canonicalUrl:null,robotsIndex:true,robotsFollow:true,showBanners:true,readingTimeMin:2,
+    publishedAt:'2026-10-13T08:00:00.000Z',updatedAt:'2026-10-13T08:00:00.000Z',
+    author:{id:'fixture-author',fullName:'Iran Plaza editorial team'},faqs:[],feedback:[{id:'legacy-comment',rating:null,comment:'Legacy guest comment',createdAt:'2026-09-01T08:00:00.000Z',user:{fullName:'WordPress guest'}}],rating:null,ratingCount:0,
+    businesses:[{id:'mention-1',sortOrder:0,customTitle:null,customNote:null,business:{
+      id:'public-fixture',slug:publicSlug,name:'Registered Shiraz restaurant',description:'Live business profile',
+      address:'Shiraz',city:'Shiraz',neighborhood:null,phone:'09120000000',logoId:null,planType:'FREE',planExpiryDate:null,
+    }}],
+    banners:[
+      {id:'top-banner',imageId:'top-banner-image',title:'Top campaign',altText:'Top article banner',targetUrl:'https://iranplaza.ir/register',placement:'TOP',sortOrder:0},
+      {id:'side-banner',imageId:'side-banner-image',title:'Side campaign',altText:'Sidebar article banner',targetUrl:'https://iranplaza.ir/businesses',placement:'SIDEBAR',sortOrder:0},
+    ],
+  };
+  fixtures[articleListPath]={data:[{
+    id:article.id,title:article.title,slug:article.slug,excerpt:article.excerpt,coverImageId:null,coverImageAlt:null,
+    readingTimeMin:article.readingTimeMin,publishedAt:article.publishedAt,updatedAt:article.updatedAt,
+    author:{fullName:article.author.fullName},category:null,rating:null,ratingCount:0,
+  }],total:1,page:1,limit:12};
+  const articleCategoryListPath='/api/articles?page=1&limit=12&category='+articleCategory.slug;
+  fixtures[articleCategoryListPath]=fixtures[articleListPath];
+  const randomArticlesPath='/api/articles/random?limit=3&excludeId='+article.id;
+  fixtures[randomArticlesPath]=[{
+    id:'related-article',title:'Related Iran Plaza guide',slug:'related-guide',excerpt:'Related guide',coverImageId:null,coverImageAlt:null,
+    readingTimeMin:1,publishedAt:article.publishedAt,updatedAt:article.updatedAt,author:{fullName:'Iran Plaza'},category:null,rating:null,ratingCount:0,
+  }];
+  fixtures['/api/articles/categories']=[categoryParent,articleCategory];
+  fixtures['/api/articles/'+articleSlug]=article;
+  fixtures['/api/content/me']={id:'fixture-admin',fullName:'Content manager',canWrite:true,canPublish:true};
+  fixtures['/api/content/banners']=[];
+  fixtures['/api/content/categories']=[];
+  fixtures['/api/content/articles/'+article.id]={...article,revision:1,reviewNote:null,submittedAt:null,approvedAt:null};
   const requestedPaths=[];
   const backend = http.createServer((req, res) => {
     requestedPaths.push(req.url);
     res.setHeader('Content-Type', 'application/json');
     if (!(req.url in fixtures)) { res.statusCode = 404; return res.end('{}'); }
-    if (req.url!==publicPath&&!req.url.startsWith('/api/businesses/public-fixture/')&&!req.headers.authorization?.startsWith('Bearer ')) { res.statusCode = 401; return res.end('{}'); }
+    const publicRequest=req.url===publicPath||req.url.startsWith('/api/businesses/public-fixture/')||req.url.startsWith('/api/articles');
+    if (!publicRequest&&!req.headers.authorization?.startsWith('Bearer ')) { res.statusCode = 401; return res.end('{}'); }
     res.end(JSON.stringify(fixtures[req.url]));
   });
   let child;
@@ -64,10 +110,41 @@ async function main() {
     assert.equal(publicResponse.status,200,'Encoded Persian slug must resolve in the production page');
     assert.match(publicHtml,/<h1[^>]*>کسب‌وکار فارسی آزمایشی<\/h1>/);
     console.log('PASS: production public page resolves encoded Persian slug against unchanged backend response shape.');
-    const articleList=await fetch(origin+'/articles');
+    const articleList=await fetch(origin+'/articles/');
     assert.equal(articleList.status,200);
-    assert.ok((await articleList.text()).includes('بخش مقالات در حال حاضر در دسترس نیست.'));
-    const missingArticle=await fetch(origin+'/articles/unavailable-article');
+    assert.ok((await articleList.text()).includes(article.title));
+    const categoryResponse=await fetch(origin+'/category/'+categoryParent.slug+'/'+articleCategory.slug+'/');
+    const categoryHtml=await categoryResponse.text();
+    assert.equal(categoryResponse.status,200);
+    assert.ok(categoryHtml.includes(articleCategory.name));
+    assert.match(categoryHtml,new RegExp('<link[^>]+rel="canonical"[^>]+href="https://iran-plaza\\.ir/category/'+categoryParent.slug+'/'+articleCategory.slug+'/"'));
+    const categoryWithoutSlash=await fetch(origin+'/category/'+categoryParent.slug+'/'+articleCategory.slug,{redirect:'manual'});
+    assert.equal(categoryWithoutSlash.status,308);
+    assert.equal(new URL(categoryWithoutSlash.headers.get('location'),origin).pathname,'/category/'+categoryParent.slug+'/'+articleCategory.slug+'/');
+    await categoryWithoutSlash.text();
+    const articleResponse=await fetch(origin+'/'+articleSlug+'/');
+    const articleHtml=await articleResponse.text();
+    assert.equal(articleResponse.status,200);
+    assert.ok(articleHtml.includes('Registered Shiraz restaurant'));
+    assert.ok(articleHtml.includes('Rich editorial text'));
+    assert.ok(articleHtml.includes('Call now'));
+    assert.ok(articleHtml.includes('Top article banner'));
+    assert.ok(articleHtml.includes('Sidebar article banner'));
+    assert.ok(articleHtml.includes('Related Iran Plaza guide'));
+    assert.ok(articleHtml.includes('WordPress guest'));
+    assert.ok(articleHtml.includes('Legacy guest comment'));
+    assert.equal(articleHtml.includes('NaN'),false);
+    assert.ok(articleHtml.includes('application/ld+json'));
+    assert.match(articleHtml,new RegExp('<link[^>]+rel="canonical"[^>]+href="[^"]*/'+articleSlug+'/"'));
+    const articleWithoutSlash=await fetch(origin+'/'+articleSlug,{redirect:'manual'});
+    assert.equal(articleWithoutSlash.status,308);
+    assert.equal(new URL(articleWithoutSlash.headers.get('location'),origin).pathname,'/'+articleSlug+'/');
+    await articleWithoutSlash.text();
+    const legacyArticle=await fetch(origin+'/articles/'+articleSlug+'/',{redirect:'manual'});
+    assert.equal(legacyArticle.status,308);
+    assert.equal(new URL(legacyArticle.headers.get('location'),origin).pathname,'/'+articleSlug+'/');
+    await legacyArticle.text();
+    const missingArticle=await fetch(origin+'/unavailable-article/');
     assert.equal(missingArticle.status,404);await missingArticle.text();
     const customerToken=await new SignJWT({sub:'fixture-customer',userType:'CUSTOMER'}).setProtectedHeader({alg:'HS256'}).setExpirationTime('5m').sign(new TextEncoder().encode(secret));
     for(const [route,text] of [['/dashboard/support','ثبت و پیگیری پیام پشتیبانی در حال حاضر در دسترس نیست.'],['/dashboard/payments','نمایش سوابق پرداخت در حال حاضر در دسترس نیست.']]) {
@@ -75,10 +152,25 @@ async function main() {
       assert.equal(unavailable.status,200,route);
       assert.ok((await unavailable.text()).includes(text),route);
     }
-    assert.equal(requestedPaths.some(route=>/^\/api\/(articles|support\/tickets|invoices\?)/.test(route)),false);
-    console.log('PASS: unavailable articles, tickets and payment history render without calling removed backend routes.');
+    assert.equal(requestedPaths.includes(articleListPath),true);
+    assert.equal(requestedPaths.includes(articleCategoryListPath),true);
+    assert.equal(requestedPaths.includes('/api/articles/'+articleSlug),true);
+    assert.equal(requestedPaths.includes(randomArticlesPath),true);
+    assert.equal(requestedPaths.some(route=>/^\/api\/(support\/tickets|invoices\?)/.test(route)),false);
+    console.log('PASS: live CMS articles render from the public API with business cards and structured data.');
     const token = await new SignJWT({ sub: 'fixture-admin', userType: 'ADMIN' }).setProtectedHeader({ alg: 'HS256' }).setExpirationTime('5m').sign(new TextEncoder().encode(secret));
     const headers = { cookie: 'access_token=' + token };
+    const bannerManager=await fetch(origin+'/content/banners',{headers,redirect:'manual'});
+    const bannerManagerHtml=await bannerManager.text();
+    assert.equal(bannerManager.status,200);
+    assert.ok(bannerManagerHtml.includes('بنرهای مقاله'));
+    assert.ok(bannerManagerHtml.includes('بنر جدید'));
+    const articleEditor=await fetch(origin+'/content/articles/'+article.id,{headers,redirect:'manual'});
+    const articleEditorHtml=await articleEditor.text();
+    assert.equal(articleEditor.status,200);
+    assert.ok(articleEditorHtml.includes('نمایش بنرهای مقاله'));
+    assert.ok(articleEditorHtml.includes('جدول'));
+    console.log('PASS: production editorial routes render the banner manager and extended article editor.');
     for (const role of ['ADMIN', 'SUPER_ADMIN']) {
       const roleToken = await new SignJWT({ sub: 'fixture-' + role, userType: role }).setProtectedHeader({ alg: 'HS256' }).setExpirationTime('5m').sign(new TextEncoder().encode(secret));
       for (const route of ['/dashboard', '/dashboard/business/new', '/complete-profile', '/login', '/admin/login']) {

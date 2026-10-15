@@ -5,6 +5,7 @@
  * Iran Plaza backend API
  * OpenAPI spec version: 0.1
  */
+import type { UsersControllerGetMe200ContentAccess } from './usersControllerGetMe200ContentAccess';
 import type { UsersControllerGetMe200Gender } from './usersControllerGetMe200Gender';
 import type { UsersControllerGetMe200UserType } from './usersControllerGetMe200UserType';
 
@@ -16,6 +17,7 @@ export type UsersControllerGetMe200 = {
   birthDate: string | null;
   /** @nullable */
   city: string | null;
+  contentAccess: UsersControllerGetMe200ContentAccess;
   createdAt: string;
   /** @nullable */
   email: string | null;
