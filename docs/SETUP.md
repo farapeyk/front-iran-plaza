@@ -56,6 +56,21 @@ scriptهای `test` و `typecheck` اضافه شده‌اند: `npm test` و `np
 
 ## ملاحظات استقرار
 
+### تصویر Docker production
+
+`Dockerfile` با Node `24.18.0` و lockfile رسمی pnpm یک build چندمرحله‌ای می‌سازد. تنظیم `output: "standalone"` در `next.config.ts` باعث می‌شود مرحله نهایی فقط سرور لازم Next، فایل‌های static و `public` را داشته باشد و با کاربر غیر root اجرا شود.
+
+```bash
+docker build --build-arg SITE_URL=https://review.example.com -t iran-plaza-web:review .
+docker run --rm -p 127.0.0.1:3020:3000 \
+  -e BACKEND_INTERNAL_URL=http://backend:3000 \
+  -e SITE_URL=https://review.example.com \
+  -e JWT_ACCESS_SECRET=replace-with-the-backend-access-secret \
+  iran-plaza-web:review
+```
+
+`SITE_URL` هنگام build برای metadataهای قابل تولید در build و دوباره هنگام runtime برای مسیرهای پویا تنظیم می‌شود. `JWT_ACCESS_SECRET` و سایر secretها نباید build argument باشند یا داخل image قرار گیرند. در استقرار بازبینی، compose مرجع و کنترل‌های Basic Auth/noindex در مخزن بک‌اند و سند `docs/REVIEW-DEPLOYMENT.md` آن نگهداری می‌شوند.
+
 ۱. بک‌اند باید endpointها و فیلدهای مورد انتظار، به‌ویژه `onboardingStep` و endpoint پیشرفت، را فراهم کند.
 ۲. dependencyها را با lockfile انتخاب‌شده نصب و QA تغییرات runtime را اجرا کنید.
 ۳. متغیرهای محیطی خصوصی را در محیط build/runtime لازم در دسترس قرار دهید.

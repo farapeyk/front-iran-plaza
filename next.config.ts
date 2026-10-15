@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Produce the minimal server bundle consumed by the production Docker image.
+  output: "standalone",
   // Legacy WordPress article/category URLs end in a slash and must remain exact.
   skipTrailingSlashRedirect: true,
   // Keep resolution/scanning inside this app, including isolated QA snapshots.
