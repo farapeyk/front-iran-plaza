@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { NavLink } from "@/design/navigation"
 import type { ReactNode } from "react"
@@ -30,7 +31,7 @@ function MenuDesktopLink({
     <>
       <span className="pt-0.5">{children}</span>
       {icon ? (
-        <img
+        <Image
           alt=""
           className={cn("size-4 shrink-0", active && "opacity-90")}
           height={16}

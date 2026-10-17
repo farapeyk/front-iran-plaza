@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useState, type ReactNode } from "react"
 import { Link, useNavigate } from "@/design/navigation"
@@ -22,12 +23,12 @@ const arrowDown = "/design/icons/arrow-down.svg"
 const addIcon = "/design/icons/add.svg"
 const categoriesIcon = "/design/icons/categories.svg"
 const userIcon = "/design/icons/user.svg"
-const landingHero = "/design/registration/landing-hero.png"
-const stepUserImg = "/design/registration/step-user.png"
-const stepBusinessImg = "/design/registration/step-business.png"
-const stepIdentityImg = "/design/registration/step-identity.png"
-const stepNationalImg = "/design/registration/step-national.png"
-const stepLicenseImg = "/design/registration/step-license.png"
+const landingHero = "/design/registration/landing-hero.webp"
+const stepUserImg = "/design/registration/step-user.webp"
+const stepBusinessImg = "/design/registration/step-business.webp"
+const stepIdentityImg = "/design/registration/step-identity.webp"
+const stepNationalImg = "/design/registration/step-national.webp"
+const stepLicenseImg = "/design/registration/step-license.webp"
 
 type RegStep =
   | "landing"
@@ -93,7 +94,7 @@ function DateSelect({
         rounded === "none" && "border-x-0"
       )}
     >
-      <img alt="" className="size-4 shrink-0" height={16} src={arrowDown} width={16} />
+      <Image alt="" className="size-4 shrink-0" height={16} src={arrowDown} width={16} />
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -182,7 +183,7 @@ function UploadSlot({
         tall ? "min-h-[280px] lg:min-h-[480px]" : "min-h-[160px]"
       )}
     >
-      <img
+      <Image
         alt=""
         className="size-8 opacity-50"
         height={32}
@@ -191,7 +192,7 @@ function UploadSlot({
       />
       <span className="text-base text-[var(--text-body)]">{label}</span>
       <span className="absolute bottom-3 flex size-10 items-center justify-center rounded-full bg-[var(--btn-primary-fill)]">
-        <img
+        <Image
           alt=""
           className="size-6 brightness-0 invert"
           height={24}
@@ -234,7 +235,7 @@ function StepShell({
               className="flex size-12 items-center justify-center rounded-full border border-[var(--border-default)]"
               aria-label="بازگشت"
             >
-              <img alt="" className="size-6" height={24} src={arrowRight} width={24} />
+              <Image alt="" className="size-6" height={24} src={arrowRight} width={24} />
             </button>
             <div className="space-y-1">
               <h1 className="text-2xl font-bold text-[var(--text-title)] lg:text-[32px] lg:font-black lg:leading-[1.4]">
@@ -252,10 +253,13 @@ function StepShell({
 
         {side ? (
           <div className="hidden lg:sticky lg:top-24 lg:block lg:w-[540px] lg:shrink-0">
-            <img
+            <Image
               alt=""
               className="h-auto w-full rounded-[var(--radius-xs)] object-cover"
+              height={1080}
+              sizes="540px"
               src={side}
+              width={1080}
             />
           </div>
         ) : null}
@@ -392,13 +396,16 @@ function BusinessRegistrationPage() {
                 onClick={() => setStep("user")}
               >
                 ثبت نام رایگان
-                <img alt="" className="size-6 brightness-0 invert" height={24} src={addIcon} width={24} />
+                <Image alt="" className="size-6 brightness-0 invert" height={24} src={addIcon} width={24} />
               </Button>
             </div>
-            <img
+            <Image
               alt=""
               className="h-[240px] w-full max-w-[560px] rounded-[var(--radius-xs)] object-cover lg:h-[350px]"
+              height={700}
+              sizes="(min-width: 1024px) 560px, 100vw"
               src={landingHero}
+              width={1120}
             />
           </div>
         </section>
@@ -416,7 +423,7 @@ function BusinessRegistrationPage() {
             onClick={() => setStep("user")}
           >
             شروع ثبت نام
-            <img alt="" className="size-6 brightness-0 invert" height={24} src={arrowLeft} width={24} />
+            <Image alt="" className="size-6 brightness-0 invert" height={24} src={arrowLeft} width={24} />
           </Button>
         </section>
       </SiteLayout>
@@ -462,7 +469,7 @@ function BusinessRegistrationPage() {
               className="w-full gap-2 lg:me-auto lg:w-auto"
               onClick={() => step0Valid && setStep("business")}
             >
-              <img alt="" className="size-6" height={24} src={arrowLeft} width={24} />
+              <Image alt="" className="size-6" height={24} src={arrowLeft} width={24} />
               تایید اطلاعات و ادامه
             </Button>
           }
@@ -523,7 +530,7 @@ function BusinessRegistrationPage() {
               className="w-full gap-2 lg:me-auto lg:w-auto"
               onClick={() => step1Valid && setStep("identity")}
             >
-              <img alt="" className="size-6" height={24} src={arrowLeft} width={24} />
+              <Image alt="" className="size-6" height={24} src={arrowLeft} width={24} />
               تایید اطلاعات و احراز هویت
             </Button>
           }
@@ -559,7 +566,7 @@ function BusinessRegistrationPage() {
               زمینه فعالیت <span className="text-[var(--danger)]">*</span>
             </p>
             <label className="flex h-14 w-full items-center gap-[var(--lg)] rounded-[var(--radius-xs)] border border-[var(--input-border)] px-[var(--lg)]">
-              <img alt="" className="size-6" height={24} src={arrowDown} width={24} />
+              <Image alt="" className="size-6" height={24} src={arrowDown} width={24} />
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
@@ -637,7 +644,7 @@ function BusinessRegistrationPage() {
               className="w-full gap-2 lg:me-auto lg:w-auto"
               onClick={() => nationalValid && setStep("national-docs")}
             >
-              <img alt="" className="size-6" height={24} src={arrowLeft} width={24} />
+              <Image alt="" className="size-6" height={24} src={arrowLeft} width={24} />
               تایید و بارگذاری تصویر مدارک
             </Button>
           }
@@ -710,7 +717,7 @@ function BusinessRegistrationPage() {
               className="w-full gap-2 lg:me-auto lg:w-auto"
               onClick={() => nationalDocsValid && setStep("success")}
             >
-              <img alt="" className="size-6" height={24} src={arrowLeft} width={24} />
+              <Image alt="" className="size-6" height={24} src={arrowLeft} width={24} />
               تایید و ارسال مدارک
             </Button>
           }
@@ -747,7 +754,7 @@ function BusinessRegistrationPage() {
               className="w-full gap-2 lg:me-auto lg:w-auto"
               onClick={() => licenseValid && setStep("license-docs")}
             >
-              <img alt="" className="size-6" height={24} src={arrowLeft} width={24} />
+              <Image alt="" className="size-6" height={24} src={arrowLeft} width={24} />
               تایید و بارگذاری تصویر مدارک
             </Button>
           }
@@ -852,7 +859,7 @@ function BusinessRegistrationPage() {
               className="w-full gap-2 lg:me-auto lg:w-auto"
               onClick={() => licenseDoc && setStep("success")}
             >
-              <img alt="" className="size-6" height={24} src={arrowLeft} width={24} />
+              <Image alt="" className="size-6" height={24} src={arrowLeft} width={24} />
               تایید و ارسال مدارک
             </Button>
           }
@@ -905,7 +912,7 @@ function DashboardPage() {
                 <p className="text-sm text-[var(--text-body)]">۰۹۱۷۴۵۵۰۱۰۸</p>
               </div>
               <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[var(--opacity-dark-16)] sm:size-12">
-                <img alt="" className="size-5 sm:size-6" height={24} src={userIcon} width={24} />
+                <Image alt="" className="size-5 sm:size-6" height={24} src={userIcon} width={24} />
               </div>
             </div>
             <div className="flex items-start justify-between gap-3 py-3 text-sm">
@@ -916,7 +923,7 @@ function DashboardPage() {
             </div>
             <Link to="/business-registration">
               <Button size="sm" className="w-full gap-2">
-                <img alt="" className="size-5 sm:size-6" height={24} src={addIcon} width={24} />
+                <Image alt="" className="size-5 sm:size-6" height={24} src={addIcon} width={24} />
                 ثبت رایگان کسب وکار
               </Button>
             </Link>
@@ -943,7 +950,7 @@ function DashboardPage() {
                       <p className="font-bold text-[var(--text-title)]">{item.title}</p>
                       <p className="mt-1 text-sm text-[var(--text-body)]">{item.subtitle}</p>
                     </div>
-                    <img alt="" className="size-6 shrink-0" height={24} src={item.icon} width={24} />
+                    <Image alt="" className="size-6 shrink-0" height={24} src={item.icon} width={24} />
                   </Link>
                 ))}
             </div>
@@ -957,7 +964,7 @@ function DashboardPage() {
               if (disabled) {
                 return (
                   <div key={item.title} className={cn(className, "opacity-40")}>
-                    <img alt="" className="size-4" height={16} src={arrowLeft} width={16} />
+                    <Image alt="" className="size-4" height={16} src={arrowLeft} width={16} />
                     <span className="min-w-0 flex-1 text-start">
                       <span className="block text-base font-bold text-[var(--text-title)] sm:text-lg">
                         {item.title}
@@ -966,13 +973,13 @@ function DashboardPage() {
                         {item.subtitle}
                       </span>
                     </span>
-                    <img alt="" className="size-6" height={24} src={item.icon} width={24} />
+                    <Image alt="" className="size-6" height={24} src={item.icon} width={24} />
                   </div>
                 )
               }
               return (
                 <Link key={item.title} to={item.to} className={className}>
-                  <img alt="" className="size-4" height={16} src={arrowLeft} width={16} />
+                  <Image alt="" className="size-4" height={16} src={arrowLeft} width={16} />
                   <span className="min-w-0 flex-1 text-start">
                     <span className="block text-base font-bold text-[var(--text-title)] sm:text-lg">
                       {item.title}
@@ -981,7 +988,7 @@ function DashboardPage() {
                       {item.subtitle}
                     </span>
                   </span>
-                  <img alt="" className="size-6" height={24} src={item.icon} width={24} />
+                  <Image alt="" className="size-6" height={24} src={item.icon} width={24} />
                 </Link>
               )
             })}
@@ -989,7 +996,7 @@ function DashboardPage() {
               to={dashboardLogoutItem.to}
               className="flex min-h-16 items-center gap-3 py-3 sm:min-h-20 sm:gap-4 sm:py-4"
             >
-              <img alt="" className="size-4" height={16} src={arrowLeft} width={16} />
+              <Image alt="" className="size-4" height={16} src={arrowLeft} width={16} />
               <span className="min-w-0 flex-1 text-start">
                 <span className="block text-base font-bold text-[var(--text-title)] sm:text-lg">
                   {dashboardLogoutItem.title}
@@ -998,7 +1005,7 @@ function DashboardPage() {
                   {dashboardLogoutItem.subtitle}
                 </span>
               </span>
-              <img
+              <Image
                 alt=""
                 className="size-6"
                 height={24}

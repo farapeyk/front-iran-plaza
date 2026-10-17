@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { pageFetch } from '@/lib/api/page-fetch';
 import Link from "next/link";
 import { Heart } from "lucide-react";
@@ -44,8 +45,7 @@ export default async function FavoritesPage() {
               <Link key={b.id} href={`/businesses/${b.slug}`} className="flex items-center gap-3 bg-white border border-neutral-200 rounded-lg p-3 hover:border-emerald-300 transition-colors">
                 <div className="w-10 h-10 rounded-full bg-neutral-100 overflow-hidden shrink-0">
                   {b.logoId && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={fileUrl(b.logoId)} alt={b.name} className="w-full h-full object-cover" />
+                    <Image src={fileUrl(b.logoId)} alt={b.name} width={40} height={40} sizes="40px" className="w-full h-full object-cover" />
                   )}
                 </div>
                 <span className="font-medium text-neutral-900">{b.name}</span>

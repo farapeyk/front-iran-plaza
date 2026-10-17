@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useState } from "react"
 import { useModalFocus } from '@/design/lib/use-modal-focus'
@@ -72,12 +73,14 @@ function GalleryLightboxContent({
             onClick={() => go(1)}
             className="hidden size-12 shrink-0 items-center justify-center rounded-full border-2 border-[var(--btn-black-outline)] lg:flex"
           >
-            <img alt="" className="size-6" height={24} src={arrowLeft} width={24} />
+            <Image alt="" className="size-6" height={24} src={arrowLeft} width={24} />
           </button>
 
           <div className="relative min-h-[260px] min-w-0 flex-1 overflow-hidden rounded-[var(--radius-xs)] border-[length:var(--xl)] border-secondary-50 lg:min-h-[480px]">
-            <img
+            <Image
               alt=""
+              fill
+              sizes="(min-width: 1024px) calc(100vw - 256px), 100vw"
               src={current.src}
               className="absolute inset-0 size-full object-cover"
             />
@@ -94,7 +97,7 @@ function GalleryLightboxContent({
                 onClick={() => go(-1)}
                 className="flex size-10 items-center justify-center rounded-full bg-[var(--backdrop)]"
               >
-                <img
+                <Image
                   alt=""
                   className="size-6 brightness-0 invert"
                   height={24}
@@ -108,7 +111,7 @@ function GalleryLightboxContent({
                 onClick={() => go(1)}
                 className="flex size-10 items-center justify-center rounded-full bg-[var(--backdrop)]"
               >
-                <img
+                <Image
                   alt=""
                   className="size-6 brightness-0 invert"
                   height={24}
@@ -125,7 +128,7 @@ function GalleryLightboxContent({
             onClick={() => go(-1)}
             className="hidden size-12 shrink-0 items-center justify-center rounded-full border-2 border-[var(--btn-black-outline)] lg:flex"
           >
-            <img alt="" className="size-6" height={24} src={arrowRight} width={24} />
+            <Image alt="" className="size-6" height={24} src={arrowRight} width={24} />
           </button>
         </div>
 
@@ -144,8 +147,10 @@ function GalleryLightboxContent({
                     : "opacity-50 lg:opacity-[0.48]"
                 )}
               >
-                <img
+                <Image
                   alt=""
+                  fill
+                  sizes="(min-width: 1024px) 160px, 100px"
                   src={item.src}
                   className="absolute inset-0 size-full object-cover"
                 />

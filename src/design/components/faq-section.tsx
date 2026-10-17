@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import type { CSSProperties } from "react"
 import { Link } from "@/design/navigation"
@@ -89,9 +90,11 @@ function FaqSection({ className }: { className?: string }) {
           className="relative hidden size-[280px] shrink-0 lg:block lg:size-[360px]"
           aria-hidden
         >
-          <img
+          <Image
             alt=""
             className="absolute inset-0 size-full object-contain"
+            fill
+            sizes="360px"
             src={faqLooper}
           />
           {faqMarkDepth.map((layer, i) => (
@@ -135,7 +138,7 @@ function FaqSection({ className }: { className?: string }) {
             )}
           >
             مشاهده همه
-            <img alt="" className="size-6" height={24} src={addIcon} width={24} />
+            <Image alt="" className="size-6" height={24} src={addIcon} width={24} />
           </Link>
         </div>
       </div>

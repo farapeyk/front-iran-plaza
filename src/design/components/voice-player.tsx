@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useState } from "react"
 import { cn } from "@/design/lib/utils"
@@ -44,9 +45,9 @@ function VoicePlayer({
       )}
     >
       {playing ? (
-        <img alt="" className="size-4" height={16} src={pauseIcon} width={16} />
+        <Image alt="" className="size-4" height={16} src={pauseIcon} width={16} />
       ) : (
-        <img alt="" className="h-[13px] w-[11px]" height={13} src={playFill} width={11} />
+        <Image alt="" className="h-[13px] w-[11px]" height={13} src={playFill} width={11} />
       )}
     </button>
   )

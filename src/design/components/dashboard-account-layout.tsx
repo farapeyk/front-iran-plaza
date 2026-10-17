@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import type { ReactNode } from "react"
 import { useEffect, useState } from "react"
@@ -92,7 +93,7 @@ function DashboardAccountLayout({
               onClick={() => setMenuOpen(false)}
               className="absolute end-3 top-3 flex size-10 items-center justify-center rounded-full bg-[var(--surface)] shadow-sm"
             >
-              <img alt="" className="size-6" height={24} src={closeCircle} width={24} />
+              <Image alt="" className="size-6" height={24} src={closeCircle} width={24} />
             </button>
           </div>
         </div>
@@ -105,7 +106,7 @@ function DashboardAccountLayout({
               onClick={() => setMenuOpen(true)}
               className="flex size-11 shrink-0 items-center justify-center rounded-full border border-[var(--border-default)] bg-[var(--surface)]"
             >
-              <img alt="" className="size-5" height={20} src={element3} width={20} />
+              <Image alt="" className="size-5" height={20} src={element3} width={20} />
             </button>
             <h1 className="min-w-0 flex-1 truncate text-start text-base font-bold text-[var(--text-title)] sm:text-lg">
               {title}
@@ -115,7 +116,7 @@ function DashboardAccountLayout({
               className="flex size-11 shrink-0 items-center justify-center rounded-full border border-[var(--border-default)] bg-[var(--surface)]"
               aria-label="بازگشت"
             >
-              <img alt="" className="size-5" height={20} src={arrowRight} width={20} />
+              <Image alt="" className="size-5" height={20} src={arrowRight} width={20} />
             </Link>
           </header>
 
@@ -126,7 +127,7 @@ function DashboardAccountLayout({
                 className="flex size-12 shrink-0 items-center justify-center rounded-full border border-[var(--border-default)] bg-[var(--surface)]"
                 aria-label="بازگشت"
               >
-                <img alt="" className="size-6" height={24} src={arrowRight} width={24} />
+                <Image alt="" className="size-6" height={24} src={arrowRight} width={24} />
               </Link>
               <h1 className="truncate text-[length:var(--text-h1)] font-black text-[var(--text-title)]">
                 {title}

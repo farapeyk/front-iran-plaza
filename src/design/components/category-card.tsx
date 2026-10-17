@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { Link } from "@/design/navigation"
 import { cn } from "@/design/lib/utils"
@@ -42,7 +43,7 @@ function CategoryCard({
           )}
         >
           <span className="size-8 overflow-clip">
-            <img
+            <Image
               alt=""
               className={cn("size-full", active && "brightness-0 invert")}
               height={32}

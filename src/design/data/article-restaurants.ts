@@ -1,8 +1,8 @@
 import type { BusinessCardData } from "@/design/components/business-card"
-const biz1 = "/design/home/biz-1.png"
-const biz2 = "/design/home/biz-2.png"
-const biz3 = "/design/home/biz-3.png"
-const biz4 = "/design/home/biz-4.png"
+const biz1 = "/design/home/biz-1.webp"
+const biz2 = "/design/home/biz-2.webp"
+const biz3 = "/design/home/biz-3.webp"
+const biz4 = "/design/home/biz-4.webp"
 
 /** Source: https://iran-plaza.ir/best-restaurants-in-shiraz/ */
 export type ArticleBusiness = BusinessCardData & {

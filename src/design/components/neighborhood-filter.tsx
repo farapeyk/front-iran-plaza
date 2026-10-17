@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useMemo, useState } from "react"
 import { cn } from "@/design/lib/utils"
@@ -75,7 +76,7 @@ function NeighborhoodFilter({
             : "border border-[var(--opacity-dark-16)] bg-transparent"
         )}
       >
-        <img
+        <Image
           alt=""
           className={cn("size-6 transition-transform", open && "rotate-180")}
           height={24}
@@ -95,7 +96,7 @@ function NeighborhoodFilter({
                 placeholder="جستجوی محله"
                 className="min-w-0 flex-1 bg-transparent text-right text-base outline-none placeholder:text-[var(--input-placeholder)]"
               />
-              <img alt="" className="size-6 shrink-0" height={24} src={searchIcon} width={24} />
+              <Image alt="" className="size-6 shrink-0" height={24} src={searchIcon} width={24} />
             </div>
           </div>
 

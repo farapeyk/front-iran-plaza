@@ -1,8 +1,10 @@
 "use client"
+import Image from "next/image";
 
 import { Link, useLocation } from "@/design/navigation"
 import { useDesignUser } from '@/design/provider'
 import { cn } from "@/design/lib/utils"
+import { useModalFocus } from "@/design/lib/use-modal-focus"
 import { Logo } from "@/design/components/logo"
 import { Button } from "@/design/components/ui/button"
 const homeIcon = "/design/icons/home-2.svg"
@@ -13,11 +15,11 @@ const questionIcon = "/design/icons/question.svg"
 const callIcon = "/design/icons/call.svg"
 const flagIcon = "/design/icons/flag.svg"
 const shieldIcon = "/design/icons/shield-tick.svg"
-const addIcon = "/design/icons/add.svg"
 const arrowLeft = "/design/icons/arrow-left.svg"
 const userBold = "/design/icons/user-bold.svg"
 const looper1 = "/design/icons/menu-looper.svg"
 const looper2 = "/design/icons/menu-looper-2.svg"
+const closeIcon = "/design/icons/close-x.svg"
 
 type MenuAuth = "logout" | "login" | "member"
 
@@ -61,12 +63,12 @@ function MenuLink({
       to={to}
       onClick={onClick}
       className={cn(
-        "flex h-10 w-full items-center justify-start gap-3 rounded px-3 text-base font-bold text-[var(--text-light-title)]",
+        "flex h-16 w-full items-center justify-start gap-4 rounded-lg px-4 text-xl font-bold text-[var(--text-light-title)]",
         active && "bg-[var(--opacity-light-16)]"
       )}
     >
+      <Image alt="" className="size-8 shrink-0 brightness-0 invert opacity-70" height={32} src={icon} width={32} />
       <span>{title}</span>
-      <img alt="" className="size-6 shrink-0" height={24} src={icon} width={24} />
     </Link>
   )
 }
@@ -83,9 +85,12 @@ function MobileSideMenu({
   const userName=suppliedName??user?.fullName??'حساب کاربری'
   const userPhone=suppliedPhone??user?.phone??''
   const isLoggedIn = auth === "login" || auth === "member"
+  const modalRef = useModalFocus(open, onClose)
 
   return (
     <div
+      ref={modalRef}
+      tabIndex={-1}
       className={cn(
         "fixed inset-0 z-50 lg:hidden",
         open ? "pointer-events-auto" : "pointer-events-none"
@@ -94,7 +99,7 @@ function MobileSideMenu({
     >
       <button
         type="button"
-        aria-label="بستن منو"
+        aria-label="بستن منو با لمس پس‌زمینه"
         className={cn(
           "absolute inset-0 bg-[var(--opacity-dark-32)] transition-opacity duration-300",
           open ? "opacity-100" : "opacity-0"
@@ -104,8 +109,8 @@ function MobileSideMenu({
 
       <aside
         className={cn(
-          "absolute inset-y-0 end-0 flex w-[260px] flex-col justify-between overflow-hidden px-4 py-6 text-[var(--text-light-title)] transition-transform duration-300 ease-out",
-          open ? "translate-x-0" : "translate-x-full rtl:-translate-x-full"
+          "absolute inset-y-0 right-0 flex w-full flex-col overflow-y-auto overflow-x-hidden px-6 pb-12 pt-20 text-[var(--text-light-title)] transition-transform duration-300 ease-out sm:px-8",
+          open ? "translate-x-0" : "translate-x-full"
         )}
         style={{
           backgroundImage:
@@ -115,16 +120,30 @@ function MobileSideMenu({
         aria-modal="true"
         aria-label="منوی اصلی"
       >
-        <div className="relative z-10 flex w-full flex-col gap-4">
+        <button
+          type="button"
+          aria-label="بستن منو"
+          onClick={onClose}
+          className="absolute right-5 top-5 z-20 flex size-12 items-center justify-center rounded-full border border-[var(--opacity-light-32)] bg-[var(--opacity-light-16)] transition-colors hover:bg-[var(--opacity-light-32)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        >
+          <Image
+            alt=""
+            className="size-6 brightness-0 invert"
+            height={24}
+            src={closeIcon}
+            width={24}
+          />
+        </button>
+
+        <div className="relative z-10 mx-auto flex w-full max-w-[520px] flex-col gap-12">
           <div
             className={cn(
-              "flex w-full flex-col items-center gap-4",
-              isLoggedIn ? "pt-4" : "py-4"
+              "flex w-full flex-col items-center gap-5 pt-2"
             )}
           >
-            <div className="flex w-full flex-col items-center gap-2">
-              <Logo variant="secondary" to="/" className="h-[22px] w-[115px]" />
-              <p className="text-sm text-[var(--text-light-title)]">مرجع معرفی بهترین کسب و کارها</p>
+            <div className="flex w-full flex-col items-center gap-3">
+              <Logo variant="secondary" to="/" className="h-auto w-[190px]" />
+              <p className="text-lg text-[var(--text-light-title)]">مرجع معرفی بهترین کسب و کارها</p>
             </div>
 
             {isLoggedIn ? (
@@ -133,18 +152,18 @@ function MobileSideMenu({
                 onClick={onClose}
                 className="flex h-16 w-full items-center gap-2 rounded border border-[var(--opacity-light-32)] p-3"
               >
-                <img alt="" className="size-4 shrink-0 invert" height={16} src={arrowLeft} width={16} />
+                <Image alt="" className="size-4 shrink-0 invert" height={16} src={arrowLeft} width={16} />
                 <span className="min-w-0 flex-1 text-right text-sm text-[var(--text-light-title)]">
                   <span className="block font-bold">{userName}</span>
                   <span className="block">{userPhone}</span>
                 </span>
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-700">
-                  <img alt="" className="size-4" height={16} src={userBold} width={16} />
+                  <Image alt="" className="size-4" height={16} src={userBold} width={16} />
                 </span>
               </Link>
             ) : (
               <Link to="/login" onClick={onClose}>
-                <Button variant="white" size="sm" className="w-[140px]">
+                <Button variant="white" size="lg" className="h-14 w-[210px] text-xl">
                   ورود / ثبت نام
                 </Button>
               </Link>
@@ -154,7 +173,7 @@ function MobileSideMenu({
           <nav
             className={cn(
               "flex w-full flex-col gap-1 border-[var(--opacity-light-16)]",
-              isLoggedIn ? "border-b pb-4" : "border-y py-4"
+              isLoggedIn ? "border-b pb-6" : "border-y py-6"
             )}
           >
             {primaryLinks.map((link) => (
@@ -178,27 +197,20 @@ function MobileSideMenu({
           </nav>
         </div>
 
-        {auth !== "member" ? (
-          <div className="relative z-10 w-full">
-            <Link to="/business-registration" onClick={onClose} className="block w-full">
-              <Button variant="secondary" size="sm" className="w-full gap-2">
-                ثبت رایگان کسب وکار
-                <img alt="" className="size-6" height={24} src={addIcon} width={24} />
-              </Button>
-            </Link>
-          </div>
-        ) : null}
-
-        <div className="pointer-events-none absolute bottom-0 start-0 h-[163px] w-[171px] opacity-16">
-          <img
+        <div className="pointer-events-none absolute bottom-0 left-0 h-[220px] w-[230px] opacity-20">
+          <Image
             alt=""
-            className="absolute start-0 top-0 w-[160px] rotate-[4deg]"
+            className="absolute left-0 top-0 w-[220px] rotate-[4deg]"
+            height={320}
             src={looper1}
+            width={320}
           />
-          <img
+          <Image
             alt=""
-            className="absolute start-2 top-8 w-[149px] -rotate-[176deg]"
+            className="absolute left-2 top-10 w-[205px] -rotate-[176deg]"
+            height={320}
             src={looper2}
+            width={320}
           />
         </div>
       </aside>

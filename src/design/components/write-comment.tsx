@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useState, type FormEvent } from "react"
 import { cn } from "@/design/lib/utils"
@@ -63,7 +64,7 @@ function WriteComment({
           isDesktop ? "size-12" : "size-10"
         )}
       >
-        <img
+        <Image
           alt=""
           className="size-6 -scale-x-100"
           height={24}

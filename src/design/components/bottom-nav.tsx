@@ -1,9 +1,10 @@
 "use client"
+import Image from "next/image";
 
 import { NavLink } from "@/design/navigation"
 import { cn } from "@/design/lib/utils"
-const homeIcon = "/design/icons/home-2.svg"
-const categoriesIcon = "/design/icons/element-3.svg"
+const homeIcon = "/design/icons/home.svg"
+const categoriesIcon = "/design/icons/categories.svg"
 const searchIcon = "/design/icons/search.svg"
 const profileIcon = "/design/icons/profile-circle.svg"
 
@@ -48,14 +49,14 @@ function BottomNav({ className, auth = "logout", avatarSrc }: BottomNavProps) {
           {"avatar" in item && item.avatar ? (
             <span className="size-6 overflow-hidden rounded-full border border-[var(--opacity-dark-8)] bg-[var(--opacity-dark-24)]">
               {avatarSrc ? (
-                <img alt="" className="size-full object-cover" src={avatarSrc} />
+                <Image alt="" className="size-full object-cover" src={avatarSrc} width={24} height={24} sizes="24px" unoptimized />
               ) : (
                 <span className="block size-full bg-primary-200" />
               )}
             </span>
           ) : (
             <span className="size-6 overflow-clip">
-              <img
+              <Image
                 alt=""
                 className="size-full"
                 height={24}

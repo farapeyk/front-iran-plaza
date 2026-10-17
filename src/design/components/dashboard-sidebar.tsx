@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useState } from "react"
 import { Link, useLocation } from "@/design/navigation"
@@ -67,7 +68,7 @@ function SidebarItem({
           onClick={onToggle}
           className="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-[var(--opacity-dark-8)]"
         >
-          <img
+          <Image
             alt=""
             className={cn("size-4 transition-transform", open && "rotate-180")}
             height={16}
@@ -82,7 +83,7 @@ function SidebarItem({
           className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4"
         >
           <span className="min-w-0 flex-1 text-start text-base font-bold">{title}</span>
-          <img alt="" className="size-6 shrink-0" height={24} src={icon} width={24} />
+          <Image alt="" className="size-6 shrink-0" height={24} src={icon} width={24} />
         </Link>
       </div>
     )
@@ -93,7 +94,7 @@ function SidebarItem({
       <div className={className} aria-disabled>
         <span className="size-4 shrink-0" aria-hidden />
         <span className="min-w-0 flex-1 text-start text-base font-bold">{title}</span>
-        <img alt="" className="size-6 shrink-0" height={24} src={icon} width={24} />
+        <Image alt="" className="size-6 shrink-0" height={24} src={icon} width={24} />
       </div>
     )
   }
@@ -108,7 +109,7 @@ function SidebarItem({
     >
       <span className="size-4 shrink-0" aria-hidden />
       <span className="min-w-0 flex-1 text-start text-base font-bold">{title}</span>
-      <img alt="" className="size-6 shrink-0" height={24} src={icon} width={24} />
+      <Image alt="" className="size-6 shrink-0" height={24} src={icon} width={24} />
     </Link>
   )
 }
@@ -179,7 +180,7 @@ function DashboardSidebar({
                 >
                   <span className="size-4 shrink-0" aria-hidden />
                   <span className="min-w-0 flex-1 text-start">{item.title}</span>
-                  <img
+                  <Image
                     alt=""
                     className="size-5 shrink-0 sm:size-6"
                     height={24}

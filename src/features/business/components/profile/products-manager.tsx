@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Trash2, Plus, UploadCloud } from "lucide-react";
 import { Button } from "@/design/components/ui/button";
 import { Input } from "@/design/components/ui/input";
+import { ImageEditor } from "@/design/components/image-editor";
 import {
   addProductCategoryAction,
   removeProductCategoryAction,
@@ -16,6 +17,7 @@ import {
 } from "@/features/business/actions/products.action";
 import { uploadFileAction } from "@/features/business/actions/upload-file.action";
 import type { ProductCategoryItem, ProductItem } from "@/features/business/types/business-extras";
+import { isFileTooLarge } from "@/lib/validate-file";
 
 export function ProductsManager({
   businessId,
@@ -41,6 +43,7 @@ export function ProductsManager({
   
   // ✅ استیت‌های مربوط به آپلود تصویر محصول
   const [imageId, setImageId] = useState<string | null>(null);
+  const [imageToEdit, setImageToEdit] = useState<File | null>(null);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   useProfileBusy(isUploadingImage);
 
@@ -87,7 +90,17 @@ export function ProductsManager({
       return;
     }
     setImageId(result.fileId);
+    setImageToEdit(null);
     toast.success("تصویر محصول آپلود شد");
+  }
+
+  function selectProductImage(file: File | null) {
+    if (!file) return;
+    if (isFileTooLarge(file, 20)) {
+      toast.error("حجم تصویر نباید بیشتر از ۲۰ مگابایت باشد");
+      return;
+    }
+    setImageToEdit(file);
   }
 
   function handleAddProduct(e: React.FormEvent, categoryId: string) {
@@ -187,7 +200,7 @@ export function ProductsManager({
                 
                 {/* ✅ بخش آپلود تصویر محصول */}
                 <label className="flex items-center gap-3 border border-dashed border-neutral-300 rounded-lg p-2 cursor-pointer hover:bg-neutral-50">
-                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageChange(e.target.files?.[0] ?? null)} disabled={isPending || isUploadingImage} />
+                  <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => { selectProductImage(e.target.files?.[0] ?? null); e.currentTarget.value = ""; }} disabled={isPending || isUploadingImage} />
                   <div className="w-10 h-10 rounded bg-neutral-100 shrink-0 flex items-center justify-center text-neutral-400">
                     {imageId ? "✓" : <UploadCloud size={18} />}
                   </div>
@@ -195,18 +208,21 @@ export function ProductsManager({
                     {isUploadingImage ? "در حال آپلود..." : imageId ? "تصویر انتخاب شد" : "آپلود تصویر محصول (اختیاری)"}
                   </span>
                 </label>
+                <p className="text-xs text-neutral-500">پیش از آپلود می‌توانید قاب و برش تصویر محصول را تنظیم کنید.</p>
+
+                <ImageEditor file={imageToEdit} title="تنظیم تصویر محصول" initialAspect="square" aspects={["square","portrait","landscape","original"]} maxOutputWidth={1600} onCancel={()=>setImageToEdit(null)} onConfirm={handleImageChange} />
 
                 <div className="flex gap-2">
                   <Button type="submit" size="sm" className="flex-1" disabled={isPending || isUploadingImage}>
                     {isPending ? "در حال ثبت..." : "ثبت محصول"}
                   </Button>
-                  <button type="button" onClick={() => { setAddingProductFor(null); setImageId(null); setProductDescription(""); }} className="text-xs text-neutral-500 px-2">
+                  <button type="button" onClick={() => { setAddingProductFor(null); setImageId(null); setImageToEdit(null); setProductDescription(""); }} className="text-xs text-neutral-500 px-2">
                     انصراف
                   </button>
                 </div>
               </form>
             ) : (
-              <button onClick={() => { setAddingProductFor(cat.id); setImageId(null); setProductDescription(""); }} className="flex items-center gap-1 text-xs text-emerald-800 font-medium">
+              <button onClick={() => { setAddingProductFor(cat.id); setImageId(null); setImageToEdit(null); setProductDescription(""); }} className="flex items-center gap-1 text-xs text-emerald-800 font-medium">
                 <Plus size={14} />
                 افزودن محصول به این دسته
               </button>

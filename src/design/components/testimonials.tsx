@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 import { SectionHeading } from "@/design/components/section-heading"
@@ -40,7 +41,7 @@ function Testimonials({ className }: { className?: string }) {
               <div className="flex shrink-0 flex-col items-center gap-[var(--sm)] lg:border-s lg:border-[var(--opacity-dark-8)] lg:px-[var(--3xl)]">
                 <div className="rounded-full border border-secondary-50 p-[var(--sm)]">
                   <div className="flex size-16 items-center justify-center rounded-full bg-primary-700">
-                    <img alt="" className="size-8" height={32} src={userBold} width={32} />
+                    <Image alt="" className="size-8" height={32} src={userBold} width={32} />
                   </div>
                 </div>
                 <div className="text-center">

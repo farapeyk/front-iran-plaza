@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useState } from "react"
 import { cn } from "@/design/lib/utils"
@@ -58,7 +59,7 @@ function SearchField({
           onClick={clear}
           className="shrink-0"
         >
-          <img alt="" className="size-6" height={24} src={closeCircle} width={24} />
+          <Image alt="" className="size-6" height={24} src={closeCircle} width={24} />
         </button>
       ) : null}
 
@@ -72,7 +73,7 @@ function SearchField({
           onBlur={() => setFocused(false)}
           className="min-w-0 flex-1 bg-transparent text-right text-base text-[var(--text-title)] outline-none placeholder:text-[var(--input-placeholder)]"
         />
-        <img
+        <Image
           alt=""
           className="size-6 shrink-0"
           height={24}

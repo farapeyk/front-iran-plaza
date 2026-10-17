@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 const coverPattern = "/design/cover-pattern.svg"
 
@@ -22,7 +23,7 @@ export function Cover() {
         data-name="Pattern"
         data-node-id="5695:33889"
       >
-        <img
+        <Image
           alt=""
           className="block size-full max-w-none"
           height={1379}

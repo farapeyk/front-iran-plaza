@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useEffect, useState, useTransition, useId } from "react"
 import { requestOtpAction } from "@/features/auth/actions/request-otp.action"
@@ -8,7 +9,7 @@ import { cn } from "@/design/lib/utils"
 import { Button } from "@/design/components/ui/button"
 import { buttonVariants } from "@/design/components/ui/button-variants"
 import { MobileHeader } from "@/design/components/mobile-header"
-const loginSide = "/design/login/side.jpg"
+const loginSide = "/design/login/side.webp"
 const arrowRight = "/design/icons/arrow-right-ltr.svg"
 const timerIcon = "/design/icons/timer.svg"
 const infoCircle = "/design/icons/info-circle.svg"
@@ -84,7 +85,7 @@ function LoginPage() {
       {message && <p role="alert" className="p-4 text-center text-[var(--danger)]">{message}</p>}
       {step==='phone'&&seconds>0&&<p role="status" className="p-4 text-center">ارسال مجدد کد پس از {seconds} ثانیه</p>}
       {/* Mobile */}
-      <div className="flex min-h-dvh flex-col lg:hidden">
+      <div className="flex min-h-dvh flex-col min-[700px]:hidden">
         <MobileHeader />
         <div className="flex flex-1 flex-col justify-between px-[var(--2xl)] pb-[var(--2xl)] pt-[var(--9xl)]">
           <LoginForm
@@ -110,10 +111,10 @@ function LoginPage() {
       </div>
 
       {/* Desktop */}
-      <div className="hidden min-h-dvh items-center justify-center p-[var(--sm)] lg:flex">
-        <div className="flex w-full max-w-[754px] items-center gap-[var(--5xl)] rounded-[var(--radius-xs)] bg-[var(--main-bg)] py-[var(--sm)] ps-[var(--sm)] pe-[var(--5xl)]">
+      <div className="hidden min-h-dvh items-center justify-center p-[var(--sm)] min-[700px]:flex">
+        <div dir="ltr" className="flex w-full max-w-[754px] items-center gap-[var(--5xl)] rounded-[var(--radius-xs)] bg-[var(--main-bg)] pe-[var(--5xl)]">
           <div className="h-[584px] w-[350px] shrink-0 overflow-hidden rounded-[var(--radius-xs)] bg-primary-800">
-            <img
+            <Image
               alt=""
               className="size-full object-cover"
               height={584}
@@ -121,7 +122,7 @@ function LoginPage() {
               width={350}
             />
           </div>
-          <div className="flex w-[300px] flex-col gap-[var(--5xl)]">
+          <div dir="rtl" className="flex w-[300px] flex-col gap-[var(--5xl)]">
             <LoginForm
               step={step}
               phone={phone}
@@ -190,7 +191,7 @@ function LoginForm({
             "border-[var(--border-default)] bg-transparent"
           )}
         >
-          <img alt="" className="size-6" height={24} src={arrowRight} width={24} />
+          <Image alt="" className="size-6" height={24} src={arrowRight} width={24} />
         </button>
 
         <div className="flex w-full flex-col gap-[var(--lg)]">
@@ -233,7 +234,7 @@ function LoginForm({
           {error && (
             <p className="flex items-center justify-start gap-[var(--sm)] text-sm text-[var(--danger)]">
               کد وارد شده صحیح نمی باشد
-              <img alt="" className="size-6" height={24} src={infoCircle} width={24} />
+              <Image alt="" className="size-6" height={24} src={infoCircle} width={24} />
             </p>
           )}
         </div>
@@ -248,7 +249,7 @@ function LoginForm({
           )}
         >
           {canResend ? "ارسال مجدد کد" : timerLabel}
-          <img alt="" className="size-6" height={24} src={timerIcon} width={24} />
+          <Image alt="" className="size-6" height={24} src={timerIcon} width={24} />
         </button>
       </div>
     )
@@ -264,11 +265,12 @@ function LoginForm({
           برای ادامه شماره موبایل خود را وارد کنید.
         </p>
       </div>
-      <label className="flex h-[var(--button-xl)] items-center gap-[var(--lg)] rounded-[var(--radius-xs)] border border-[var(--input-border)] px-[var(--lg)]">
-        <span className="border-e border-[var(--border-strong)] pe-[var(--lg)] text-[length:var(--text-label-3)] font-bold text-[var(--input-value)]">
+      <label dir="ltr" className="flex h-[var(--button-xl)] items-center gap-[var(--lg)] rounded-[var(--radius-xs)] border border-[var(--input-border)] px-[var(--lg)]">
+        <span dir="ltr" className="border-e border-[var(--border-strong)] pe-[var(--lg)] [font-family:Arial,sans-serif] text-[length:var(--text-label-3)] font-bold text-[var(--input-value)]">
           +98
         </span>
         <input
+          dir="rtl"
           type="tel"
           inputMode="numeric"
           placeholder="شماره موبایل"

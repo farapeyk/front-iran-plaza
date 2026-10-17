@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 const notFoundBox = "/design/icons/not-found-box.svg"
@@ -23,7 +24,7 @@ function NotFound({
         className
       )}
     >
-      <img
+      <Image
         alt=""
         src={notFoundBox}
         width={102}

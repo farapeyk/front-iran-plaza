@@ -76,7 +76,7 @@ function TextBlock({ block }: { block: ArticleBlock }) {
 }
 
 function ArticleBannerView({ banner, compact = false }: { banner: ArticleBanner; compact?: boolean }) {
-  return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="relative block overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50"><Image unoptimized width={compact ? 560 : 1200} height={compact ? 420 : 240} sizes={compact ? "280px" : "(min-width: 1024px) 760px, 100vw"} src={fileUrl(banner.imageId)} alt={banner.altText} className={`h-auto w-full object-contain ${compact ? "max-h-72" : "max-h-60"}`} /></a>;
+  return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="relative block overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50"><Image width={compact ? 560 : 1200} height={compact ? 420 : 240} sizes={compact ? "280px" : "(min-width: 1024px) 760px, 100vw"} src={fileUrl(banner.imageId)} alt={banner.altText} className={`h-auto w-full object-contain ${compact ? "max-h-72" : "max-h-60"}`} /></a>;
 }
 
 function ArticleTableView({ block }: { block: ArticleBlock }) {
@@ -115,7 +115,7 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath 
             {topBanners.map(banner => <ArticleBannerView key={banner.id} banner={banner} />)}
             {article.coverImageId ? (
               <figure className="space-y-2">
-                <div className="relative aspect-[16/9] overflow-hidden rounded-[var(--radius-xs)]"><Image unoptimized fill sizes="(min-width: 1024px) 760px, 100vw" src={fileUrl(article.coverImageId)} alt={article.coverImageAlt || article.title} className="object-cover" /></div>
+                <div className="relative aspect-[16/9] overflow-hidden rounded-[var(--radius-xs)]"><Image fill sizes="(min-width: 1024px) 760px, 100vw" src={fileUrl(article.coverImageId)} alt={article.coverImageAlt || article.title} className="object-cover" /></div>
                 {article.coverImageAlt ? <figcaption className="text-sm text-[var(--text-body)]">{article.coverImageAlt}</figcaption> : null}
               </figure>
             ) : null}
@@ -124,7 +124,7 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath 
 
             {article.bodyBlocks.map(block => {
               if (block.type === "image" && block.imageId) {
-                return <figure key={block.id} className="space-y-2"><Image unoptimized width={1200} height={675} sizes="(min-width: 1024px) 760px, 100vw" src={fileUrl(block.imageId)} alt={block.imageAlt || ""} className="h-auto w-full rounded-[var(--radius-xs)]" /><figcaption className="text-sm text-[var(--text-body)]">{block.imageAlt}</figcaption></figure>;
+                return <figure key={block.id} className="space-y-2"><Image width={1200} height={675} sizes="(min-width: 1024px) 760px, 100vw" src={fileUrl(block.imageId)} alt={block.imageAlt || ""} className="h-auto w-full rounded-[var(--radius-xs)]" /><figcaption className="text-sm text-[var(--text-body)]">{block.imageAlt}</figcaption></figure>;
               }
               if (block.type === "business-list") {
                 const businesses = (block.businessIds ?? []).map(id => businessById.get(id)).filter((item): item is NonNullable<typeof item> => Boolean(item));
@@ -161,7 +161,7 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath 
               <section className="space-y-4">
                 <h2 className="text-2xl font-black">مقاله‌های پیشنهادی</h2>
                 <div className="grid gap-5 md:grid-cols-3">
-                  {relatedArticles.map(item => <ArticleCard key={item.id} variant="variant3" className="max-w-none" article={{ id: item.id, title: item.title, image: item.coverImageId ? fileUrl(item.coverImageId) : "/design/home/biz-3.png", date: new Date(item.publishedAt).toLocaleDateString("fa-IR", { timeZone: "Asia/Tehran" }), href: articlePath(item.slug) }} />)}
+                  {relatedArticles.map(item => <ArticleCard key={item.id} variant="variant3" className="max-w-none" article={{ id: item.id, title: item.title, image: item.coverImageId ? fileUrl(item.coverImageId) : "/design/home/biz-3.webp", date: new Date(item.publishedAt).toLocaleDateString("fa-IR", { timeZone: "Asia/Tehran" }), href: articlePath(item.slug) }} />)}
                 </div>
               </section>
             ) : null}

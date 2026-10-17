@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -63,8 +64,7 @@ export function DocumentReviewCard({ document, businessId }: { document: Busines
 
   return (
     <div className="border border-neutral-200 rounded-lg overflow-hidden">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={fileUrl(document.fileId)} alt={DOC_TYPE_LABEL[document.type] ?? document.type} className="w-full h-40 object-cover bg-neutral-100" />
+      <Image unoptimized src={fileUrl(document.fileId)} alt={DOC_TYPE_LABEL[document.type] ?? document.type} width={640} height={320} sizes="(min-width: 768px) 50vw, 100vw" className="w-full h-40 object-cover bg-neutral-100" />
 
       <div className="p-3">
         <div className="flex items-center justify-between mb-2">

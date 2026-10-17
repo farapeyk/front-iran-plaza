@@ -1,10 +1,11 @@
 "use client"
+import Image from "next/image";
 
 import { Link } from "@/design/navigation"
 import { cn } from "@/design/lib/utils"
 import { buttonVariants } from "@/design/components/ui/button-variants"
 const addIcon = "/design/icons/add.svg"
-const vipBadgeLg = "/design/home/vip-badge-lg.png"
+const vipBadgeLg = "/design/home/vip-badge-lg.webp"
 
 const benefits = [
   "نمایش به هزاران کاربر فعال",
@@ -52,13 +53,13 @@ function FreeRegistrationPromo({ className }: { className?: string }) {
               "gap-2 bg-secondary-300 text-[var(--text-title)] hover:bg-secondary-400"
             )}
           >
-            <img alt="" className="size-6" height={24} src={addIcon} width={24} />
+            <Image alt="" className="size-6" height={24} src={addIcon} width={24} />
             ثبت نام رایگان
           </Link>
         </div>
 
         <div className="relative flex w-full max-w-md flex-col justify-center gap-[var(--xs)] rounded-[var(--radius-xs)] border border-[var(--opacity-light-24)] p-[var(--2xl)] lg:w-[400px] lg:shrink-0">
-          <img
+          <Image
             alt="VIP"
             className="absolute -bottom-4 end-4 h-16 w-14 object-cover lg:-top-5 lg:bottom-auto lg:end-6 lg:h-20 lg:w-[72px]"
             height={80}

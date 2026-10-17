@@ -6,7 +6,7 @@ import { Link } from "@/design/navigation";
 import type { ContentCategory, PublicArticleListResponse } from "@/features/content/types";
 import { articlePath, categoryPath } from "@/features/content/lib/public-paths";
 
-const fallbackImage = "/design/home/biz-3.png";
+const fallbackImage = "/design/home/biz-3.webp";
 const imageUrl = (id: string | null) => id ? `/api/backend/files/${encodeURIComponent(id)}` : fallbackImage;
 
 export function ArticlesLivePage({

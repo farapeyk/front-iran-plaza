@@ -1,9 +1,11 @@
 "use client";
+import Image from "next/image";
 import { useProfileBusy } from "./onboarding-context";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Trash2, UploadCloud, Video } from "lucide-react";
+import { ImageEditor } from "@/design/components/image-editor";
 import { uploadFileAction } from "@/features/business/actions/upload-file.action";
 import { addGalleryImageAction, removeGalleryImageAction } from "@/features/business/actions/gallery.action";
 import { updateBusinessProfileAction } from "@/features/business/actions/update-business-profile.action";
@@ -19,6 +21,7 @@ export function GalleryManager({ businessId, initialImages, initialIntroVideoId 
   const [introVideoId, setIntroVideoId] = useState(initialIntroVideoId);
   const [isUploadingImage, startImageUpload] = useTransition();
   const [isUploadingVideo, setIsUploadingVideo] = useState(false);
+  const [imageToEdit, setImageToEdit] = useState<File | null>(null);
   useProfileBusy(isUploadingImage || isUploadingVideo);
 
   function handleAddImage(file: File | null) {
@@ -27,24 +30,40 @@ export function GalleryManager({ businessId, initialImages, initialIntroVideoId 
       toast.error("حجم تصویر نباید بیشتر از ۲۰ مگابایت باشد");
       return;
     }
-    startImageUpload(async () => {
-      const formData = new FormData();
-      formData.append("file", file);
-      const uploadResult = await uploadFileAction(formData);
-      if (!uploadResult.success) {
-        toast.error(uploadResult.message);
-        return;
-      }
+    return new Promise<void>((resolve) => {
+      startImageUpload(async () => {
+        try {
+          const formData = new FormData();
+          formData.append("file", file);
+          const uploadResult = await uploadFileAction(formData);
+          if (!uploadResult.success) {
+            toast.error(uploadResult.message);
+            return;
+          }
 
-      const addResult = await addGalleryImageAction(businessId, uploadResult.fileId);
-      if (!addResult.success) {
-        toast.error(addResult.message);
-        return;
-      }
+          const addResult = await addGalleryImageAction(businessId, uploadResult.fileId);
+          if (!addResult.success) {
+            toast.error(addResult.message);
+            return;
+          }
 
-      setImages((prev) => [...prev, addResult.image]);
-      toast.success("تصویر اضافه شد");
+          setImages((prev) => [...prev, addResult.image]);
+          setImageToEdit(null);
+          toast.success("تصویر اضافه شد");
+        } finally {
+          resolve();
+        }
+      });
     });
+  }
+
+  function selectGalleryImage(file: File | null) {
+    if (!file) return;
+    if (isFileTooLarge(file, 20)) {
+      toast.error("حجم تصویر نباید بیشتر از ۲۰ مگابایت باشد");
+      return;
+    }
+    setImageToEdit(file);
   }
 
   function handleRemoveImage(imageId: string) {
@@ -107,8 +126,7 @@ export function GalleryManager({ businessId, initialImages, initialIntroVideoId 
         <div className="grid grid-cols-3 gap-2">
           {images.map((img) => (
             <div key={img.id} className="relative aspect-square rounded-lg overflow-hidden border border-neutral-200">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={fileUrl(img.fileId)} alt={img.title ?? "تصویر گالری"} className="w-full h-full object-cover" />
+              <Image unoptimized src={fileUrl(img.fileId)} alt={img.title ?? "تصویر گالری"} width={320} height={320} sizes="(min-width: 768px) 33vw, 33vw" className="w-full h-full object-cover" />
               <button onClick={() => handleRemoveImage(img.id)} disabled={isUploadingImage} className="absolute top-1 left-1 bg-white/90 rounded-full p-1 text-red-600">
                 <Trash2 size={14} />
               </button>
@@ -116,12 +134,15 @@ export function GalleryManager({ businessId, initialImages, initialIntroVideoId 
           ))}
 
           <label className="aspect-square rounded-lg border-2 border-dashed border-neutral-300 flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-neutral-50">
-            <input type="file" accept="image/*" className="hidden" onChange={(e) => handleAddImage(e.target.files?.[0] ?? null)} disabled={isUploadingImage} />
+            <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => { selectGalleryImage(e.target.files?.[0] ?? null); e.currentTarget.value = ""; }} disabled={isUploadingImage} />
             <UploadCloud className="text-neutral-400" size={18} />
             <span className="text-xs text-neutral-500">افزودن</span>
           </label>
         </div>
+        <p className="mt-3 text-xs text-neutral-500">هر تصویر را قبل از آپلود می‌توانید با قاب دلخواه برش دهید و پیش‌نمایش کنید.</p>
       </div>
+
+      <ImageEditor file={imageToEdit} title="تنظیم تصویر گالری" initialAspect="landscape" maxOutputWidth={1920} onCancel={()=>setImageToEdit(null)} onConfirm={handleAddImage} />
     </div>
   );
 }

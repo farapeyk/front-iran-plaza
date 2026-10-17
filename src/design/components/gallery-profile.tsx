@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { galleryProfileDefaults, type GalleryItem } from "@/design/data/gallery"
 import { cn } from "@/design/lib/utils"
@@ -46,9 +47,11 @@ function GalleryProfile({
               isLast && "rounded-e-[var(--radius-xs)]"
             )}
           >
-            <img
+            <Image
               alt=""
               className="absolute inset-0 size-full object-cover"
+              fill
+              sizes="(min-width: 1024px) 40vw, 60vw"
               src={item.src}
             />
             {item.isVideo ? (

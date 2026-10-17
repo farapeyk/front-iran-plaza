@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 const userBold = "/design/icons/user-bold.svg"
@@ -56,9 +57,9 @@ function UserAvatar({
       )}
     >
       {src ? (
-        <img alt={alt} className="size-full object-cover" src={src} />
+        <Image alt={alt} className="size-full object-cover" src={src} width={size} height={size} sizes={`${size}px`} unoptimized />
       ) : (
-        <img
+        <Image
           alt=""
           className={cn(dims.icon, color === "opacity-dark" || color === "white-neutral" ? "opacity-70" : "brightness-0 invert")}
           height={24}

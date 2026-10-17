@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useState } from "react"
 import { Link, useNavigate } from "@/design/navigation"
@@ -49,7 +50,7 @@ function DesktopBusinessesCategory({
             : "border border-[var(--opacity-dark-16)] bg-[var(--surface)] text-[var(--text-body)]"
         )}
       >
-        <img
+        <Image
           alt=""
           className={cn("size-6 transition-transform", open && "rotate-180")}
           height={24}
@@ -69,7 +70,7 @@ function DesktopBusinessesCategory({
                 className="flex items-center gap-1 text-sm font-bold text-primary-500"
                 onClick={() => setOpen(false)}
               >
-                <img alt="" className="size-4" height={16} src={arrowLeft} width={16} />
+                <Image alt="" className="size-4" height={16} src={arrowLeft} width={16} />
                 همه
               </Link>
               <p className="text-lg font-bold text-primary-700">{current?.label??'دسته‌بندی‌ها'}</p>
@@ -109,7 +110,7 @@ function DesktopBusinessesCategory({
                     <span className="absolute -start-1 top-1/2 size-0 -translate-y-1/2 border-y-[8px] border-e-[10px] border-y-transparent border-e-primary-700" />
                   ) : null}
                   <span className="min-w-0 flex-1 text-sm font-bold">{cat.label}</span>
-                  <img
+                  <Image
                     alt=""
                     className={cn("size-6 shrink-0", isActive && "brightness-0 invert")}
                     height={24}

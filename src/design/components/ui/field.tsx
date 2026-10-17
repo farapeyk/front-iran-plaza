@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import * as React from "react"
 import { cn } from "@/design/lib/utils"
@@ -48,7 +49,7 @@ function Field({
       <div className="relative">
         {locked ? (
           <span className="pointer-events-none absolute start-4 top-1/2 size-6 -translate-y-1/2 overflow-clip">
-            <img alt="" className="size-full" height={24} src={lockIcon} width={24} />
+            <Image alt="" className="size-full" height={24} src={lockIcon} width={24} />
           </span>
         ) : null}
         <Input
@@ -69,7 +70,7 @@ function Field({
         >
           <span>{error}</span>
           <span className="size-6 shrink-0 overflow-clip">
-            <img
+            <Image
               alt=""
               className="size-full"
               height={24}

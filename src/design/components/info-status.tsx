@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 const tickCircle = "/design/icons/tick-circle.svg"
@@ -56,7 +57,7 @@ function InfoStatus({
       >
         {message ?? styles.message}
       </p>
-      <img
+      <Image
         alt=""
         className="size-6 shrink-0"
         height={24}

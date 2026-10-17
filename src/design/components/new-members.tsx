@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useNewMembers } from "@/design/api/catalog"
 import { useRef } from "react"
@@ -47,7 +48,7 @@ function NewMembers({ className, title = "عضوهای جدید ما" }: { class
                 "border-[var(--opacity-dark-16)] bg-transparent"
               )}
             >
-              <img alt="" className="size-6" height={24} src={arrowRight} width={24} />
+              <Image alt="" className="size-6" height={24} src={arrowRight} width={24} />
             </button>
             <button
               type="button"
@@ -58,7 +59,7 @@ function NewMembers({ className, title = "عضوهای جدید ما" }: { class
                 "border-[var(--opacity-dark-16)] bg-transparent"
               )}
             >
-              <img alt="" className="size-6" height={24} src={arrowLeft} width={24} />
+              <Image alt="" className="size-6" height={24} src={arrowLeft} width={24} />
             </button>
           </div>
         </div>

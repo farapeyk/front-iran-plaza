@@ -16,6 +16,7 @@ export async function validateUpload(formData: FormData): Promise<string | null>
     'image/webp': ascii(0,4) === 'RIFF' && ascii(8,12) === 'WEBP',
     'image/bmp': ascii(0,2) === 'BM',
     'image/avif': ascii(4,8) === 'ftyp' && ['avif','avis'].includes(ascii(8,12)),
+    'image/tiff': starts(0x49,0x49,0x2a,0x00) || starts(0x4d,0x4d,0x00,0x2a),
     'video/mp4': ascii(4,8) === 'ftyp' && ['isom','iso2','mp41','mp42','avc1','M4V '].includes(ascii(8,12)),
     'video/quicktime': ascii(4,8) === 'ftyp' && ascii(8,12) === 'qt  ',
     'video/webm': starts(0x1a,0x45,0xdf,0xa3),

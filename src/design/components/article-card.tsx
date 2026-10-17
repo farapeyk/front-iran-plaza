@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { Link } from "@/design/navigation"
 import { cn } from "@/design/lib/utils"
@@ -31,7 +32,7 @@ function Meta({ date, className }: { date: string; className?: string }) {
         className
       )}
     >
-      <img alt="" className="size-4 shrink-0" height={16} src={noteIcon} width={16} />
+      <Image alt="" className="size-4 shrink-0" height={16} src={noteIcon} width={16} />
       <p className="text-sm text-[var(--text-body)]">{date}</p>
     </div>
   )
@@ -64,7 +65,7 @@ function ArticleCard({
       >
         {/* Image on the start (right) — Figma x=225 */}
         <div className="size-[120px] shrink-0 overflow-hidden rounded-[var(--radius-xs)] border border-[var(--opacity-dark-8)]">
-          <img alt="" className="size-full object-cover" src={article.image} />
+          <Image alt="" className="size-full object-cover" src={article.image} width={240} height={240} sizes="120px" />
         </div>
         <div className="min-w-0 flex-1 space-y-[var(--sm)]">
           <h3 className={cn(titleClass, "line-clamp-3")}>{article.title}</h3>
@@ -86,7 +87,7 @@ function ArticleCard({
         )}
       >
         <div className="h-[200px] w-full overflow-hidden rounded-[var(--radius-xs)] border border-[var(--opacity-dark-8)] lg:h-[250px]">
-          <img alt="" className="size-full object-cover" src={article.image} />
+          <Image alt="" className="size-full object-cover" src={article.image} width={758} height={500} sizes="(min-width: 1024px) 379px, 100vw" />
         </div>
         <div className="flex w-full flex-col items-stretch gap-2">
           <h3 className={cn(titleClass, "w-full")}>{article.title}</h3>
@@ -108,7 +109,7 @@ function ArticleCard({
       )}
     >
       <div className="h-40 w-full overflow-hidden rounded-[var(--radius-xs)] border border-[var(--opacity-dark-8)]">
-        <img alt="" className="size-full object-cover" src={article.image} />
+        <Image alt="" className="size-full object-cover" src={article.image} width={456} height={320} sizes="228px" />
       </div>
       <div className="flex min-h-0 flex-1 w-full flex-col items-stretch justify-between">
         <h3 className={cn(titleClass, "line-clamp-3 w-full")}>{article.title}</h3>

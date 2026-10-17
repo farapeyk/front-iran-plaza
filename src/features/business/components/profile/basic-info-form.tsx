@@ -1,10 +1,12 @@
 "use client";
+import Image from "next/image";
 import { useProfileBusy } from "./onboarding-context";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/design/components/ui/button";
 import { Input } from "@/design/components/ui/input";
+import { ImageEditor } from "@/design/components/image-editor";
 import { updateBusinessProfileAction } from "@/features/business/actions/update-business-profile.action";
 import { uploadFileAction } from "@/features/business/actions/upload-file.action";
 import { isFileTooLarge } from "@/lib/validate-file";
@@ -28,6 +30,7 @@ export function BasicInfoForm({ businessId, initialName, initialBio, initialLogo
   const [bio, setBio] = useState(initialBio);
   const [logoId, setLogoId] = useState(initialLogoId);
   const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoToEdit, setLogoToEdit] = useState<File | null>(null);
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   useProfileBusy(isPending || isUploadingLogo);
 
@@ -50,6 +53,16 @@ async function handleLogoChange(file: File | null) {
       return;
     }
     setLogoId(result.fileId);
+    setLogoToEdit(null);
+  }
+
+  function selectLogo(file: File | null) {
+    if (!file) return;
+    if (isFileTooLarge(file, 20)) {
+      toast.error("حجم لوگو نباید بیشتر از ۲۰ مگابایت باشد");
+      return;
+    }
+    setLogoToEdit(file);
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -72,11 +85,10 @@ async function handleLogoChange(file: File | null) {
       <div className="space-y-2">
         <label className="text-sm font-medium">لوگو</label>
         <label className="flex items-center gap-3 border border-dashed border-neutral-300 rounded-lg p-3 cursor-pointer hover:bg-neutral-50">
-          <input type="file" accept="image/*" className="hidden" onChange={(e) => handleLogoChange(e.target.files?.[0] ?? null)} />
+          <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => { selectLogo(e.target.files?.[0] ?? null); e.currentTarget.value = ""; }} disabled={isUploadingLogo} />
           <div className="w-14 h-14 rounded-full bg-neutral-100 shrink-0 overflow-hidden flex items-center justify-center text-xs text-neutral-400">
             {logoId ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={`/api/backend/files/${logoId}`} alt="لوگوی فعلی" className="w-full h-full object-cover" />
+              <Image unoptimized src={`/api/backend/files/${logoId}`} alt="لوگوی فعلی" width={56} height={56} sizes="56px" className="w-full h-full object-cover" />
             ) : (
               "بدون لوگو"
             )}
@@ -85,7 +97,10 @@ async function handleLogoChange(file: File | null) {
             {isUploadingLogo ? "در حال آپلود..." : logoFile ? logoFile.name : "برای آپلود یا تغییر لوگو کلیک کنید"}
           </span>
         </label>
+        <p className="text-xs text-neutral-500">بعد از انتخاب تصویر می‌توانید قاب، زوم و برش لوگو را تنظیم کنید.</p>
       </div>
+
+      <ImageEditor file={logoToEdit} title="تنظیم لوگوی کسب‌وکار" initialAspect="square" aspects={["square","original"]} maxOutputWidth={1200} onCancel={()=>setLogoToEdit(null)} onConfirm={handleLogoChange} />
 
       <div className="space-y-2">
         <label className="text-sm font-medium">نام کسب‌وکار</label>

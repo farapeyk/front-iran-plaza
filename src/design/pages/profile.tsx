@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useState } from "react"
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from "@/design/navigation"
@@ -66,7 +67,7 @@ function SelectField({
     <div className="space-y-1">
       <p className="text-right text-lg font-bold text-[var(--input-label)]">{label}</p>
       <label className="flex h-14 w-full items-center gap-[var(--lg)] rounded-[var(--radius-xs)] border border-[var(--input-border)] px-[var(--lg)]">
-        <img alt="" className="size-6" height={24} src={arrowDown} width={24} />
+        <Image alt="" className="size-6" height={24} src={arrowDown} width={24} />
         <select className="h-full w-full appearance-none bg-transparent text-right text-base outline-none">
           <option value="">{placeholder}</option>
           {options.map((o) => (
@@ -189,7 +190,7 @@ function ProfileEditItem({
       {locked ? (
         <span className="shrink-0 text-base text-secondary-950">VIP</span>
       ) : (
-        <img alt="" className="size-4 shrink-0" height={16} src={arrowLeft} width={16} />
+        <Image alt="" className="size-4 shrink-0" height={16} src={arrowLeft} width={16} />
       )}
       <span
         className={cn(
@@ -199,7 +200,7 @@ function ProfileEditItem({
       >
         {title}
       </span>
-      <img
+      <Image
         alt=""
         className={cn("size-6 shrink-0", locked && "opacity-[0.24]")}
         height={24}
@@ -234,7 +235,7 @@ function ProfileStats() {
             </p>
             <div className="flex items-center justify-between gap-2">
               <p className="text-sm text-[var(--text-subtitle)] sm:text-base">{s.title}</p>
-              <img alt="" className="size-4 shrink-0" height={16} src={arrowDown} width={16} />
+              <Image alt="" className="size-4 shrink-0" height={16} src={arrowDown} width={16} />
             </div>
           </div>
           <div
@@ -243,7 +244,7 @@ function ProfileStats() {
               s.iconBg
             )}
           >
-            <img alt="" className="size-5 sm:size-6" height={24} src={s.icon} width={24} />
+            <Image alt="" className="size-5 sm:size-6" height={24} src={s.icon} width={24} />
           </div>
         </div>
       ))}
@@ -270,14 +271,14 @@ function ProfileEditGrid({ lockedVip }: { lockedVip: boolean }) {
 function ProfileEmptyState() {
   return (
     <div className="flex min-h-[420px] flex-col items-center justify-center gap-[var(--2xl)] rounded-[var(--radius-xs)] border border-[var(--opacity-dark-16)] bg-[var(--surface)] px-[var(--2xl)] py-[var(--5xl)] text-center">
-      <img alt="" className="size-20" height={80} src={notFoundBox} width={80} />
+      <Image alt="" className="size-20" height={80} src={notFoundBox} width={80} />
       <p className="max-w-md text-lg leading-relaxed text-[var(--text-body)]">
         برای داشتن پروفایل، ابتدا باید کسب و کارتان را ثبت و احراز هویت کنید.
       </p>
       <Link to="/business-registration">
         <Button size="lg" className="gap-2">
           ثبت رایگان کسب و کار
-          <img alt="" className="size-6 brightness-0 invert" height={24} src={addIcon} width={24} />
+          <Image alt="" className="size-6 brightness-0 invert" height={24} src={addIcon} width={24} />
         </Button>
       </Link>
     </div>
@@ -300,7 +301,7 @@ function ProfilePage() {
         <Link to="/businesses/1">
           <Button variant="outline" className="gap-2 border-[var(--border-default)]">
             نمایش پروفایل
-            <img alt="" className="size-6" height={24} src={eyeIcon} width={24} />
+            <Image alt="" className="size-6" height={24} src={eyeIcon} width={24} />
           </Button>
         </Link>
       }
@@ -360,7 +361,7 @@ function UserInfoPage() {
                   seg.round === "none" && "border-x-0"
                 )}
               >
-                <img alt="" className="size-4" height={16} src={arrowDown} width={16} />
+                <Image alt="" className="size-4" height={16} src={arrowDown} width={16} />
                 <select className="h-full w-full appearance-none bg-transparent text-right text-base outline-none">
                   <option value="">{seg.ph}</option>
                   {seg.opts.map((o) => (
@@ -468,7 +469,7 @@ function SubscriptionPage() {
                 key={f}
                 className="flex items-center justify-start gap-2 text-start text-sm text-[var(--text-title)] sm:text-base"
               >
-                <img alt="" className="size-5 shrink-0 sm:size-6" height={24} src={awardIcon} width={24} />
+                <Image alt="" className="size-5 shrink-0 sm:size-6" height={24} src={awardIcon} width={24} />
                 <span>{f}</span>
               </li>
             ))}
@@ -479,7 +480,7 @@ function SubscriptionPage() {
               <span className="text-primary-500">رایگان</span>
             </div>
             <Button size="lg" className="w-full gap-2">
-              <img alt="" className="size-6" height={24} src={addIcon} width={24} />
+              <Image alt="" className="size-6" height={24} src={addIcon} width={24} />
               فعال‌سازی رایگان
             </Button>
           </div>
@@ -544,7 +545,7 @@ function PaymentsPage() {
       <div className="space-y-4 sm:space-y-5">
         {empty ? (
           <div className="flex min-h-[320px] flex-col items-center justify-center gap-4 px-4 text-center sm:min-h-[400px]">
-            <img
+            <Image
               alt=""
               className="h-16 w-[82px] sm:h-20 sm:w-[102px]"
               height={80}
@@ -633,7 +634,7 @@ function SupportPage() {
           <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <a href="tel:09174550108">
               <Button className="w-full gap-2 sm:w-auto">
-                <img alt="" className="size-5" height={20} src={callIcon} width={20} />
+                <Image alt="" className="size-5" height={20} src={callIcon} width={20} />
                 ۰۹۱۷۴۵۵۰۱۰۸
               </Button>
             </a>
@@ -671,7 +672,7 @@ function SupportPage() {
                     <span className="min-w-0 flex-1 text-base font-bold text-[var(--text-title)]">
                       {item.q}
                     </span>
-                    <img
+                    <Image
                       alt=""
                       className={cn(
                         "size-5 shrink-0 transition-transform",
@@ -739,7 +740,7 @@ function SaveButton() {
 function EmptyEditState({ message }: { message: string }) {
   return (
     <div className="flex min-h-[240px] flex-col items-center justify-center gap-[var(--lg)] rounded-[var(--radius-xs)] border border-dashed border-[var(--opacity-dark-16)] bg-[var(--surface)] px-[var(--2xl)] py-[var(--5xl)] text-center">
-      <img alt="" className="size-16" height={64} src={searchNotFound} width={64} />
+      <Image alt="" className="size-16" height={64} src={searchNotFound} width={64} />
       <p className="text-base text-[var(--text-body)]">{message}</p>
     </div>
   )
@@ -800,7 +801,7 @@ function ProfileEditForm({ section }: { section: ProfileEditKey }) {
                 aria-label="تغییر لوگو"
                 className="absolute -bottom-1 -start-1 flex size-8 items-center justify-center rounded-full border border-[var(--opacity-dark-16)] bg-[var(--surface)]"
               >
-                <img alt="" className="size-4" height={16} src={galleryIcon} width={16} />
+                <Image alt="" className="size-4" height={16} src={galleryIcon} width={16} />
               </button>
             </div>
             <div className="min-w-0 flex-1 space-y-[var(--2xl)]">
@@ -842,7 +843,7 @@ function ProfileEditForm({ section }: { section: ProfileEditKey }) {
               aria-label="افزودن شماره"
               className="flex size-12 items-center justify-center rounded-full border border-[var(--opacity-dark-16)]"
             >
-              <img alt="" className="size-6" height={24} src={addIcon} width={24} />
+              <Image alt="" className="size-6" height={24} src={addIcon} width={24} />
             </button>
           </div>
           <Field label="واتساپ" placeholder="شماره واتساپ خود را وارد کنید" />
@@ -883,7 +884,7 @@ function ProfileEditForm({ section }: { section: ProfileEditKey }) {
               type="button"
               className="flex h-32 w-full flex-col items-center justify-center gap-2 rounded-[var(--radius-xs)] border border-dashed border-[var(--opacity-dark-16)] bg-[var(--surface)] text-sm text-[var(--text-body)]"
             >
-              <img alt="" className="size-6" height={24} src={addIcon} width={24} />
+              <Image alt="" className="size-6" height={24} src={addIcon} width={24} />
               افزودن ویدیو
             </button>
           </div>
@@ -896,7 +897,7 @@ function ProfileEditForm({ section }: { section: ProfileEditKey }) {
               type="button"
               className="flex h-32 w-full flex-col items-center justify-center gap-2 rounded-[var(--radius-xs)] border border-dashed border-[var(--opacity-dark-16)] bg-[var(--surface)] text-sm text-[var(--text-body)]"
             >
-              <img alt="" className="size-6" height={24} src={addIcon} width={24} />
+              <Image alt="" className="size-6" height={24} src={addIcon} width={24} />
               افزودن تصویر
             </button>
           </div>
@@ -920,7 +921,7 @@ function ProfileEditForm({ section }: { section: ProfileEditKey }) {
                 onClick={() => setSocialOpen(true)}
               >
                 افزودن شبکه اجتماعی
-                <img alt="" className="size-5" height={20} src={addIcon} width={20} />
+                <Image alt="" className="size-5" height={20} src={addIcon} width={20} />
               </Button>
             </div>
             <div className="grid gap-[var(--lg)] sm:grid-cols-2">
@@ -984,7 +985,7 @@ function ProfileEditForm({ section }: { section: ProfileEditKey }) {
                       setServices((prev) => prev.filter((_, idx) => idx !== i))
                     }
                   >
-                    <img alt="" className="size-6" height={24} src={trashIcon} width={24} />
+                    <Image alt="" className="size-6" height={24} src={trashIcon} width={24} />
                   </Button>
                 ) : null}
               </div>
@@ -998,7 +999,7 @@ function ProfileEditForm({ section }: { section: ProfileEditKey }) {
             onClick={() => setServices((prev) => [...prev, ""])}
           >
             افزودن خدمت
-            <img alt="" className="size-6" height={24} src={addIcon} width={24} />
+            <Image alt="" className="size-6" height={24} src={addIcon} width={24} />
           </Button>
           <SaveButton />
         </form>
@@ -1025,7 +1026,7 @@ function ProfileEditForm({ section }: { section: ProfileEditKey }) {
                   onClick={() => navigate("/profile/edit/products/new")}
                 >
                   افزودن محصول
-                  <img alt="" className="size-5" height={20} src={addIcon} width={20} />
+                  <Image alt="" className="size-5" height={20} src={addIcon} width={20} />
                 </Button>
                 <Button
                   type="button"
@@ -1035,7 +1036,7 @@ function ProfileEditForm({ section }: { section: ProfileEditKey }) {
                   onClick={() => setCategoryOpen(true)}
                 >
                   افزودن دسته
-                  <img alt="" className="size-5" height={20} src={addIcon} width={20} />
+                  <Image alt="" className="size-5" height={20} src={addIcon} width={20} />
                 </Button>
               </div>
               <div className="flex flex-wrap justify-start gap-2">
@@ -1086,7 +1087,7 @@ function ProfileEditForm({ section }: { section: ProfileEditKey }) {
                       aria-label="حذف محصول"
                       onClick={() => setDeleteProductId(p.id)}
                     >
-                      <img
+                      <Image
                         alt=""
                         className="size-6"
                         height={24}
@@ -1153,7 +1154,7 @@ function ProfileEditForm({ section }: { section: ProfileEditKey }) {
           <div className="flex justify-start">
             <Button type="button" variant="outline" size="sm" className="gap-2">
               افزودن ویس
-              <img alt="" className="size-5" height={20} src={addIcon} width={20} />
+              <Image alt="" className="size-5" height={20} src={addIcon} width={20} />
             </Button>
           </div>
           <TextAreaField
@@ -1190,14 +1191,14 @@ function ProfileEditForm({ section }: { section: ProfileEditKey }) {
                 <p className="text-xl font-bold text-[var(--text-title)]">{day}</p>
                 <div className="flex items-center gap-[var(--lg)]">
                   <label className="flex h-14 min-w-0 flex-1 items-center gap-[var(--lg)] rounded-[var(--radius-xs)] border border-[var(--input-border)] px-[var(--lg)]">
-                    <img alt="" className="size-4" height={16} src={arrowDown} width={16} />
+                    <Image alt="" className="size-4" height={16} src={arrowDown} width={16} />
                     <span className="flex-1 text-right text-base text-[var(--input-placeholder)]">
                       ساعت
                     </span>
                   </label>
                   <span className="text-base text-[var(--text-body)]">تا</span>
                   <label className="flex h-14 min-w-0 flex-1 items-center gap-[var(--lg)] rounded-[var(--radius-xs)] border border-[var(--input-border)] px-[var(--lg)]">
-                    <img alt="" className="size-4" height={16} src={arrowDown} width={16} />
+                    <Image alt="" className="size-4" height={16} src={arrowDown} width={16} />
                     <span className="flex-1 text-right text-base text-[var(--input-placeholder)]">
                       ساعت
                     </span>
@@ -1206,14 +1207,14 @@ function ProfileEditForm({ section }: { section: ProfileEditKey }) {
                 {doubleShift ? (
                   <div className="flex items-center gap-[var(--lg)]">
                     <label className="flex h-14 min-w-0 flex-1 items-center gap-[var(--lg)] rounded-[var(--radius-xs)] border border-[var(--input-border)] px-[var(--lg)]">
-                      <img alt="" className="size-4" height={16} src={arrowDown} width={16} />
+                      <Image alt="" className="size-4" height={16} src={arrowDown} width={16} />
                       <span className="flex-1 text-right text-base text-[var(--input-placeholder)]">
                         ساعت
                       </span>
                     </label>
                     <span className="text-base text-[var(--text-body)]">تا</span>
                     <label className="flex h-14 min-w-0 flex-1 items-center gap-[var(--lg)] rounded-[var(--radius-xs)] border border-[var(--input-border)] px-[var(--lg)]">
-                      <img alt="" className="size-4" height={16} src={arrowDown} width={16} />
+                      <Image alt="" className="size-4" height={16} src={arrowDown} width={16} />
                       <span className="flex-1 text-right text-base text-[var(--input-placeholder)]">
                         ساعت
                       </span>
@@ -1296,7 +1297,7 @@ function AddProductPage() {
             type="button"
             className="flex size-[100px] flex-col items-center justify-center gap-2 rounded-[var(--radius-xs)] border border-[var(--opacity-dark-16)]"
           >
-            <img alt="" className="size-6" height={24} src={addIcon} width={24} />
+            <Image alt="" className="size-6" height={24} src={addIcon} width={24} />
             <span className="text-sm font-bold text-[var(--text-body)]">عکس محصول</span>
           </button>
           <Field

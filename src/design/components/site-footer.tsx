@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { Link } from "@/design/navigation"
 import type { ReactNode } from "react"
@@ -10,8 +11,8 @@ import { FooterSocialIcon } from "@/design/components/footer-social-icon"
 import { useCategories } from '@/design/api/catalog'
 const callIcon = "/design/icons/call.svg"
 const arrowDown = "/design/icons/arrow-down.svg"
-const enamad = "/design/shared/enamad.png"
-const samandehi = "/design/shared/samandehi.png"
+const enamad = "/design/shared/enamad.webp"
+const samandehi = "/design/shared/samandehi.webp"
 
 const iranPlazaLinks = [
   { label: "خانه", to: "/" },
@@ -65,7 +66,7 @@ function FooterAccordion({
             open && "rotate-180"
           )}
         >
-          <img alt="" className="size-full" height={24} src={arrowDown} width={24} />
+          <Image alt="" className="size-full" height={24} src={arrowDown} width={24} />
         </span>
       </button>
       {open ? <div className="space-y-3 pb-4">{children}</div> : null}
@@ -124,7 +125,7 @@ function SiteFooter({ className }: { className?: string }) {
               >
                 پشتیبانی
                 <span className="size-4 overflow-clip">
-                  <img alt="" className="size-full" height={16} src={callIcon} width={16} />
+                  <Image alt="" className="size-full" height={16} src={callIcon} width={16} />
                 </span>
               </Link>
             </div>
@@ -154,10 +155,10 @@ function SiteFooter({ className }: { className?: string }) {
         <div className="mt-12 flex items-start justify-between gap-8 border-t border-[var(--opacity-light-8)] pt-8">
           <div className="flex gap-4">
             <div className="flex size-24 items-center justify-center rounded border border-[var(--opacity-light-8)] bg-[var(--opacity-light-8)] p-3">
-              <img alt="اینماد" className="max-h-full max-w-full object-contain" src={enamad} />
+              <Image alt="اینماد" className="max-h-full max-w-full object-contain" src={enamad} width={96} height={96} sizes="96px" />
             </div>
             <div className="flex size-24 items-center justify-center rounded border border-[var(--opacity-light-8)] bg-[var(--opacity-light-8)] p-3">
-              <img alt="ساماندهی" className="max-h-full max-w-full object-contain" src={samandehi} />
+              <Image alt="ساماندهی" className="max-h-full max-w-full object-contain" src={samandehi} width={96} height={96} sizes="96px" />
             </div>
           </div>
           <p className="max-w-2xl text-right text-base leading-relaxed text-secondary-100">
@@ -209,16 +210,16 @@ function SiteFooter({ className }: { className?: string }) {
             <Link to="/dashboard/support" className="inline-flex items-center gap-2 text-lg text-secondary-100">
               پشتیبانی
               <span className="size-4 overflow-clip">
-                <img alt="" className="size-full" height={16} src={callIcon} width={16} />
+                <Image alt="" className="size-full" height={16} src={callIcon} width={16} />
               </span>
             </Link>
           </div>
           <div className="flex gap-4">
             <div className="flex h-28 flex-1 items-center justify-center rounded border border-[var(--opacity-light-8)] p-4">
-              <img alt="اینماد" className="max-h-full object-contain" src={enamad} />
+              <Image alt="اینماد" className="max-h-full object-contain" src={enamad} width={112} height={112} sizes="50vw" />
             </div>
             <div className="flex h-28 flex-1 items-center justify-center rounded border border-[var(--opacity-light-8)] p-4">
-              <img alt="ساماندهی" className="max-h-full object-contain" src={samandehi} />
+              <Image alt="ساماندهی" className="max-h-full object-contain" src={samandehi} width={112} height={112} sizes="50vw" />
             </div>
           </div>
         </div>

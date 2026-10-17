@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 const arrowLeft = "/design/icons/arrow-left.svg"
@@ -37,7 +38,7 @@ function CategoryItem({
       )}
     >
       {!grouped ? (
-        <img alt="" className="size-4 shrink-0" height={16} src={arrowLeft} width={16} />
+        <Image alt="" className="size-4 shrink-0" height={16} src={arrowLeft} width={16} />
       ) : null}
       <span
         className={cn(
@@ -50,7 +51,7 @@ function CategoryItem({
         {label}
       </span>
       {grouped ? (
-        <img
+        <Image
           alt=""
           className={cn("size-4 shrink-0", active && "opacity-90")}
           height={16}

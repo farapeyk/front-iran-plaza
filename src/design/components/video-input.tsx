@@ -1,10 +1,11 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 const addCircle = "/design/icons/add-circle.svg"
 const trashIcon = "/design/icons/trash.svg"
 const playFill = "/design/icons/play-fill.svg"
-const videoThumb = "/design/video-thumb.png"
+const videoThumb = "/design/video-thumb.webp"
 
 type VideoInputProps = {
   className?: string
@@ -48,10 +49,13 @@ function VideoInput({
       >
         {filled ? (
           <>
-            <img
+            <Image
               alt=""
               className="absolute inset-0 size-full object-cover"
+              height={234}
+              sizes="165px"
               src={thumbnailSrc}
+              width={329}
             />
             <button
               type="button"
@@ -59,7 +63,7 @@ function VideoInput({
               onClick={onDelete}
               className="absolute start-1/2 top-1/2 flex size-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--opacity-dark-56)] p-2.5"
             >
-              <img
+              <Image
                 alt=""
                 className="size-6 brightness-0 invert"
                 height={24}
@@ -67,7 +71,7 @@ function VideoInput({
                 width={24}
               />
             </button>
-            <img
+            <Image
               alt=""
               className="absolute bottom-3 start-3 size-4 brightness-0 invert"
               height={16}
@@ -82,7 +86,7 @@ function VideoInput({
             onClick={onAdd}
             className="absolute inset-0 flex items-center justify-center"
           >
-            <img alt="" className="size-8" height={32} src={addCircle} width={32} />
+            <Image alt="" className="size-8" height={32} src={addCircle} width={32} />
           </button>
         )}
       </div>

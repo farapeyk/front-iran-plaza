@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 import { Button } from "@/design/components/ui/button"
@@ -39,7 +40,7 @@ function Voice({
         onClick={onAdd}
       >
         افزودن ویس
-        <img alt="" className="size-6" height={24} src={addIcon} width={24} />
+        <Image alt="" className="size-6" height={24} src={addIcon} width={24} />
       </Button>
     )
   }
@@ -59,7 +60,7 @@ function Voice({
         onClick={onPlay}
         className="flex size-8 shrink-0 items-center justify-center rounded-full"
       >
-        <img alt="" className="size-4" height={16} src={playFill} width={16} />
+        <Image alt="" className="size-4" height={16} src={playFill} width={16} />
       </button>
 
       <div className="flex h-full min-w-0 flex-1 items-center gap-[var(--lg)]">
@@ -81,7 +82,7 @@ function Voice({
         onClick={onDelete}
         className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[var(--opacity-dark-8)] p-2.5"
       >
-        <img alt="" className="size-6" height={24} src={trashIcon} width={24} />
+        <Image alt="" className="size-6" height={24} src={trashIcon} width={24} />
       </button>
     </div>
   )

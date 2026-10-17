@@ -1,10 +1,11 @@
 "use client"
+import Image from "next/image";
 
 import { Link } from "@/design/navigation"
 import { cn } from "@/design/lib/utils"
-const logoPrimary = "/design/brand/logo-primary.png"
-const logoWhite = "/design/brand/logo-white.png"
-const logoSecondary = "/design/brand/logo-secondary.png"
+const logoPrimary = "/design/brand/logo-primary.webp"
+const logoWhite = "/design/brand/logo-white.webp"
+const logoSecondary = "/design/brand/logo-secondary.webp"
 
 const logos = {
   primary: logoPrimary,
@@ -20,7 +21,7 @@ type LogoProps = {
 
 function Logo({ variant = "primary", className, to = "/" }: LogoProps) {
   const img = (
-    <img
+    <Image
       alt="Iran Plaza"
       className={cn("h-[22px] w-[115px] object-contain object-right", className)}
       height={22}

@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { Link } from "@/design/navigation"
 import { cn } from "@/design/lib/utils"
@@ -56,7 +57,7 @@ function RegistrationBanner({
             "shrink-0 gap-1 bg-secondary-300 text-[var(--text-title)] hover:bg-secondary-400"
           )}
         >
-          <img alt="" className="size-4" height={16} src={addIcon} width={16} />
+          <Image alt="" className="size-4" height={16} src={addIcon} width={16} />
           ثبت نام
         </Link>
       </div>
@@ -84,7 +85,7 @@ function RegistrationBanner({
         )}
       >
         <span className="size-6 overflow-clip">
-          <img alt="" className="size-full" height={24} src={addIcon} width={24} />
+          <Image alt="" className="size-full" height={24} src={addIcon} width={24} />
         </span>
         ثبت نام رایگان
       </Link>

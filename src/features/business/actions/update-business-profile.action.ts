@@ -33,12 +33,6 @@ export async function updateBusinessProfileAction(
       console.error("[updateBusinessProfileAction] backend rejected:", res.status);
       return { success: false, message: extractErrorMessage(body, `ذخیره‌ی اطلاعات با خطا مواجه شد (کد ${res.status})`) };
     }
-    if (payload.categoryIds) {
-      const saved = await res.json();
-      const expected = payload.categoryIds as string[];
-      const actual = Array.isArray(saved?.categories) ? saved.categories.map((entry: { categoryId?: string }) => entry.categoryId) : [];
-      if (expected.some(id => !actual.includes(id))) return { success: false, message: 'بک‌اند تغییر دسته‌بندی را تأیید نکرد. سایر اطلاعات ممکن است ذخیره شده باشد؛ دوباره کسب‌وکار جدید نسازید.' };
-    }
   } catch (err) {
     console.error("[updateBusinessProfileAction] network error:", err);
     return { success: false, message: "برقراری ارتباط با سرور ممکن نشد" };

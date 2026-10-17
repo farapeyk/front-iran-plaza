@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { Icon } from "@/design/components/icon"
 import { DsShell } from "@/design/pages/design-system/index"
@@ -385,7 +386,7 @@ function DesignIconsPage() {
                 key={icon.name}
                 className="flex flex-col items-center gap-[var(--sm)] rounded-[var(--radius-xs)] border border-[var(--border-default)] bg-[var(--surface)] p-[var(--lg)]"
               >
-                <img alt="" className="size-8" height={32} src={icon.src} width={32} />
+                <Image alt="" className="size-8" height={32} src={icon.src} width={32} />
                 <span className="break-all text-center text-[10px] text-[var(--text-body)]">
                   {icon.name}
                 </span>
@@ -402,7 +403,7 @@ function DesignIconsPage() {
               key={icon.name}
               className="flex flex-col items-center gap-[var(--sm)] rounded-[var(--radius-xs)] border border-[var(--border-default)] bg-[var(--surface)] p-[var(--lg)]"
             >
-              <img alt="" className="size-8" height={32} src={icon.src} width={32} />
+              <Image alt="" className="size-8" height={32} src={icon.src} width={32} />
               <span className="break-all text-center text-[10px] text-[var(--text-body)]">
                 {icon.name}
               </span>

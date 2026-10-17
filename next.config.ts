@@ -12,7 +12,12 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "25mb",
     },
   },
-  allowedDevOrigins: ['45.149.77.64'],
+  images: {
+    // Keep responsive variants in the same format used by the upload pipeline.
+    formats: ["image/webp"],
+    qualities: [90],
+  },
+  allowedDevOrigins: ["45.149.77.64", "192.168.1.196"],
 };
 
 export default nextConfig;

@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useState } from "react"
 import { cn } from "@/design/lib/utils"
@@ -68,7 +69,7 @@ function TableOfContent({
         <span className="text-start text-xl font-bold leading-normal text-[var(--text-title)]">
           {title}
         </span>
-        <img
+        <Image
           alt=""
           className={cn("size-6 shrink-0 transition-transform", open && "rotate-180")}
           height={24}
@@ -85,7 +86,7 @@ function TableOfContent({
                 <span className="min-w-0 flex-1 text-start text-base leading-normal text-[var(--text-title)]">
                   {item.label}
                 </span>
-                <img
+                <Image
                   alt=""
                   className="size-6 shrink-0"
                   height={24}

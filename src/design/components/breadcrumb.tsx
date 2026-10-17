@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { Fragment } from "react"
 import { Link } from "@/design/navigation"
@@ -29,7 +30,7 @@ function Breadcrumb({ className, items }: BreadcrumbProps) {
         return (
           <Fragment key={`${item.label}-${i}`}>
             {i > 0 ? (
-              <img
+              <Image
                 alt=""
                 className="size-4 shrink-0"
                 height={16}

@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 import { UserAvatar } from "@/design/components/user-avatar"
@@ -66,7 +67,7 @@ function Comment({
             className="flex h-8 items-center gap-2 rounded-full border border-[var(--opacity-dark-16)] px-3 text-sm font-bold text-[var(--text-body)]"
           >
             پاسخ
-            <img alt="" className="size-4" height={16} src={undoIcon} width={16} />
+            <Image alt="" className="size-4" height={16} src={undoIcon} width={16} />
           </button>
           <LikeButton type="dislike" pressed={false} />
           <LikeButton type="like" pressed={false} />
@@ -107,7 +108,7 @@ function Comment({
                 className="flex h-10 w-full items-center justify-center gap-2 rounded-full text-base font-bold text-[var(--text-body)]"
               >
                 پاسخ های بیشتر
-                <img alt="" className="size-6" height={24} src={addIcon} width={24} />
+                <Image alt="" className="size-6" height={24} src={addIcon} width={24} />
               </button>
             ) : null}
           </div>

@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 const closeX = "/design/icons/close-x.svg"
@@ -54,7 +55,7 @@ function ModalHeader({
             onClick={onBack}
             className="flex size-12 shrink-0 items-center justify-center rounded-full border border-[var(--opacity-dark-16)]"
           >
-            <img alt="" className="size-6" height={24} src={arrowRight} width={24} />
+            <Image alt="" className="size-6" height={24} src={arrowRight} width={24} />
           </button>
         ) : null}
         <div className="flex w-full flex-col items-start gap-[var(--sm)]">
@@ -108,7 +109,7 @@ function ModalHeader({
             onClick={onClose}
             className="flex size-12 shrink-0 items-center justify-center rounded-full"
           >
-            <img alt="" className="size-6" height={24} src={closeX} width={24} />
+            <Image alt="" className="size-6" height={24} src={closeX} width={24} />
           </button>
         ) : showBack ? (
           <button
@@ -117,7 +118,7 @@ function ModalHeader({
             onClick={onBack}
             className="flex size-12 shrink-0 items-center justify-center rounded-full"
           >
-            <img alt="" className="size-6" height={24} src={arrowRight} width={24} />
+            <Image alt="" className="size-6" height={24} src={arrowRight} width={24} />
           </button>
         ) : (
           <span className="size-12 shrink-0" aria-hidden />
@@ -134,7 +135,7 @@ function ModalHeader({
               {title}
             </p>
             {showIcon && iconSrc ? (
-              <img alt="" className="size-6 shrink-0" height={24} src={iconSrc} width={24} />
+              <Image alt="" className="size-6 shrink-0" height={24} src={iconSrc} width={24} />
             ) : null}
           </div>
         ) : null}
@@ -146,7 +147,7 @@ function ModalHeader({
             onClick={onBack}
             className="flex size-12 shrink-0 items-center justify-center rounded-full"
           >
-            <img alt="" className="size-6" height={24} src={arrowRight} width={24} />
+            <Image alt="" className="size-6" height={24} src={arrowRight} width={24} />
           </button>
         ) : !showClose && !showBack && hasTitle ? (
           <span className="size-12 shrink-0" aria-hidden />

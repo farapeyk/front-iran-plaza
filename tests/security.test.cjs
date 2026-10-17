@@ -172,6 +172,12 @@ test('upload rejects empty, oversized, executable and MIME-spoofed files', async
   assert.ok(await check(new File(['MZ executable'], 'fake.png',{type:'image/png'})));
   assert.ok(await check(new File([new Uint8Array(MAX_UPLOAD_BYTES+1)], 'huge.png',{type:'image/png'})));
   assert.equal(await check(new File([new Uint8Array([137,80,78,71,13,10,26,10,0])], 'image.png',{type:'image/png'})),null);
+  assert.equal(await check(new File([new Uint8Array([255,216,255,224])], 'image.jpg',{type:'image/jpeg'})),null);
+  assert.equal(await check(new File(['GIF89a'], 'image.gif',{type:'image/gif'})),null);
+  assert.equal(await check(new File(['RIFF0000WEBP'], 'image.webp',{type:'image/webp'})),null);
+  assert.equal(await check(new File(['0000ftypavif0000'], 'image.avif',{type:'image/avif'})),null);
+  assert.equal(await check(new File([new Uint8Array([0x49,0x49,0x2a,0x00])], 'image.tiff',{type:'image/tiff'})),null);
+  assert.equal(await check(new File(['BM'], 'image.bmp',{type:'image/bmp'})),null);
 });
 
 test('JWT verification rejects missing secret, bad claims, expiry and other algorithms', async () => {
@@ -216,18 +222,14 @@ test('cookie migration removes the legacy scope and matches JWT expiry', async (
   assert.ok(writes.some(([name,value,options])=>name==='refresh_token'&&value===''&&options.path==='/'&&options.maxAge===0));
 });
 
-test('unsupported category updates are reported as partial saves instead of success', async () => {
+test('successful category updates are not downgraded when the response omits relations', async () => {
   let revalidated=0;
-  const response={categories:[]};
   const action=load('src/features/business/actions/update-business-profile.action.ts',{
-    '@/lib/api/action-fetch':{actionFetch:async()=>Response.json(response)},
+    '@/lib/api/action-fetch':{actionFetch:async()=>Response.json({id:'business_1'})},
     '@/lib/auth/action-access-token':{getActionAccessToken:async()=>'token'},
     '@/lib/api/error-message':{extractErrorMessage:()=> 'error'},
     'next/cache':{revalidatePath:()=>revalidated++},
   });
-  assert.equal((await action.updateBusinessProfileAction('business_1',{categoryIds:['category_1']})).success,false);
-  assert.equal(revalidated,0);
-  response.categories=[{categoryId:'category_1'}];
   assert.equal((await action.updateBusinessProfileAction('business_1',{categoryIds:['category_1']})).success,true);
   assert.equal(revalidated,1);
 });

@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 import { ModalHeader } from "@/design/components/modal-header"
@@ -71,7 +72,7 @@ function CallContactSheet({
               <a href={`tel:${phone}`} className="block w-full">
                 <Button size="lg" className="h-12 w-full gap-2">
                   تماس
-                  <img
+                  <Image
                     alt=""
                     className="size-6 brightness-0 invert"
                     height={24}
@@ -88,7 +89,7 @@ function CallContactSheet({
               >
                 <Button size="lg" variant="light" className="h-12 w-full gap-2">
                   واتساپ
-                  <img
+                  <Image
                     alt=""
                     className="size-6"
                     height={24}
@@ -104,7 +105,7 @@ function CallContactSheet({
                 برای دریافت خدمات ویژه، هنگام تماس یا پیام بگویید که از سایت ایران
                 پلازا تماس گرفته اید.
               </p>
-              <img
+              <Image
                 alt=""
                 className="mt-0.5 size-6 shrink-0"
                 height={24}

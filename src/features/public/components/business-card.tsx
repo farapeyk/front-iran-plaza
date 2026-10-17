@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Building2, MapPin, CreditCard, ShieldCheck } from "lucide-react";
 import type { PublicBusinessSummary } from "@/features/public/types/public-business";
@@ -20,8 +21,7 @@ export function BusinessCard({ business }: { business: PublicBusinessSummary }) 
         </div>
         <div className="w-14 h-14 rounded-lg bg-neutral-100 overflow-hidden shrink-0 flex items-center justify-center text-neutral-400">
           {business.logoId ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={fileUrl(business.logoId)} alt={business.name} className="w-full h-full object-cover" />
+            <Image src={fileUrl(business.logoId)} alt={business.name} width={112} height={112} sizes="56px" className="w-full h-full object-cover" />
           ) : (
             <Building2 size={22} />
           )}

@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 const socialX = "/design/icons/social-x.svg"
@@ -46,7 +47,7 @@ function FooterSocialIcon({
         className
       )}
     >
-      <img
+      <Image
         alt=""
         src={FOOTER_SOCIAL[name]}
         width={24}

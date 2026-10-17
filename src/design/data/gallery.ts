@@ -1,7 +1,7 @@
-const gallery1 = "/design/gallery/gallery-1.png"
-const gallery2 = "/design/gallery/gallery-2.png"
-const gallery3 = "/design/gallery/gallery-3.png"
-const gallery4 = "/design/gallery/gallery-4.png"
+const gallery1 = "/design/gallery/gallery-1.webp"
+const gallery2 = "/design/gallery/gallery-2.webp"
+const gallery3 = "/design/gallery/gallery-3.webp"
+const gallery4 = "/design/gallery/gallery-4.webp"
 
 export type GalleryItem = {
   src: string

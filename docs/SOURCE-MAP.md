@@ -1,8 +1,8 @@
 # فهرست سورس
 
-این فهرست در تاریخ ۲۰۲۶-۱۰-۱۴ از فایل‌های موجود در `src/` و `tests/` به‌روز شده است. برای مسئولیت هر بخش، [معماری](ARCHITECTURE.md) و برای رفتار صفحات، [مسیرها](ROUTES.md) را بخوانید. فایل‌های نصب‌شده و خروجی build در این فهرست نیستند.
+این فهرست در تاریخ ۲۰۲۶-۱۰-۱۶ از فایل‌های موجود در `src/` و `tests/` به‌روز شده است. برای مسئولیت هر بخش، [معماری](ARCHITECTURE.md) و برای رفتار صفحات، [مسیرها](ROUTES.md) را بخوانید. فایل‌های نصب‌شده و خروجی build در این فهرست نیستند.
 
-تعداد فایل‌های فهرست‌شده: **904**.
+تعداد فایل‌های فهرست‌شده: **909**.
 
 ## فایل‌ها
 
@@ -653,6 +653,7 @@ src/design/components/help-tip.tsx
 src/design/components/home-hero.tsx
 src/design/components/icon.tsx
 src/design/components/identity-card.tsx
+src/design/components/image-editor.tsx
 src/design/components/info-status.tsx
 src/design/components/like-button.tsx
 src/design/components/logo.tsx
@@ -708,6 +709,8 @@ src/design/data/home-categories.ts
 src/design/data/new-members.ts
 src/design/data/site-index.ts
 src/design/fonts.css
+src/design/lib/image-crop.ts
+src/design/lib/search-history.ts
 src/design/lib/use-modal-focus.ts
 src/design/lib/utils.ts
 src/design/listing-reference.css
@@ -908,6 +911,8 @@ tests/docs.test.cjs
 tests/glob-security.test.cjs
 tests/helpers.cjs
 tests/http.test.cjs
+tests/image-crop.test.cjs
+tests/mobile-search.test.cjs
 tests/onboarding.test.cjs
 tests/same-origin.test.cjs
 tests/security.test.cjs

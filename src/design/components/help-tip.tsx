@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 const infoCircle = "/design/icons/info-circle.svg"
@@ -20,7 +21,7 @@ function HelpTip({ title, body, className }: HelpTipProps) {
     >
       <div className="flex items-center justify-start gap-[var(--md)]">
         <p className="text-base font-bold text-[var(--text-title)]">{title}</p>
-        <img alt="" className="size-6 shrink-0" height={24} src={infoCircle} width={24} />
+        <Image alt="" className="size-6 shrink-0" height={24} src={infoCircle} width={24} />
       </div>
       <p className="text-sm leading-relaxed text-[var(--text-body)]">{body}</p>
     </aside>

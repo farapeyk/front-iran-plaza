@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useRef } from "react"
 import { Link } from "@/design/navigation"
@@ -44,7 +45,7 @@ function BusinessSlider({
                     "border-[var(--opacity-dark-16)] bg-transparent"
                   )}
                 >
-                  <img alt="" className="size-6" height={24} src={arrowRight} width={24} />
+                  <Image alt="" className="size-6" height={24} src={arrowRight} width={24} />
                 </button>
                 <button
                   type="button"
@@ -55,7 +56,7 @@ function BusinessSlider({
                     "border-[var(--opacity-dark-16)] bg-transparent"
                   )}
                 >
-                  <img alt="" className="size-6" height={24} src={arrowLeft} width={24} />
+                  <Image alt="" className="size-6" height={24} src={arrowLeft} width={24} />
                 </button>
               </div>
             ) : null}

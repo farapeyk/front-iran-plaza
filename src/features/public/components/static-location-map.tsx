@@ -5,9 +5,9 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 const markerIcon = L.icon({
-  iconUrl: "/leaflet/images/marker-icon.png",
-  iconRetinaUrl: "/leaflet/images/marker-icon-2x.png",
-  shadowUrl: "/leaflet/images/marker-shadow.png",
+  iconUrl: "/leaflet/images/marker-icon.webp",
+  iconRetinaUrl: "/leaflet/images/marker-icon-2x.webp",
+  shadowUrl: "/leaflet/images/marker-shadow.webp",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });

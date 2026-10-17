@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 
@@ -363,7 +364,7 @@ function Icon({
   const px = size === "sm" ? 16 : size === "lg" ? 32 : 24
 
   return (
-    <img
+    <Image
       alt={alt}
       data-slot="icon"
       data-style={style}

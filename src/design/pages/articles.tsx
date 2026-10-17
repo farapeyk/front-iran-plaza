@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { articles, type ArticleCardData } from "@/design/data/articles"
 import { useMemo, useState } from "react"
@@ -113,7 +114,7 @@ function ArticlesPage() {
               placeholder="جستجوی مقاله"
               className="h-full min-w-0 flex-1 bg-transparent text-start text-base outline-none placeholder:text-[var(--input-placeholder)]"
             />
-            <img alt="" className="size-6" height={24} src={searchIcon} width={24} />
+            <Image alt="" className="size-6" height={24} src={searchIcon} width={24} />
           </label>
         </header>
 
@@ -175,7 +176,7 @@ function ArticlesPage() {
 
         <div className="flex justify-center">
           <Button variant="outline" className="gap-2 border-[var(--border-default)]">
-            <img alt="" className="size-6" height={24} src={addIcon} width={24} />
+            <Image alt="" className="size-6" height={24} src={addIcon} width={24} />
             مشاهده بیشتر
           </Button>
         </div>
@@ -214,7 +215,7 @@ function ArticleMeta({
       {/* Figma RTL: rating → date → read time → author (right → left) */}
       {article.rating != null && (
         <div className="flex items-center justify-start gap-2">
-          <img alt="" className="size-6" height={24} src={starIcon} width={24} />
+          <Image alt="" className="size-6" height={24} src={starIcon} width={24} />
           <p>
             <span className="font-bold text-[var(--text-title)]">
               {article.rating}
@@ -226,15 +227,15 @@ function ArticleMeta({
         </div>
       )}
       <div className="flex items-center justify-start gap-2">
-        <img alt="" className="size-6" height={24} src={clockIcon} width={24} />
+        <Image alt="" className="size-6" height={24} src={clockIcon} width={24} />
         <span>{article.date}</span>
       </div>
       <div className="flex items-center justify-start gap-2">
-        <img alt="" className="size-6" height={24} src={clockIcon} width={24} />
+        <Image alt="" className="size-6" height={24} src={clockIcon} width={24} />
         <span>زمان مطالعه: {article.readMinutes ?? 5} دقیقه</span>
       </div>
       <div className="flex items-center justify-start gap-2">
-        <img alt="" className="size-6" height={24} src={userIcon} width={24} />
+        <Image alt="" className="size-6" height={24} src={userIcon} width={24} />
         <span>نویسنده: {article.author ?? "تیم ایران پلازا"}</span>
       </div>
     </div>
@@ -250,7 +251,7 @@ function ArticleShareActions({ className }: { className?: string }) {
         size="sm"
         className="gap-2 border-[var(--border-default)] text-[var(--text-title)]"
       >
-        <img alt="" className="size-6" height={24} src={shareIcon} width={24} />
+        <Image alt="" className="size-6" height={24} src={shareIcon} width={24} />
         اشتراک گذاری
       </Button>
       <CopyLinkButton />
@@ -297,7 +298,7 @@ function ArticleProse({ article }: { article: ArticleCardData }) {
       ))}
 
       <div className="aspect-[775/484] overflow-hidden rounded-[var(--radius-xs)]">
-        <img alt="" className="size-full object-cover" src={article.image} />
+        <Image alt="" className="size-full object-cover" src={article.image} width={1550} height={968} sizes="(min-width: 1024px) 775px, 100vw" />
       </div>
 
       {[2, 3, 4].map((i) => (
@@ -312,7 +313,7 @@ function ArticleProse({ article }: { article: ArticleCardData }) {
       ))}
 
       <div className="flex items-center gap-[var(--lg)] rounded-[var(--radius-xs)] bg-secondary-100 px-[var(--lg)] py-[var(--xl)]">
-        <img alt="" className="size-6 shrink-0" height={24} src={lampIcon} width={24} />
+        <Image alt="" className="size-6 shrink-0" height={24} src={lampIcon} width={24} />
         <p className="text-start text-base leading-relaxed text-[var(--text-title)]">
           این باکس برای نوشتن انواع نکته‌هایی هست که نویسنده می‌خواهد به مخاطب برساند.
         </p>
@@ -322,7 +323,7 @@ function ArticleProse({ article }: { article: ArticleCardData }) {
         to={`/articles/${related.id}`}
         className="flex items-center gap-[var(--lg)] rounded-[var(--radius-xs)] border border-[var(--opacity-dark-16)] p-2"
       >
-        <img
+        <Image
           alt=""
           className="size-[88px] shrink-0 rounded-[var(--radius-xs)] object-cover"
           height={88}
@@ -332,18 +333,18 @@ function ArticleProse({ article }: { article: ArticleCardData }) {
         <span className="min-w-0 flex-1 text-start text-lg font-bold text-[var(--text-title)]">
           این کارت یک نوع مقاله است برای لینک کردن مقالات دیگر در این مقاله
         </span>
-        <img alt="" className="size-4 shrink-0" height={16} src={arrowLeft} width={16} />
+        <Image alt="" className="size-4 shrink-0" height={16} src={arrowLeft} width={16} />
       </Link>
 
       <Link
         to="/faq"
         className="flex items-center gap-[var(--lg)] rounded-[var(--radius-xs)] border border-[var(--opacity-dark-16)] px-[var(--lg)] py-[var(--xl)]"
       >
-        <img alt="" className="size-8 shrink-0" height={32} src={linkIcon} width={32} />
+        <Image alt="" className="size-8 shrink-0" height={32} src={linkIcon} width={32} />
         <span className="min-w-0 flex-1 text-start text-lg font-bold text-[var(--text-title)]">
           این یک کارت برای لینک کردن صفحات دیگر در این مقاله است
         </span>
-        <img alt="" className="size-4 shrink-0" height={16} src={arrowLeft} width={16} />
+        <Image alt="" className="size-4 shrink-0" height={16} src={arrowLeft} width={16} />
       </Link>
     </div>
   )
@@ -395,7 +396,7 @@ function ArticlePage() {
         <div className="mt-[var(--5xl)] space-y-[var(--2xl)] lg:hidden">
           <RegistrationBanner variant="sidebar" />
           <div className="aspect-[16/9] overflow-hidden rounded-[var(--radius-xs)]">
-            <img alt="" className="size-full object-cover" src={article.image} />
+            <Image alt="" className="size-full object-cover" src={article.image} width={1200} height={675} sizes="100vw" />
           </div>
           <TableOfContent className="w-full" defaultOpen items={tocItems} />
         </div>
@@ -405,10 +406,13 @@ function ArticlePage() {
             {/* Desktop hero + TOC */}
             <div className="hidden space-y-[var(--2xl)] lg:block">
               <div className="aspect-[16/9] overflow-hidden rounded-[var(--radius-xs)]">
-                <img
+                <Image
                   alt=""
                   className="size-full object-cover"
+                  height={872}
+                  sizes="775px"
                   src={article.image}
+                  width={1550}
                 />
               </div>
               <TableOfContent className="w-full" defaultOpen items={tocItems} />
@@ -485,7 +489,7 @@ function ArticlePage() {
               </p>
               <div className="mt-[var(--lg)] flex justify-center gap-2">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <img
+                  <Image
                     key={i}
                     alt=""
                     className="size-8"
@@ -536,7 +540,7 @@ function ArticlePage() {
                   className="flex items-start gap-[var(--lg)] border-b border-[var(--opacity-dark-8)] pb-[var(--2xl)] text-start"
                 >
                   <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-700">
-                    <img
+                    <Image
                       alt=""
                       className="size-4 brightness-0 invert"
                       height={16}

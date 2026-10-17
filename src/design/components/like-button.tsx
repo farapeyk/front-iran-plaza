@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useState } from "react"
 import { cn } from "@/design/lib/utils"
@@ -53,7 +54,7 @@ function LikeButton({
         className
       )}
     >
-      <img
+      <Image
         alt=""
         className="size-4"
         height={16}

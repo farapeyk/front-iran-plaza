@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { Link } from "@/design/navigation"
 import { cn } from "@/design/lib/utils"
@@ -36,11 +37,11 @@ function BusinessListCard({
     return <article data-slot="table-of-business" data-layout="listing" className={cn("listing-card", className)}>
       {isVip && <VipBadge className="listing-vip" />}
       <div className="listing-card-heading">
-        <Link to={href} aria-label={business.name} className="listing-logo"><img src={business.image} alt="" width={100} height={100}/></Link>
+        <Link to={href} aria-label={business.name} className="listing-logo"><Image src={business.image} alt="" width={100} height={100}/></Link>
         <div className="min-w-0"><h2><Link to={href}>{business.name}</Link></h2><p>{business.description}</p></div>
       </div>
       <div className="listing-card-footer">
-        <div className="listing-location"><img src={locationIcon} alt="" width={16} height={16}/><span>{address}</span>{business.hasInstallment && <img src="/design/icons/convert-card.svg" alt="فروش اقساطی" width={20} height={20}/>}</div>
+        <div className="listing-location"><Image src={locationIcon} alt="" width={16} height={16}/><span>{address}</span>{business.hasInstallment && <Image src="/design/icons/convert-card.svg" alt="فروش اقساطی" width={20} height={20}/>}</div>
         <Link to={href} className={cn(buttonVariants({variant:"light",size:"sm"}),"listing-profile")}>مشاهده پروفایل</Link>
       </div>
     </article>
@@ -55,7 +56,7 @@ function BusinessListCard({
         !isVip && isDesktop === false && "w-full"
       )}
     >
-      <img alt="" className="size-4" height={16} src={callIcon} width={16} />
+      <Image alt="" className="size-4" height={16} src={callIcon} width={16} />
       تماس
     </a>
   )
@@ -79,7 +80,7 @@ function BusinessListCard({
       >
         <div className="flex min-w-0 flex-1 items-center justify-start gap-[var(--md)]">
           <div className="size-12 shrink-0 overflow-hidden rounded-full">
-            <img alt="" className="size-full object-cover" src={business.image} />
+            <Image alt="" className="size-full object-cover" src={business.image} width={96} height={96} sizes="48px" />
           </div>
           <h3 className="min-w-0 flex-1 truncate text-start text-lg font-bold text-[var(--text-title)]">
             {business.name}
@@ -87,7 +88,7 @@ function BusinessListCard({
           <VipBadge />
         </div>
         <div className="flex min-w-0 flex-1 items-center justify-center gap-[var(--sm)] border-x border-[var(--opacity-dark-24)] px-[var(--lg)]">
-          <img alt="" className="size-4 shrink-0" height={16} src={locationIcon} width={16} />
+          <Image alt="" className="size-4 shrink-0" height={16} src={locationIcon} width={16} />
           <p className="min-w-0 flex-1 text-start text-sm leading-relaxed text-[var(--text-body)]">
             {address}
           </p>
@@ -137,7 +138,7 @@ function BusinessListCard({
       >
         <div className="flex w-full items-center gap-[var(--md)] py-[var(--lg)]">
           <div className="size-12 shrink-0 overflow-hidden rounded-full">
-            <img alt="" className="size-full object-cover" src={business.image} />
+            <Image alt="" className="size-full object-cover" src={business.image} width={96} height={96} sizes="48px" />
           </div>
           <div className="flex min-w-0 flex-1 items-center justify-between">
             <h3 className="min-w-0 flex-1 truncate text-start text-lg font-bold text-[var(--text-title)]">
@@ -154,7 +155,7 @@ function BusinessListCard({
         ) : null}
 
         <div className="flex w-full items-center justify-center gap-[var(--sm)] border-t border-[var(--opacity-dark-8)] pt-[var(--lg)]">
-          <img alt="" className="size-4 shrink-0" height={16} src={locationIcon} width={16} />
+          <Image alt="" className="size-4 shrink-0" height={16} src={locationIcon} width={16} />
           <p className="min-w-0 flex-1 text-start text-sm leading-relaxed text-[var(--text-body)]">
             {address}
           </p>

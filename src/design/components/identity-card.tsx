@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 const arrowLeft = "/design/icons/arrow-left.svg"
@@ -34,7 +35,7 @@ function IdentityCard({
         className
       )}
     >
-      <img alt="" className="size-6 shrink-0" height={24} src={arrowLeft} width={24} />
+      <Image alt="" className="size-6 shrink-0" height={24} src={arrowLeft} width={24} />
       <div className="flex min-w-0 flex-1 flex-col items-start justify-center">
         <p className="w-full text-lg font-bold leading-normal text-[var(--text-title)]">{title}</p>
         <p className="w-full text-sm leading-normal text-[var(--text-subtitle)]">
@@ -47,7 +48,7 @@ function IdentityCard({
           active ? "bg-secondary-25" : "bg-secondary-100"
         )}
       >
-        <img alt="" className="size-6" height={24} src={profileCircle} width={24} />
+        <Image alt="" className="size-6" height={24} src={profileCircle} width={24} />
       </span>
     </button>
   )

@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useState } from "react"
 import { Link } from "@/design/navigation"
@@ -43,7 +44,7 @@ function ProfileSubmenu({
           open && "bg-secondary-100"
         )}
       >
-        <img
+        <Image
           alt=""
           className={cn("size-4 shrink-0 transition-transform", open && "rotate-180")}
           height={16}
@@ -53,7 +54,7 @@ function ProfileSubmenu({
         <span className="min-w-0 flex-1 text-start text-base font-bold text-[var(--text-body)]">
           پروفایل من
         </span>
-        <img alt="" className="size-6 shrink-0" height={24} src={briefcase} width={24} />
+        <Image alt="" className="size-6 shrink-0" height={24} src={briefcase} width={24} />
       </button>
 
       {open ? (
@@ -72,7 +73,7 @@ function ProfileSubmenu({
                   <span className="min-w-0 flex-1 text-sm font-medium text-[var(--text-body)]">
                     {item.title}
                   </span>
-                  <img
+                  <Image
                     alt=""
                     className="size-5 shrink-0 opacity-70"
                     height={20}

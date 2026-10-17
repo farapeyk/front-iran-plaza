@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { Link } from "@/design/navigation"
 import { cn } from "@/design/lib/utils"
@@ -21,7 +22,7 @@ function SearchRow({
   className?: string
 }) {
   const media = item.image ? (
-    <img
+    <Image
       alt=""
       className="size-full object-cover"
       height={56}
@@ -30,7 +31,7 @@ function SearchRow({
     />
   ) : item.iconSrc ? (
     <span className="flex size-full items-center justify-center rounded-full border border-[var(--opacity-dark-8)] bg-[var(--surface)] p-[10px]">
-      <img alt="" className="size-6" height={24} src={item.iconSrc} width={24} />
+      <Image alt="" className="size-6" height={24} src={item.iconSrc} width={24} />
     </span>
   ) : null
 

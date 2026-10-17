@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { Link } from "@/design/navigation"
 import { cn } from "@/design/lib/utils"
@@ -23,8 +24,9 @@ function MobileHeader({
 
   return (
     <header
+      dir="ltr"
       className={cn(
-        "flex h-[72px] w-full items-center justify-between px-3 lg:hidden",
+        "flex h-[72px] w-full items-center justify-between px-5 lg:hidden",
         isDark ? "bg-primary-950" : "bg-[var(--surface-muted)]",
         divider && "border-b border-[var(--border-default)]",
         className
@@ -32,14 +34,14 @@ function MobileHeader({
     >
       <Logo variant={isDark ? "white" : "primary"} />
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3" dir="ltr">
         <Link
           to="/login"
           aria-label="ورود"
           className="flex size-12 items-center justify-center"
         >
           <span className="size-6 overflow-clip">
-            <img alt="" className="size-full" height={24} src={userIcon} width={24} />
+            <Image alt="" className="size-full" height={24} src={userIcon} width={24} />
           </span>
         </Link>
         <button
@@ -49,7 +51,7 @@ function MobileHeader({
           onClick={onMenuClick}
         >
           <span className="size-6 overflow-clip">
-            <img alt="" className="size-full" height={24} src={menuIcon} width={24} />
+            <Image alt="" className="size-full" height={24} src={menuIcon} width={24} />
           </span>
         </button>
       </div>

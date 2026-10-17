@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useState } from "react"
 import { cn } from "@/design/lib/utils"
@@ -63,7 +64,7 @@ function Scoring({
               value > 0 && value !== n && "opacity-40"
             )}
           >
-            <img
+            <Image
               alt=""
               className={cn(
                 "size-full",

@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 import { useNavigate } from "@/design/navigation"
@@ -53,6 +54,7 @@ function BusinessSearch({
   return (
     <div
       role="search"
+      dir="ltr"
       data-slot="business-search"
       data-state={resolved}
       data-size={size}
@@ -81,10 +83,16 @@ function BusinessSearch({
               : "ps-[var(--sm)] pe-[var(--xs)]"
         )}
       >
-        <span className="px-[var(--lg)] py-[var(--sm)] text-base text-[var(--text-title)]">
+        <span
+          dir="rtl"
+          className={cn(
+            "py-[var(--sm)] text-[var(--text-title)]",
+            size === "responsive" ? "px-2 text-sm lg:px-[var(--lg)] lg:text-base" : "px-[var(--lg)] text-base"
+          )}
+        >
           {city}
         </span>
-        <img alt="" className="size-4 shrink-0" height={16} src={locationIcon} width={16} />
+        <Image alt="" className="size-4 shrink-0" height={16} src={locationIcon} width={16} />
       </button>
 
       {onChange ? (
@@ -105,10 +113,11 @@ function BusinessSearch({
               className="size-6 shrink-0"
               aria-label="پاک کردن"
             >
-              <img alt="" className="size-full" height={24} src={closeCircle} width={24} />
+              <Image alt="" className="size-full" height={24} src={closeCircle} width={24} />
             </button>
           ) : null}
           <input
+            dir="rtl"
             aria-label="جستجوی کسب‌وکار"
             onKeyDown={(event) => { if(event.key === 'Enter') { event.preventDefault(); onSearchClick() } }}
             value={value ?? ""}
@@ -116,7 +125,10 @@ function BusinessSearch({
             onFocus={onFocus}
             onBlur={onBlur}
             placeholder={placeholder}
-            className="min-w-0 flex-1 bg-transparent text-right text-base text-[var(--input-value)] outline-none placeholder:text-[var(--input-placeholder)]"
+            className={cn(
+              "min-w-0 flex-1 bg-transparent text-right text-[var(--input-value)] outline-none placeholder:text-[var(--input-placeholder)]",
+              size === "responsive" ? "text-sm lg:text-base" : "text-base"
+            )}
           />
           <button
             type="button"
@@ -124,7 +136,7 @@ function BusinessSearch({
             className="size-6 shrink-0"
             aria-label="جستجو"
           >
-            <img alt="" className="size-full" height={24} src={searchIcon} width={24} />
+            <Image alt="" className="size-full" height={24} src={searchIcon} width={24} />
           </button>
         </div>
       ) : (
@@ -142,7 +154,7 @@ function BusinessSearch({
         >
           {searching ? (
             <span className="size-6 shrink-0" aria-hidden>
-              <img alt="" className="size-full" height={24} src={closeCircle} width={24} />
+              <Image alt="" className="size-full" height={24} src={closeCircle} width={24} />
             </span>
           ) : (
             <span className="size-6 shrink-0" aria-hidden />
@@ -150,7 +162,8 @@ function BusinessSearch({
           <span className="flex min-w-0 items-center justify-start gap-[var(--md)]">
             <span
               className={cn(
-                "truncate text-base",
+                "truncate",
+                size === "responsive" ? "text-sm lg:text-base" : "text-base",
                 searching
                   ? "text-[var(--input-value)]"
                   : "text-[var(--input-placeholder)]"
@@ -159,7 +172,7 @@ function BusinessSearch({
               {value || placeholder}
             </span>
             <span className="size-6 shrink-0 overflow-clip">
-              <img alt="" className="size-full" height={24} src={searchIcon} width={24} />
+              <Image alt="" className="size-full" height={24} src={searchIcon} width={24} />
             </span>
           </span>
         </button>

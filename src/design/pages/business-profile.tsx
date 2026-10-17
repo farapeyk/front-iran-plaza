@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useMemo, useState } from "react"
 import { useParams } from "@/design/navigation"
@@ -221,7 +222,7 @@ function SectionHeading({
       className="flex items-center justify-start gap-[var(--md)] scroll-mt-24"
     >
       <h2 className="text-2xl font-bold text-[var(--text-title)]">{title}</h2>
-      <img alt="" className="size-8" height={32} src={icon} width={32} />
+      <Image alt="" className="size-8" height={32} src={icon} width={32} />
     </div>
   )
 }
@@ -236,7 +237,7 @@ function Chip({
   return (
     <span className="inline-flex h-8 items-center gap-1 rounded-full border border-[var(--opacity-dark-16)] px-3 text-sm text-[var(--text-body)]">
       {label}
-      <img alt="" className="size-4" height={16} src={icon} width={16} />
+      <Image alt="" className="size-4" height={16} src={icon} width={16} />
     </span>
   )
 }
@@ -245,7 +246,7 @@ function RatingChip({ value = "۴.۲" }: { value?: string }) {
   return (
     <span className="inline-flex h-8 items-center gap-1 rounded-full border border-[var(--opacity-dark-16)] px-3 text-base font-bold text-[var(--text-body)]">
       {value}
-      <img alt="" className="size-4" height={16} src={starIcon} width={16} />
+      <Image alt="" className="size-4" height={16} src={starIcon} width={16} />
     </span>
   )
 }
@@ -270,7 +271,7 @@ function HeroActions({
         )}
       >
         تماس/ واتساپ
-        <img alt="" className="size-6" height={24} src={callIcon} width={24} />
+        <Image alt="" className="size-6" height={24} src={callIcon} width={24} />
       </button>
       <Button
         variant="secondary"
@@ -278,7 +279,7 @@ function HeroActions({
         className={cn("gap-2", compact ? "shrink-0" : "max-lg:shrink-0")}
       >
         آدرس
-        <img alt="" className="size-6" height={24} src={locationIcon} width={24} />
+        <Image alt="" className="size-6" height={24} src={locationIcon} width={24} />
       </Button>
     </div>
   )
@@ -296,7 +297,7 @@ function AvatarBlock({
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
       <div className="size-full overflow-hidden rounded-full">
-        <img
+        <Image
           alt=""
           className="size-full object-cover"
           height={size}
@@ -404,7 +405,7 @@ function BusinessProfilePage() {
             aria-label="اشتراک‌گذاری"
             className="flex size-12 items-center justify-center rounded-full"
           >
-            <img alt="" className="size-6" height={24} src={shareIcon} width={24} />
+            <Image alt="" className="size-6" height={24} src={shareIcon} width={24} />
           </button>
         </div>
         <Breadcrumb
@@ -423,7 +424,7 @@ function BusinessProfilePage() {
           <div className="flex items-center gap-[var(--2xl)] py-[var(--xs)]">
             {isVip ? <VipBadge /> : null}
             <button type="button" aria-label="اشتراک‌گذاری" className="size-6">
-              <img alt="" className="size-full" height={24} src={shareIcon} width={24} />
+              <Image alt="" className="size-full" height={24} src={shareIcon} width={24} />
             </button>
           </div>
           <AvatarBlock src={business.image} size={100} />
@@ -438,7 +439,7 @@ function BusinessProfilePage() {
           </p>
           <div className="flex items-center justify-start gap-1 text-base text-[var(--text-body)]">
             <span>{business.location}</span>
-            <img alt="" className="size-4" height={16} src={locationIcon} width={16} />
+            <Image alt="" className="size-4" height={16} src={locationIcon} width={16} />
           </div>
         </div>
 
@@ -473,7 +474,7 @@ function BusinessProfilePage() {
                 </p>
                 <div className="flex items-center justify-start gap-1 text-lg text-[var(--text-body)]">
                   <span>{business.location}</span>
-                  <img
+                  <Image
                     alt=""
                     className="size-4"
                     height={16}
@@ -537,10 +538,10 @@ function BusinessProfilePage() {
         <div className="mt-[var(--lg)] hidden items-center justify-between lg:flex">
           <div className="flex gap-4">
             <Button variant="outline" size="icon" aria-label="قبلی">
-              <img alt="" className="size-6" height={24} src={arrowRight} width={24} />
+              <Image alt="" className="size-6" height={24} src={arrowRight} width={24} />
             </Button>
             <Button variant="outline" size="icon" aria-label="بعدی">
-              <img alt="" className="size-6" height={24} src={arrowLeft} width={24} />
+              <Image alt="" className="size-6" height={24} src={arrowLeft} width={24} />
             </Button>
           </div>
           <Button
@@ -550,7 +551,7 @@ function BusinessProfilePage() {
             onClick={() => setGalleryOpen(true)}
           >
             مشاهده همه
-            <img alt="" className="size-6" height={24} src={addIcon} width={24} />
+            <Image alt="" className="size-6" height={24} src={addIcon} width={24} />
           </Button>
         </div>
       </section>
@@ -569,7 +570,7 @@ function BusinessProfilePage() {
                   showChevron={false}
                   className="flex w-full items-center gap-[var(--lg)] py-[var(--lg)] hover:no-underline"
                 >
-                  <img
+                  <Image
                     alt=""
                     className="size-6 shrink-0 transition-transform group-aria-expanded/accordion-trigger:rotate-180"
                     height={24}
@@ -584,7 +585,7 @@ function BusinessProfilePage() {
                       {s.subtitle}
                     </span>
                   </span>
-                  <img
+                  <Image
                     alt=""
                     className="size-6 shrink-0"
                     height={24}
@@ -671,7 +672,7 @@ function BusinessProfilePage() {
               type="button"
               className="flex w-[118px] shrink-0 flex-col items-center justify-center gap-2 rounded-[var(--radius-xs)] border border-[var(--opacity-dark-8)] bg-[var(--surface)] text-sm font-bold text-[var(--text-title)]"
             >
-              <img alt="" className="size-6" height={24} src={addIcon} width={24} />
+              <Image alt="" className="size-6" height={24} src={addIcon} width={24} />
               مشاهده همه
             </button>
           </div>
@@ -693,7 +694,7 @@ function BusinessProfilePage() {
               <div className="flex items-center gap-[var(--md)]">
                 {isVip ? <VipBadge /> : null}
                 <button type="button" aria-label="اشتراک‌گذاری" className="size-6">
-                  <img
+                  <Image
                     alt=""
                     className="size-full"
                     height={24}
@@ -712,7 +713,7 @@ function BusinessProfilePage() {
               </p>
               <div className="flex items-center justify-start gap-1 text-sm text-[var(--text-body)]">
                 <span>{business.location}</span>
-                <img
+                <Image
                   alt=""
                   className="size-4"
                   height={16}
@@ -753,7 +754,7 @@ function BusinessProfilePage() {
                   className="flex items-center justify-start gap-[var(--sm)] text-right"
                 >
                   <span className="text-lg text-[var(--text-body)]">{label}</span>
-                  <img
+                  <Image
                     alt=""
                     className="size-6 shrink-0"
                     height={24}
@@ -768,7 +769,7 @@ function BusinessProfilePage() {
               className="flex w-full items-center justify-start gap-2 text-lg font-bold text-[var(--text-title)]"
             >
               مشاهده همه خدمات
-              <img alt="" className="size-6" height={24} src={addIcon} width={24} />
+              <Image alt="" className="size-6" height={24} src={addIcon} width={24} />
             </button>
           </section>
 
@@ -802,7 +803,7 @@ function BusinessProfilePage() {
                       </p>
                     </div>
                     <span className="flex size-12 shrink-0 items-center justify-center rounded-[var(--radius-xs)] bg-secondary-100">
-                      <img
+                      <Image
                         alt=""
                         className="size-6"
                         height={24}
@@ -871,7 +872,7 @@ function BusinessProfilePage() {
                         {b.address}
                       </p>
                     </div>
-                    <img
+                    <Image
                       alt=""
                       className="mt-1 size-6 shrink-0"
                       height={24}
@@ -949,15 +950,15 @@ function BusinessProfilePage() {
             <div className="flex items-center justify-between">
               <div className="flex gap-4">
                 <Button variant="outline" size="icon" aria-label="قبلی">
-                  <img alt="" className="size-6" height={24} src={arrowRight} width={24} />
+                  <Image alt="" className="size-6" height={24} src={arrowRight} width={24} />
                 </Button>
                 <Button variant="outline" size="icon" aria-label="بعدی">
-                  <img alt="" className="size-6" height={24} src={arrowLeft} width={24} />
+                  <Image alt="" className="size-6" height={24} src={arrowLeft} width={24} />
                 </Button>
               </div>
               <Button variant="outline" size="sm" className="gap-2">
                 مشاهده همه
-                <img alt="" className="size-5" height={20} src={addIcon} width={20} />
+                <Image alt="" className="size-5" height={20} src={addIcon} width={20} />
               </Button>
             </div>
             <WriteComment size="desktop" className="w-full" />

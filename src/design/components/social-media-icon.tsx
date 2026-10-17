@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 const facebook = "/design/icons/social-facebook.svg"
@@ -59,7 +60,7 @@ function SocialMediaIcon({
   const isButton = type === "Button"
 
   const inner = (
-    <img
+    <Image
       alt=""
       src={src}
       width={isButton ? 24 : 22}

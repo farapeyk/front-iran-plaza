@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { SiteLayout } from '@/design/components/site-layout';
@@ -11,8 +12,16 @@ import { Button } from '@/design/components/ui/button';
 import { businessControllerListPublic } from '@/design/api/generated/browser';
 import { decodeBusinesses, useCategories } from '@/design/api/catalog';
 import { businessCard } from '@/design/api/business';
+import { homeCategories } from '@/design/data/home-categories';
+import { prependSearchHistory, readSearchHistory } from '@/design/lib/search-history';
 import { Link } from '@/design/navigation';
 import type { BusinessCardData } from '@/design/components/business-card';
+import type { SearchHistoryItem } from '@/design/lib/search-history';
+
+const backIcon = '/design/icons/arrow-right-ltr.svg';
+const historyIcon = '/design/icons/refresh-2.svg';
+const defaultCategoryIcon = '/design/icons/categories.svg';
+const mobileSearchCity = 'شیراز';
 
 type ListingItem = BusinessCardData & {phone:string;hasInstallment?:boolean};
 type ListingResult = {key:string|null;base:string;page:number;items:ListingItem[];total:number;error?:string};
@@ -20,6 +29,103 @@ type ListingResult = {key:string|null;base:string;page:number;items:ListingItem[
 function ListingSearch({search,city,onSearch,onCityClick}:{search:string;city:string;onSearch:(value:string)=>void;onCityClick:()=>void}) {
   const [draft,setDraft]=useState(search);
   return <form onSubmit={event=>{event.preventDefault();onSearch(draft);}}><BusinessSearch size="responsive" value={draft} onChange={setDraft} onClear={()=>{setDraft('');onSearch('');}} onSearchClick={()=>onSearch(draft)} onCityClick={onCityClick} city={city}/></form>;
+}
+
+function MobileSearchRow({item,onSelect}:{item:SearchHistoryItem;onSelect:(item:SearchHistoryItem)=>void}) {
+  return <Link
+    to={item.href}
+    onClick={()=>onSelect(item)}
+    className="flex min-h-[84px] items-center gap-4 rounded-lg py-2"
+  >
+    <span className="flex size-16 shrink-0 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-white shadow-[var(--shadow-sm)]">
+      <Image src={item.icon} alt="" width={32} height={32} className="size-8"/>
+    </span>
+    <span className="min-w-0 flex-1 text-right">
+      <strong className="block truncate text-lg font-black leading-8 text-[var(--text-title)]">{item.label}</strong>
+      <span className="block truncate text-sm leading-7 text-[var(--text-muted)]">{item.subtitle}</span>
+    </span>
+  </Link>;
+}
+
+function MobileSearchPage() {
+  const router=useRouter();
+  const params=useSearchParams();
+  const {cards,categories}=useCategories();
+  const [draft,setDraft]=useState(params.get('search')??'');
+  const [history,setHistory]=useState<SearchHistoryItem[]>([]);
+  const [historyReady,setHistoryReady]=useState(false);
+
+  useEffect(()=>{
+    const frame=window.requestAnimationFrame(()=>{
+      setHistory(readSearchHistory(window.localStorage));
+      setHistoryReady(true);
+    });
+    return ()=>window.cancelAnimationFrame(frame);
+  },[]);
+
+  const remember=(item:SearchHistoryItem)=>setHistory(prependSearchHistory(window.localStorage,item));
+  const submit=()=>{
+    const term=draft.trim();
+    if(!term)return;
+    const href=`/businesses?search=${encodeURIComponent(term)}&city=${encodeURIComponent(mobileSearchCity)}`;
+    remember({label:term,subtitle:'جستجوی کسب و کار',icon:defaultCategoryIcon,href});
+    router.push(href);
+  };
+  const goBack=()=>{
+    if(window.history.length>1)router.back();
+    else router.push('/');
+  };
+  const liveRows=cards.map(card=>{
+    const childCount=categories.filter(category=>category.parentId===card.id).length;
+    return {
+      label:card.label,
+      subtitle:childCount>0?`${childCount.toLocaleString('fa-IR')} زیر دسته‌بندی`:'مشاهده کسب‌وکارهای این دسته',
+      icon:card.icon,
+      href:card.href,
+    };
+  });
+  const categoryRows: SearchHistoryItem[] = liveRows.length>0 ? liveRows : homeCategories.map(category=>({
+    label:category.label,
+    subtitle:'مشاهده کسب‌وکارهای این دسته',
+    icon:category.icon,
+    href:`/businesses?search=${encodeURIComponent(category.label)}`,
+  }));
+  const showHistory=historyReady&&history.length>0;
+
+  return <main data-slot="mobile-search-page" className="min-h-dvh bg-[var(--surface-muted)] px-5 pb-10 pt-8">
+    <div className="mx-auto flex w-full max-w-[550px] flex-col">
+      <button type="button" onClick={goBack} className="flex h-12 w-full items-center justify-end gap-4 text-lg font-black text-[var(--text-title)]" dir="ltr">
+        <span>بازگشت</span>
+        <Image src={backIcon} alt="" width={24} height={24} className="size-6"/>
+      </button>
+
+      <form className="mt-5" onSubmit={event=>{event.preventDefault();submit();}}>
+        <BusinessSearch
+          className="max-w-none"
+          size="responsive"
+          city={mobileSearchCity}
+          value={draft}
+          onChange={setDraft}
+          onClear={()=>setDraft('')}
+          onSearchClick={submit}
+        />
+      </form>
+
+      <div className="mt-6 border-t border-[var(--border-subtle)] pt-3">
+        {showHistory ? <section aria-labelledby="recent-searches-title">
+          <div className="mb-2 flex h-14 items-center gap-3">
+            <Image src={historyIcon} alt="" width={28} height={28} className="size-7"/>
+            <h1 id="recent-searches-title" className="text-xl font-black text-[var(--text-title)]">جستجوهای اخیر</h1>
+          </div>
+          <div className="flex flex-col">
+            {history.map(item=><MobileSearchRow key={`${item.href}-${item.label}`} item={item} onSelect={remember}/>) }
+          </div>
+        </section> : <section aria-label="دسته‌بندی کسب‌وکارها" className="flex flex-col">
+          {categoryRows.map(item=><MobileSearchRow key={`${item.href}-${item.label}`} item={item} onSelect={remember}/>) }
+        </section>}
+      </div>
+    </div>
+  </main>;
 }
 
 function BusinessesPage() {
@@ -74,7 +180,7 @@ function BusinessesPage() {
         <div className="listing-filter-pills">
           <select aria-label="دسته‌بندی" className="listing-filter" value={params.get('categoryId')??''} onChange={e=>update('categoryId',e.target.value)}><option value="">دسته‌بندی‌ها</option>{categories.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select>
           {(['city','neighborhood'] as const).map(key=><details key={key} ref={key==='city'?cityDetails:undefined} className="listing-location-filter">
-            <summary className="listing-filter">{params.get(key)||(key==='city'?'انتخاب شهر':'انتخاب محله')}<img src="/design/icons/arrow-down.svg" alt="" width={16} height={16}/></summary>
+            <summary className="listing-filter">{params.get(key)||(key==='city'?'انتخاب شهر':'انتخاب محله')}<Image src="/design/icons/arrow-down.svg" alt="" width={16} height={16}/></summary>
             <form className="listing-filter-popover" onSubmit={event=>{event.preventDefault();const value=String(new FormData(event.currentTarget).get('value')??'').trim();update(key,value);event.currentTarget.closest('details')?.removeAttribute('open');}}>
               <label>{key==='city'?'شهر':'محله'}<input name="value" aria-label={key==='city'?'شهر':'محله'} key={params.get(key)} defaultValue={params.get(key)??''}/></label><Button type="submit" size="sm">اعمال</Button>
               {params.get(key)&&<Button type="button" variant="ghost" size="sm" onClick={()=>update(key,'')}>پاک کردن</Button>}
@@ -86,7 +192,7 @@ function BusinessesPage() {
           <label title="این فیلتر در حال حاضر در دسترس نیست"><Switch aria-label="فقط VIP ها" disabled checked={false}/>فقط VIP ها</label>
         </div>
       </div>
-      {!loading&&!result.error&&result.items.length===0&&<div className="listing-empty"><img src="/design/icons/search-not-found.svg" width={102} height={80} alt=""/><p>نتیجه‌ای یافت نشد.</p></div>}
+      {!loading&&!result.error&&result.items.length===0&&<div className="listing-empty"><Image src="/design/icons/search-not-found.svg" width={102} height={80} alt=""/><p>نتیجه‌ای یافت نشد.</p></div>}
       {showItems&&<div className="listing-grid" aria-busy={loading}>{result.items.map((item,index)=><Fragment key={item.id}><BusinessListCard business={item} layout="listing"/>{index===5&&<RegistrationBanner className="listing-banner"/>}</Fragment>)}</div>}
       {showItems&&result.items.length>0&&result.page*limit<result.total&&<div className="listing-pagination"><Button variant="outline" disabled={loading} onClick={()=>update('page',String(page+1))}>{loading?'در حال دریافت…':'مشاهده بیشتر'}<span aria-hidden>＋</span></Button></div>}
       {!loading&&result.items.length<=6&&<RegistrationBanner className="listing-banner listing-short-banner"/>}
@@ -95,4 +201,12 @@ function BusinessesPage() {
     <section className="listing-container listing-about"><h2>{title}</h2><p>{category?`در دسته ${category.name}، کسب‌وکارهای ثبت‌شده در ایران پلازا را ببینید.`:'کسب‌وکارهای ثبت‌شده در ایران پلازا را پیدا کنید.'} با انتخاب شهر و محله یا جستجوی نام، نتیجه‌ها را محدود کنید. برای مشاهده اطلاعات، خدمات، محصولات، آدرس و راه‌های ارتباطی هر کسب‌وکار، وارد پروفایل آن شوید.</p><Link to="/about">درباره ایران پلازا</Link></section>
   </SiteLayout>;
 }
-export {BusinessesPage,BusinessesPage as SearchPage};
+
+function SearchPage() {
+  return <>
+    <div className="lg:hidden"><MobileSearchPage/></div>
+    <div className="hidden lg:block"><BusinessesPage/></div>
+  </>;
+}
+
+export {BusinessesPage,SearchPage};

@@ -56,6 +56,53 @@
 .plaza-design .reference-business .business-products h3 { font-size: 14px; }
 .plaza-design .reference-business .business-products p { font-size: 12px; }
 .plaza-design .reference-business .business-products img { background: var(--secondary-50); }
+.plaza-design .reference-business .business-offering-tabs { max-width: 440px; }
+.plaza-design .reference-business .business-offering-tabs button {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 9999px;
+  color: var(--text-body);
+  font-size: 14px;
+  transition: color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+}
+.plaza-design .reference-business .business-offering-tabs button > img { opacity: .7; }
+.plaza-design .reference-business .business-offering-tabs button > span {
+  display: inline-flex;
+  min-width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: var(--opacity-dark-8);
+  padding-inline: 6px;
+  font-size: 11px;
+}
+.plaza-design .reference-business .business-offering-tabs button.is-active {
+  background: var(--primary-950);
+  color: var(--text-light-title);
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(8, 52, 35, .16);
+}
+.plaza-design .reference-business .business-offering-tabs button.is-active > img { filter: brightness(0) invert(1); opacity: 1; }
+.plaza-design .reference-business .business-offering-tabs button.is-active > span { background: var(--opacity-light-16); }
+.plaza-design .reference-business .business-service-card {
+  background:
+    radial-gradient(circle at 0 0, rgba(234, 195, 117, .28), transparent 42%),
+    linear-gradient(145deg, #fff 0%, #f3faf6 100%);
+  box-shadow: 0 12px 30px rgba(8, 52, 35, .07);
+}
+.plaza-design .reference-business .business-service-card::after {
+  content: "";
+  position: absolute;
+  inset-block: 18px;
+  inset-inline-end: 0;
+  width: 3px;
+  border-radius: 9999px 0 0 9999px;
+  background: linear-gradient(var(--primary-400), var(--primary-700));
+}
 .plaza-design .reference-business .business-hours li { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
 .plaza-design .reference-business .business-hours span { text-align: left; }
 .plaza-design .reference-business .business-sidebar-card { background: #f6eddd; padding: 24px; text-align: right; }

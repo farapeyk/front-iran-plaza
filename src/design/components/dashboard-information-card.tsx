@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { Link } from "@/design/navigation"
 import { cn } from "@/design/lib/utils"
@@ -91,7 +92,7 @@ function DashboardInformationCard({
         >
           {copy.cta.label}
           {copy.cta.showAdd ? (
-            <img
+            <Image
               alt=""
               className="size-6 brightness-0 invert"
               height={24}

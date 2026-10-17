@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { Link } from "@/design/navigation"
 import { cn } from "@/design/lib/utils"
@@ -42,7 +43,7 @@ function AdsPosition({
       onClick={onClick}
     >
       {!isBanner ? (
-        <img
+        <Image
           alt=""
           className={cn("brightness-0 invert", isDesktop ? "size-6" : "size-4")}
           height={isDesktop ? 24 : 16}

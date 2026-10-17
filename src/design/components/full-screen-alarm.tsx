@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import type { ReactNode } from "react"
 import { Link } from "@/design/navigation"
@@ -58,7 +59,7 @@ function FullScreenAlarm({
     >
       {primaryAction?.label}
       {primaryAction?.showBackIcon ? (
-        <img alt="" className="size-6 brightness-0 invert" height={24} src={arrowRight} width={24} />
+        <Image alt="" className="size-6 brightness-0 invert" height={24} src={arrowRight} width={24} />
       ) : null}
     </Button>
   )
@@ -78,7 +79,7 @@ function FullScreenAlarm({
           styles.iconWrap
         )}
       >
-        <img
+        <Image
           alt=""
           className={cn("size-6", variant === "info" && "brightness-0 invert")}
           height={24}

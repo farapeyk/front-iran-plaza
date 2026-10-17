@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useState } from "react"
 import { Link } from "@/design/navigation"
@@ -65,7 +66,7 @@ function DashboardLoginButton({
         onClick={() => setOpen((v) => !v)}
         className="flex h-12 items-center gap-2 rounded-full border-2 border-[var(--btn-black-outline)] pe-2 ps-4"
       >
-        <img
+        <Image
           alt=""
           className={cn("size-4 transition-transform", open && "rotate-180")}
           height={16}
@@ -104,7 +105,7 @@ function DashboardLoginButton({
               onClick={() => setOpen(false)}
             >
               ثبت رایگان کسب وکار
-              <img
+              <Image
                 alt=""
                 className="size-6 brightness-0 invert"
                 height={24}
@@ -126,7 +127,7 @@ function DashboardLoginButton({
                   >
                     {item.label}
                   </span>
-                  <img
+                  <Image
                     alt=""
                     className="size-6 shrink-0"
                     height={24}

@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 import { ModalHeader } from "@/design/components/modal-header"
@@ -40,12 +41,12 @@ function NavRow({ title, subtitle, icon, onClick }: NavRowProps) {
       onClick={onClick}
       className="flex w-full items-center gap-[var(--lg)] border-b border-[var(--opacity-dark-8)] py-[var(--lg)] text-right"
     >
-      <img alt="" className="size-4 shrink-0" height={16} src={arrowLeft} width={16} />
+      <Image alt="" className="size-4 shrink-0" height={16} src={arrowLeft} width={16} />
       <div className="min-w-0 flex-1">
         <p className="text-lg font-bold text-[var(--text-title)]">{title}</p>
         <p className="text-sm text-[var(--text-subtitle)]">{subtitle}</p>
       </div>
-      <img alt="" className="size-6 shrink-0" height={24} src={icon} width={24} />
+      <Image alt="" className="size-6 shrink-0" height={24} src={icon} width={24} />
     </button>
   )
 }
@@ -77,7 +78,7 @@ function SwitchRow({
       {vip ? (
         <VipBadge className="shrink-0" />
       ) : icon ? (
-        <img alt="" className="size-6 shrink-0" height={24} src={icon} width={24} />
+        <Image alt="" className="size-6 shrink-0" height={24} src={icon} width={24} />
       ) : null}
     </div>
   )

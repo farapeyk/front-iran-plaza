@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { Link } from "@/design/navigation"
 import { cn } from "@/design/lib/utils"
@@ -35,7 +36,7 @@ function BusinessCard({
       )}
       <div className="flex w-full flex-col items-center gap-4">
         <div className="size-[100px] overflow-hidden rounded-full border-[6px] border-secondary-25">
-          <img
+          <Image
             alt=""
             className="size-full object-cover"
             height={100}
@@ -51,7 +52,7 @@ function BusinessCard({
         </div>
         <div className="flex items-center gap-1 text-sm text-[var(--text-title)]">
           <span>{business.location}</span>
-          <img alt="" className="size-4" height={16} src={locationIcon} width={16} />
+          <Image alt="" className="size-4" height={16} src={locationIcon} width={16} />
         </div>
       </div>
       <Link

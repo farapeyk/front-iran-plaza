@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { cn } from "@/design/lib/utils"
 import { ModalHeader } from "@/design/components/modal-header"
@@ -48,7 +49,7 @@ function ConfirmDeleteSheet({
         <div className="flex flex-col items-center gap-[var(--5xl)] px-[var(--3xl)] pb-[var(--5xl)]">
           <div className="flex flex-col items-center gap-[var(--lg)] text-center">
             <div className="flex size-12 items-center justify-center rounded-full border-8 border-red-25 bg-red-500">
-              <img
+              <Image
                 alt=""
                 className="size-6 brightness-0 invert"
                 height={24}

@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image";
 
 import { useState } from "react"
 import { cn } from "@/design/lib/utils"
@@ -45,7 +46,7 @@ function CopyLinkButton({
         className
       )}
     >
-      <img alt="" className="size-6 shrink-0" height={24} src={linkIcon} width={24} />
+      <Image alt="" className="size-6 shrink-0" height={24} src={linkIcon} width={24} />
       <span className="pt-0.5">{copied ? copiedLabel : label}</span>
     </button>
   )
