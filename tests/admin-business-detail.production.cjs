@@ -92,7 +92,7 @@ async function main() {
     const secret = randomBytes(32).toString('hex');
     child = spawn(process.execPath, [path.resolve('node_modules/next/dist/bin/next'), 'start', '-p', String(port), '-H', '127.0.0.1'], {
       cwd: path.resolve(__dirname, '..'), windowsHide: true, stdio: 'ignore',
-      env: { ...process.env, NODE_ENV: 'production', BACKEND_INTERNAL_URL: 'http://127.0.0.1:' + backend.address().port, JWT_ACCESS_SECRET: secret },
+      env: { ...process.env, NODE_ENV: 'production', SITE_URL: 'https://iran-plaza.ir', BACKEND_INTERNAL_URL: 'http://127.0.0.1:' + backend.address().port, JWT_ACCESS_SECRET: secret },
     });
     let launchError;
     child.on('error', error => { launchError = error; });
@@ -105,6 +105,10 @@ async function main() {
       await new Promise(resolve => setTimeout(resolve, 200));
     }
     assert.ok(ready, 'Production server did not start.');
+    const homeResponse=await fetch(origin+'/');
+    const homeHtml=await homeResponse.text();
+    assert.equal(homeResponse.status,200);
+    assert.match(homeHtml,/<link[^>]+rel="canonical"[^>]+href="https:\/\/iran-plaza\.ir\/?"/);
     const publicResponse=await fetch(origin+'/businesses/'+encodeURIComponent(publicSlug));
     const publicHtml=await publicResponse.text();
     assert.equal(publicResponse.status,200,'Encoded Persian slug must resolve in the production page');
