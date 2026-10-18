@@ -77,6 +77,8 @@ test('content CMS mutations are allowlisted and validated before reaching the ba
   };
 
   assert.equal(validateMutation('/api/content/articles', 'POST', article), null);
+  assert.equal(validateMutation('/api/content/articles', 'POST', { ...article, excerpt: 'x'.repeat(5000) }), null);
+  assert.ok(validateMutation('/api/content/articles', 'POST', { ...article, excerpt: 'x'.repeat(5001) }));
   assert.equal(validateMutation('/api/content/articles', 'POST', { ...article, slug: 'مقاله-خوب' }), null);
   assert.equal(validateMutation('/api/content/articles', 'POST', {
     ...article,
@@ -84,6 +86,7 @@ test('content CMS mutations are allowlisted and validated before reaching the ba
   }), null);
   assert.equal(validateMutation('/api/content/articles/article_1', 'PATCH', { ...article, expectedRevision: 1 }), null);
   assert.equal(validateMutation('/api/content/categories', 'POST', { name: 'Restaurants', slug: 'restaurants' }), null);
+  assert.equal(validateMutation('/api/admin/categories', 'POST', { name: 'Restaurants', icon: 'utensils' }), null);
   assert.equal(validateMutation('/api/content/categories/category_1', 'PATCH', { isActive: false }), null);
   assert.equal(validateMutation('/api/content/articles/article_1/submit', 'POST', undefined), null);
   assert.equal(validateMutation('/api/content/articles/article_1/request-changes', 'POST', { note: 'Please add sources.' }), null);
@@ -104,6 +107,7 @@ test('content CMS mutations are allowlisted and validated before reaching the ba
     bodyBlocks: Array.from({ length: 501 }, (_, index) => ({ id: `block-${index}`, type: 'paragraph', text: 'Too many blocks' })),
   }));
   assert.ok(validateMutation('/api/content/categories', 'POST', { name: 'Restaurants', slug: 'Not Valid' }));
+  assert.ok(validateMutation('/api/admin/categories', 'POST', { name: 'Restaurants', icon: '<script>' }));
   assert.ok(validateMutation('/api/content/articles/article_1/request-changes', 'POST', {}));
   assert.ok(validateMutation('/api/content/feedback/feedback_1', 'PATCH', { status: 'PENDING' }));
   assert.ok(validateMutation('/api/content/banners', 'POST', { ...banner, targetUrl: 'javascript:alert(1)' }));

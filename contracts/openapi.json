@@ -22569,6 +22569,13 @@
             "type": "string",
             "example": "clx_parent_id..."
           },
+          "icon": {
+            "type": "string",
+            "example": "utensils",
+            "description": "نام kebab-case آیکن از مجموعه lucide-react",
+            "maxLength": 100,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
           "sortOrder": {
             "type": "number",
             "example": 1,
@@ -22586,7 +22593,11 @@
             "type": "string"
           },
           "icon": {
-            "type": "string"
+            "type": "string",
+            "example": "utensils",
+            "description": "نام kebab-case آیکن از مجموعه lucide-react",
+            "maxLength": 100,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
           },
           "parentId": {
             "type": "object",
@@ -23359,7 +23370,8 @@
           },
           "excerpt": {
             "type": "string",
-            "example": "راهنمای انتخاب بهترین رستوران‌های ثبت‌شده در ایران پلازا"
+            "example": "راهنمای انتخاب بهترین رستوران‌های ثبت‌شده در ایران پلازا",
+            "maxLength": 5000
           },
           "bodyBlocks": {
             "maxItems": 500,
@@ -23428,7 +23440,8 @@
           },
           "excerpt": {
             "type": "string",
-            "example": "راهنمای انتخاب بهترین رستوران‌های ثبت‌شده در ایران پلازا"
+            "example": "راهنمای انتخاب بهترین رستوران‌های ثبت‌شده در ایران پلازا",
+            "maxLength": 5000
           },
           "bodyBlocks": {
             "maxItems": 500,

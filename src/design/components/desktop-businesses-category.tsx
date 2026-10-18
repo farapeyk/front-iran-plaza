@@ -7,6 +7,7 @@ import { cn } from "@/design/lib/utils"
 import { CategoryItem } from "@/design/components/category-item"
 import { Scroller } from "@/design/components/scroller"
 import { useCategories } from "@/design/api/catalog"
+import { CategoryIcon } from "@/components/category-icon"
 const arrowDown = "/design/icons/arrow-down.svg"
 const arrowLeft = "/design/icons/arrow-left.svg"
 
@@ -110,11 +111,12 @@ function DesktopBusinessesCategory({
                     <span className="absolute -start-1 top-1/2 size-0 -translate-y-1/2 border-y-[8px] border-e-[10px] border-y-transparent border-e-primary-700" />
                   ) : null}
                   <span className="min-w-0 flex-1 text-sm font-bold">{cat.label}</span>
-                  <Image
+                  <CategoryIcon
                     alt=""
-                    className={cn("size-6 shrink-0", isActive && "brightness-0 invert")}
+                    className={cn("size-6 shrink-0", isActive ? "text-white" : "text-primary-700")}
+                    legacyImageClassName={cn(isActive && "brightness-0 invert")}
                     height={24}
-                    src={cat.icon}
+                    value={cat.icon}
                     width={24}
                   />
                 </button>

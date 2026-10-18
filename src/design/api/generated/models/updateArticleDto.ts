@@ -12,6 +12,7 @@ export interface UpdateArticleDto {
   title?: string;
   /** @pattern ^[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)*$ */
   slug?: string;
+  /** @maxLength 5000 */
   excerpt?: string;
   /** @maxItems 500 */
   bodyBlocks?: ArticleBlockDto[];

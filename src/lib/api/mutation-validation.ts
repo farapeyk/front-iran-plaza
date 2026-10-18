@@ -6,6 +6,7 @@ const optionalText = z.string().max(10000).optional();
 const empty = z.object({}).strict();
 const reason = z.object({ reason: text.max(1000) }).strict();
 const slug = z.string().trim().min(2).max(120).regex(/^[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)*$/u);
+const lucideIconName = z.string().max(100).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 const articleBlock = z.object({
   id: z.string().regex(/^[A-Za-z0-9_-]{1,80}$/),
   type: z.enum(['paragraph', 'heading', 'image', 'quote', 'callout', 'business-list', 'table']),
@@ -36,7 +37,7 @@ const articleFaq = z.object({
 const createArticle = z.object({
   title: text.max(180),
   slug: slug.min(3),
-  excerpt: z.string().trim().min(10).max(500),
+  excerpt: z.string().trim().min(10).max(5000),
   bodyBlocks: z.array(articleBlock).max(500),
   categoryId: id.optional(),
   coverImageId: id.optional(),
@@ -106,8 +107,8 @@ const schemas: Record<string, z.ZodType> = {
   'PATCH businesses/id/working-hours': z.object({ hours: z.array(workingHour).max(7).refine(hours => new Set(hours.map(h => h.weekday)).size === hours.length, 'روز تکراری است.') }).strict(),
   'POST businesses/id/reviews': z.object({ rating: z.number().int().min(1).max(5), comment: z.string().max(5000).optional() }).strict(),
   'POST reviews/id/replies': z.object({ comment: text.max(5000) }).strict(),
-  'POST admin/categories': z.object({ name: text.max(150), parentId: id.optional(), icon: z.string().max(100).optional() }).strict(),
-  'PATCH admin/categories/id': z.object({ name: text.max(150).optional(), parentId: id.nullable().optional(), icon: z.string().max(100).optional(), isActive: z.boolean().optional(), sortOrder: z.number().int().optional() }).strict(),
+  'POST admin/categories': z.object({ name: text.max(150), parentId: id.optional(), icon: lucideIconName.optional() }).strict(),
+  'PATCH admin/categories/id': z.object({ name: text.max(150).optional(), parentId: id.nullable().optional(), icon: lucideIconName.optional(), isActive: z.boolean().optional(), sortOrder: z.number().int().optional() }).strict(),
   'PATCH admin/reviews/id': z.object({ status: z.enum(['PENDING','APPROVED','REJECTED']) }).strict(),
   'PATCH admin/businesses/id/plan': z.object({ planId: id }).strict(),
   'POST admin/businesses': z.object({ ownerPhone: z.string().regex(/^09\d{9}$/), ownerFullName: optionalText, ownerNationalCode: z.string().regex(/^\d{10}$/).optional(), name: text.max(150), phone: text.max(30), description: optionalText, address: optionalText, businessType: z.enum(['SOLE_PROPRIETOR','COMPANY','BRANCH']).optional(), registrationType: z.enum(['IN_PERSON','TELEPHONE']) }).strict(),

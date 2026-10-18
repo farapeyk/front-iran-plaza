@@ -17,6 +17,7 @@ import { prependSearchHistory, readSearchHistory } from '@/design/lib/search-his
 import { Link } from '@/design/navigation';
 import type { BusinessCardData } from '@/design/components/business-card';
 import type { SearchHistoryItem } from '@/design/lib/search-history';
+import { CategoryIcon } from '@/components/category-icon';
 
 const backIcon = '/design/icons/arrow-right-ltr.svg';
 const historyIcon = '/design/icons/refresh-2.svg';
@@ -38,7 +39,7 @@ function MobileSearchRow({item,onSelect}:{item:SearchHistoryItem;onSelect:(item:
     className="flex min-h-[84px] items-center gap-4 rounded-lg py-2"
   >
     <span className="flex size-16 shrink-0 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-white shadow-[var(--shadow-sm)]">
-      <Image src={item.icon} alt="" width={32} height={32} className="size-8"/>
+      <CategoryIcon value={item.icon} alt="" width={32} height={32} className="size-8 text-primary-700"/>
     </span>
     <span className="min-w-0 flex-1 text-right">
       <strong className="block truncate text-lg font-black leading-8 text-[var(--text-title)]">{item.label}</strong>

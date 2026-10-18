@@ -3,6 +3,7 @@ import { cache } from "react";
 import { notFound, permanentRedirect } from "next/navigation";
 import { ArticlePublicPage } from "@/features/content/components/article-public-page";
 import { articlePath, categoryPath } from "@/features/content/lib/public-paths";
+import { displayArticleExcerpt, withoutLegacyArticleWidgets } from "@/features/content/lib/article-content";
 import type { ContentCategory, PublicArticle, PublicArticleListItem } from "@/features/content/types";
 import { backendGet, BackendError } from "@/lib/api/backend-get";
 
@@ -15,15 +16,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   try {
     const result = await getArticle(slug);
     if ("redirectTo" in result) return { robots: { index: false, follow: true } };
+    const fullExcerpt = displayArticleExcerpt(result.excerpt, withoutLegacyArticleWidgets(result.bodyBlocks));
+    const sourceDescription = result.seoDescription || fullExcerpt;
+    const description = sourceDescription.length > 170 ? `${sourceDescription.slice(0, 169).trimEnd()}…` : sourceDescription;
     return {
       title: result.seoTitle || result.title,
-      description: result.seoDescription || result.excerpt,
+      description,
       alternates: { canonical: result.canonicalUrl || articlePath(result.slug) },
       robots: { index: result.robotsIndex, follow: result.robotsFollow },
       openGraph: {
         type: "article",
         title: result.seoTitle || result.title,
-        description: result.seoDescription || result.excerpt,
+        description,
         publishedTime: result.publishedAt ?? undefined,
         modifiedTime: result.updatedAt,
         images: result.coverImageId ? [{ url: `/api/backend/files/${encodeURIComponent(result.coverImageId)}`, alt: result.coverImageAlt || result.title }] : undefined,

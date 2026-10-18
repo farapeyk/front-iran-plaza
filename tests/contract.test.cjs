@@ -42,7 +42,11 @@ test('frontend contract keeps the reviewed backend names and operations, with co
   assert.equal(articleBlock.properties.businessIds.items.type, 'string');
   const createArticle = schema.components.schemas.CreateArticleDto;
   for (const field of ['title', 'slug', 'excerpt', 'bodyBlocks']) assert.ok(createArticle.required.includes(field));
+  assert.equal(createArticle.properties.excerpt.maxLength, 5000);
   assert.equal(createArticle.properties.bodyBlocks.items.$ref, '#/components/schemas/ArticleBlockDto');
+  const categoryIcon = schema.components.schemas.CreateCategoryDto.properties.icon;
+  assert.equal(categoryIcon.maxLength, 100);
+  assert.equal(categoryIcon.pattern, '^[a-z0-9]+(?:-[a-z0-9]+)*$');
   const assignAuthor = schema.components.schemas.AssignContentAuthorDto;
   assert.equal(assignAuthor.properties.assignedBy, undefined);
   for (const {route, method} of operations) {

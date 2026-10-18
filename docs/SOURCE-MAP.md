@@ -97,6 +97,7 @@ src/app/not-found.tsx
 src/app/page.tsx
 src/app/robots.ts
 src/app/sitemap.ts
+src/components/category-icon.tsx
 src/components/pagination.tsx
 src/components/ui/accordion.tsx
 src/components/ui/avatar.tsx
@@ -832,6 +833,7 @@ src/features/content/components/content-sidebar.tsx
 src/features/content/components/feedback-queue.tsx
 src/features/content/components/rich-text-editor.tsx
 src/features/content/components/rich-text-renderer.tsx
+src/features/content/lib/article-content.ts
 src/features/content/lib/canonical-url.ts
 src/features/content/lib/public-paths.ts
 src/features/content/types.ts
@@ -888,6 +890,7 @@ src/lib/auth/safe-redirect.ts
 src/lib/auth/same-origin.ts
 src/lib/auth/validate-auth-response.ts
 src/lib/auth/verify-access-token.ts
+src/lib/category-icons.ts
 src/lib/constants/auth.ts
 src/lib/constants/iran-locations.ts
 src/lib/nav-config.ts
@@ -905,6 +908,9 @@ tests/admin-routing.test.cjs
 tests/browser/design-transfer.spec.ts
 tests/browser/reference-layout.spec.ts
 tests/business-slug.test.cjs
+tests/category-icons.test.cjs
+tests/content-article.test.cjs
+tests/content-filters.test.cjs
 tests/contract.test.cjs
 tests/design-api.test.cjs
 tests/docs.test.cjs

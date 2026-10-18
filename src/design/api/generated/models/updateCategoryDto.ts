@@ -9,6 +9,11 @@ import type { UpdateCategoryDtoParentId } from './updateCategoryDtoParentId';
 
 export interface UpdateCategoryDto {
   name?: string;
+  /**
+     * نام kebab-case آیکن از مجموعه lucide-react
+     * @maxLength 100
+     * @pattern ^[a-z0-9]+(?:-[a-z0-9]+)*$
+     */
   icon?: string;
   /** شناسه دسته‌بندی والد، یا null برای تبدیل به دسته‌ی ریشه */
   parentId?: UpdateCategoryDtoParentId;

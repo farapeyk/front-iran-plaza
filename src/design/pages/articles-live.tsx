@@ -4,6 +4,7 @@ import { NewMembers } from "@/design/components/new-members";
 import { ArticleCard } from "@/design/components/article-card";
 import { Link } from "@/design/navigation";
 import type { ContentCategory, PublicArticleListResponse } from "@/features/content/types";
+import { compactPaginationItems } from "@/features/content/lib/article-content";
 import { articlePath, categoryPath } from "@/features/content/lib/public-paths";
 
 const fallbackImage = "/design/home/biz-3.webp";
@@ -22,6 +23,16 @@ export function ArticlesLivePage({
 }) {
   const selectedCategory = category ? categories.find(item => item.slug === category) : undefined;
   const archivePath = selectedCategory ? categoryPath(selectedCategory, categories) ?? "/articles/" : "/articles/";
+  const totalPages = Math.max(1, Math.ceil(result.total / Math.max(1, result.limit)));
+  const currentPage = Math.min(totalPages, Math.max(1, result.page));
+  const paginationItems = compactPaginationItems(currentPage, totalPages);
+  const pagePath = (page: number) => {
+    const searchParams = new URLSearchParams();
+    if (page > 1) searchParams.set("page", String(page));
+    if (query) searchParams.set("q", query);
+    const search = searchParams.toString();
+    return `${archivePath}${search ? `?${search}` : ""}`;
+  };
   return (
     <SiteLayout>
       <section className="mx-auto w-full max-w-[1440px] space-y-[var(--5xl)] px-[var(--page-gutter)] py-[var(--5xl)] lg:px-[var(--8xl)]">
@@ -71,11 +82,21 @@ export function ArticlesLivePage({
           </div>
         )}
 
-        {result.total > result.data.length ? (
-          <nav className="flex justify-center gap-2" aria-label="صفحه‌بندی">
-            {Array.from({ length: Math.ceil(result.total / result.limit) }, (_, index) => index + 1).map(page => (
-              <Link key={page} to={`${archivePath}?page=${page}${query ? `&q=${encodeURIComponent(query)}` : ""}`} className={`flex size-10 items-center justify-center rounded-full border ${page === result.page ? "bg-primary-700 text-white" : "bg-[var(--surface)]"}`}>{page.toLocaleString("fa-IR")}</Link>
-            ))}
+        {totalPages > 1 ? (
+          <nav className="mx-auto flex max-w-full flex-wrap items-center justify-center gap-1.5 sm:gap-2" aria-label="صفحه‌بندی">
+            {paginationItems.map(item => {
+              if (typeof item !== "number") {
+                return <span key={item} aria-hidden="true" className="flex size-9 items-center justify-center text-[var(--text-body)] sm:size-10">…</span>;
+              }
+
+              const isCurrent = item === currentPage;
+              const className = `flex size-9 items-center justify-center rounded-full border text-sm font-bold transition-colors sm:size-10 ${isCurrent ? "border-primary-700 bg-primary-700 text-white" : "border-[var(--border-default)] bg-[var(--surface)] text-[var(--text-title)] hover:border-primary-500 hover:text-primary-700"}`;
+              return isCurrent ? (
+                <span key={item} aria-current="page" className={className}>{item.toLocaleString("fa-IR")}</span>
+              ) : (
+                <Link key={item} to={pagePath(item)} className={className}>{item.toLocaleString("fa-IR")}</Link>
+              );
+            })}
           </nav>
         ) : null}
       </section>

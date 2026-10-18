@@ -8,11 +8,12 @@ import Image from "next/image";
 import { ArticleFeedbackForm } from "@/features/content/components/article-feedback-form";
 import { RichTextRenderer } from "@/features/content/components/rich-text-renderer";
 import { articlePath } from "@/features/content/lib/public-paths";
+import { displayArticleExcerpt, withoutLegacyArticleWidgets } from "@/features/content/lib/article-content";
 import type { ArticleBanner, ArticleBlock, PublicArticle, PublicArticleListItem } from "@/features/content/types";
 
 const fileUrl = (id: string) => `/api/backend/files/${encodeURIComponent(id)}`;
 
-function StructuredData({ article, categoryPath }: { article: PublicArticle; categoryPath?: string }) {
+function StructuredData({ article, categoryPath, description }: { article: PublicArticle; categoryPath?: string; description: string }) {
   const base = process.env.SITE_URL?.replace(/\/$/, "");
   const publicPath = articlePath(article.slug);
   const articleUrl = article.canonicalUrl || (base ? `${base}${publicPath}` : publicPath);
@@ -21,7 +22,7 @@ function StructuredData({ article, categoryPath }: { article: PublicArticle; cat
       "@type": "Article",
       "@id": `${articleUrl}#article`,
       headline: article.title,
-      description: article.seoDescription || article.excerpt,
+      description: article.seoDescription || description,
       datePublished: article.publishedAt,
       dateModified: article.updatedAt,
       author: { "@type": "Person", name: article.author.fullName || "تیم ایران پلازا" },
@@ -86,8 +87,10 @@ function ArticleTableView({ block }: { block: ArticleBlock }) {
 }
 
 export function ArticlePublicPage({ article, relatedArticles = [], categoryPath }: { article: PublicArticle; relatedArticles?: PublicArticleListItem[]; categoryPath?: string }) {
+  const bodyBlocks = withoutLegacyArticleWidgets(article.bodyBlocks);
+  const excerpt = displayArticleExcerpt(article.excerpt, bodyBlocks);
   const businessById = new Map(article.businesses.map(item => [item.business.id, item.business]));
-  const tocItems = article.bodyBlocks
+  const tocItems = bodyBlocks
     .filter(block => block.type === "heading" && block.text)
     .map(block => ({ label: block.text as string, href: `#${block.id}` }));
   const published = new Date(article.publishedAt as string).toLocaleDateString("fa-IR", { timeZone: "Asia/Tehran" });
@@ -97,7 +100,7 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath 
 
   return (
     <SiteLayout>
-      <StructuredData article={article} categoryPath={categoryPath} />
+      <StructuredData article={article} categoryPath={categoryPath} description={excerpt} />
       <main className="mx-auto w-full max-w-[1440px] px-[var(--page-gutter)] py-[var(--5xl)] lg:px-[var(--8xl)] lg:pb-[var(--9xl)]">
         <Breadcrumb items={[{ label: "خانه", to: "/" }, { label: article.category?.name || "مقالات", to: categoryPath || "/articles/" }, { label: article.title }]} />
         <header className="mx-auto mt-[var(--5xl)] max-w-[1000px] space-y-4 text-start">
@@ -119,10 +122,10 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath 
                 {article.coverImageAlt ? <figcaption className="text-sm text-[var(--text-body)]">{article.coverImageAlt}</figcaption> : null}
               </figure>
             ) : null}
-            {tocItems.length ? <TableOfContent items={tocItems} defaultOpen className="w-full" /> : null}
-            <p className="text-lg leading-loose text-[var(--text-body)]">{article.excerpt}</p>
+            {tocItems.length ? <TableOfContent items={tocItems} className="w-full" /> : null}
+            <p className="whitespace-pre-line text-lg leading-loose text-[var(--text-body)]">{excerpt}</p>
 
-            {article.bodyBlocks.map(block => {
+            {bodyBlocks.map(block => {
               if (block.type === "image" && block.imageId) {
                 return <figure key={block.id} className="space-y-2"><Image width={1200} height={675} sizes="(min-width: 1024px) 760px, 100vw" src={fileUrl(block.imageId)} alt={block.imageAlt || ""} className="h-auto w-full rounded-[var(--radius-xs)]" /><figcaption className="text-sm text-[var(--text-body)]">{block.imageAlt}</figcaption></figure>;
               }
@@ -149,7 +152,7 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath 
               </section>
             ) : null}
 
-            <ArticleFeedbackForm slug={article.slug} />
+            <ArticleFeedbackForm slug={article.slug} averageRating={article.rating} ratingCount={article.ratingCount} />
             {article.feedback.length ? (
               <section className="space-y-4">
                 <h2 className="text-2xl font-black">نظرات کاربران</h2>

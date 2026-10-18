@@ -1,8 +1,8 @@
 "use client"
-import Image from "next/image";
 
 import { Link } from "@/design/navigation"
 import { cn } from "@/design/lib/utils"
+import { CategoryIcon } from "@/components/category-icon"
 const awardIcon = "/design/icons/award.svg"
 
 type CategoryCardProps = {
@@ -43,12 +43,13 @@ function CategoryCard({
           )}
         >
           <span className="size-8 overflow-clip">
-            <Image
+            <CategoryIcon
               alt=""
-              className={cn("size-full", active && "brightness-0 invert")}
-              height={32}
-              src={iconSrc}
+              className={cn("size-full", active ? "text-white" : "text-primary-700")}
+              legacyImageClassName={cn(active && "brightness-0 invert")}
+              value={iconSrc}
               width={32}
+              height={32}
             />
           </span>
         </span>

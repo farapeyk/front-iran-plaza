@@ -24,4 +24,5 @@ export interface CategorySummary {
   id: string;
   name: string;
   parentId?: string | null;
+  icon?: string | null;
 }

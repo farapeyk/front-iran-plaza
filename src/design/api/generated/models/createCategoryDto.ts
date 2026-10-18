@@ -9,5 +9,11 @@
 export interface CreateCategoryDto {
   name: string;
   parentId?: string;
+  /**
+     * نام kebab-case آیکن از مجموعه lucide-react
+     * @maxLength 100
+     * @pattern ^[a-z0-9]+(?:-[a-z0-9]+)*$
+     */
+  icon?: string;
   sortOrder?: number;
 }

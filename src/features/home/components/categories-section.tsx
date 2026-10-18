@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { backendGet } from '@/lib/api/backend-get';
 import type { CategorySummary } from '@/features/public/types/public-business';
+import { CategoryIcon } from '@/components/category-icon';
 
 export async function CategoriesSection() {
   let categories: CategorySummary[] = [];
@@ -21,9 +22,8 @@ export async function CategoriesSection() {
             key={cat.id} 
             className="flex flex-col items-center p-4 rounded-2xl border border-gray-100 hover:shadow-md hover:border-emerald-200 transition-all cursor-pointer bg-white group"
           >
-            {/* Circle Icon Placeholder */}
             <div className="w-16 h-16 rounded-full bg-[#FAF3E0] group-hover:bg-[#E8D4B0] flex items-center justify-center mb-3 transition-colors">
-              <div className="w-8 h-8 bg-[#C39E67] rounded-md opacity-80" />
+              <CategoryIcon value={cat.icon} className="size-8 text-[#9A7441]" width={32} height={32} />
             </div>
             <span className="text-sm font-semibold text-gray-800">{cat.name}</span>
           </Link>

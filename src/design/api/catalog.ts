@@ -15,7 +15,7 @@ export function useCategories() {
   const [categories, setCategories] = useState<CategorySummary[]>([]);
   const [error, setError] = useState('');
   useEffect(() => { const controller = new AbortController(); categoriesControllerGetCategories({signal:controller.signal}).then(setCategories).catch(() => { if(!controller.signal.aborted) setError('دریافت دسته‌بندی‌ها انجام نشد.'); }); return () => controller.abort(); }, []);
-  const cards = categories.filter(c => !c.parentId).map(c => ({ id: c.id, label: c.name, icon: icons.find(icon => icon.label === c.name)?.icon ?? '/design/icons/categories.svg', href: '/businesses?categoryId=' + encodeURIComponent(c.id) }));
+  const cards = categories.filter(c => !c.parentId).map(c => ({ id: c.id, label: c.name, icon: c.icon || icons.find(icon => icon.label === c.name)?.icon || '/design/icons/categories.svg', href: '/businesses?categoryId=' + encodeURIComponent(c.id) }));
   return {categories, cards, error};
 }
 export function useNewMembers() {
