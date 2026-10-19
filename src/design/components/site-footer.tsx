@@ -2,7 +2,7 @@
 import Image from "next/image";
 
 import { Link } from "@/design/navigation"
-import type { ReactNode } from "react"
+import type { ImgHTMLAttributes, ReactNode } from "react"
 import { useState } from "react"
 import { cn } from "@/design/lib/utils"
 import { Logo } from "@/design/components/logo"
@@ -11,8 +11,33 @@ import { FooterSocialIcon } from "@/design/components/footer-social-icon"
 import { useCategories } from '@/design/api/catalog'
 const callIcon = "/design/icons/call.svg"
 const arrowDown = "/design/icons/arrow-down.svg"
-const enamad = "/design/shared/enamad.webp"
 const samandehi = "/design/shared/samandehi.webp"
+const enamadCode = "nvxOEnp57ndUasGvqyFejdrGnRPqExqe"
+const enamadImageAttributes = {
+  code: enamadCode,
+} as unknown as ImgHTMLAttributes<HTMLImageElement>
+
+function EnamadSeal() {
+  return (
+    <a
+      referrerPolicy="origin"
+      target="_blank"
+      rel="noopener noreferrer"
+      href={`https://trustseal.enamad.ir/?id=752601&Code=${enamadCode}`}
+      aria-label="مشاهده نماد اعتماد الکترونیکی ایران پلازا"
+      className="flex h-full w-full items-center justify-center"
+    >
+      <img
+        {...enamadImageAttributes}
+        referrerPolicy="origin"
+        src={`https://trustseal.enamad.ir/logo.aspx?id=752601&Code=${enamadCode}`}
+        alt=""
+        className="max-h-full max-w-full object-contain"
+        style={{ cursor: "pointer" }}
+      />
+    </a>
+  )
+}
 
 const iranPlazaLinks = [
   { label: "خانه", to: "/" },
@@ -155,7 +180,7 @@ function SiteFooter({ className }: { className?: string }) {
         <div className="mt-12 flex items-start justify-between gap-8 border-t border-[var(--opacity-light-8)] pt-8">
           <div className="flex gap-4">
             <div className="flex size-24 items-center justify-center rounded border border-[var(--opacity-light-8)] bg-[var(--opacity-light-8)] p-3">
-              <Image alt="اینماد" className="max-h-full max-w-full object-contain" src={enamad} width={96} height={96} sizes="96px" />
+              <EnamadSeal />
             </div>
             <div className="flex size-24 items-center justify-center rounded border border-[var(--opacity-light-8)] bg-[var(--opacity-light-8)] p-3">
               <Image alt="ساماندهی" className="max-h-full max-w-full object-contain" src={samandehi} width={96} height={96} sizes="96px" />
@@ -216,7 +241,7 @@ function SiteFooter({ className }: { className?: string }) {
           </div>
           <div className="flex gap-4">
             <div className="flex h-28 flex-1 items-center justify-center rounded border border-[var(--opacity-light-8)] p-4">
-              <Image alt="اینماد" className="max-h-full object-contain" src={enamad} width={112} height={112} sizes="50vw" />
+              <EnamadSeal />
             </div>
             <div className="flex h-28 flex-1 items-center justify-center rounded border border-[var(--opacity-light-8)] p-4">
               <Image alt="ساماندهی" className="max-h-full object-contain" src={samandehi} width={112} height={112} sizes="50vw" />

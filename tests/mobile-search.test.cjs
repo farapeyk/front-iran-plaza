@@ -66,3 +66,16 @@ test('business profile separates checked features from tabbed priced services', 
   assert.match(source, /formatServicePrice/);
   assert.match(source, /business-service-card/);
 });
+
+test('desktop and mobile footer use the linked official Enamad trust seal', () => {
+  const source = fs.readFileSync(path.join(__dirname, '../src/design/components/site-footer.tsx'), 'utf8');
+
+  assert.match(source, /const enamadCode = "nvxOEnp57ndUasGvqyFejdrGnRPqExqe"/);
+  assert.ok(source.includes('href={`https://trustseal.enamad.ir/?id=752601&Code=${enamadCode}`}'));
+  assert.ok(source.includes('src={`https://trustseal.enamad.ir/logo.aspx?id=752601&Code=${enamadCode}`}'));
+  assert.match(source, /referrerPolicy="origin"/);
+  assert.match(source, /target="_blank"/);
+  assert.match(source, /rel="noopener noreferrer"/);
+  assert.equal((source.match(/<EnamadSeal \/>/g) ?? []).length, 2);
+  assert.doesNotMatch(source, /src=\{enamad\}/);
+});
