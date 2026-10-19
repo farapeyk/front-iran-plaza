@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1
  */
 import type { BusinessControllerGetById200BusinessType } from './businessControllerGetById200BusinessType';
+import type { BusinessControllerGetById200CategoriesItem } from './businessControllerGetById200CategoriesItem';
 import type { BusinessControllerGetById200PlanType } from './businessControllerGetById200PlanType';
 import type { BusinessControllerGetById200RegistrationType } from './businessControllerGetById200RegistrationType';
 import type { BusinessControllerGetById200SocialMedia } from './businessControllerGetById200SocialMedia';
@@ -19,6 +20,7 @@ export type BusinessControllerGetById200 = {
   /** @nullable */
   address: string | null;
   businessType: BusinessControllerGetById200BusinessType;
+  categories: BusinessControllerGetById200CategoriesItem[];
   city: string;
   createdAt: string;
   /** @nullable */

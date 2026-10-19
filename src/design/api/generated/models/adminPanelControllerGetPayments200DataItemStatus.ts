@@ -10,8 +10,8 @@ export type AdminPanelControllerGetPayments200DataItemStatus = typeof AdminPanel
 
 
 export const AdminPanelControllerGetPayments200DataItemStatus = {
-  SUCCESS: 'SUCCESS',
   FAILED: 'FAILED',
+  SUCCESS: 'SUCCESS',
   INITIATED: 'INITIATED',
   PENDING_VERIFICATION: 'PENDING_VERIFICATION',
 } as const;

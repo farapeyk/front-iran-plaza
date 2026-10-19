@@ -35,8 +35,8 @@ src/app/(dashboard)/dashboard/subscription/page.tsx
 src/app/(dashboard)/dashboard/support/page.tsx
 src/app/(dashboard)/dashboard/vip/page.tsx
 src/app/(dashboard)/layout.tsx
-src/app/(public)/about/page.tsx
 src/app/(public)/[slug]/page.tsx
+src/app/(public)/about/page.tsx
 src/app/(public)/articles/[slug]/page.tsx
 src/app/(public)/articles/page.tsx
 src/app/(public)/business-registration/page.tsx
@@ -116,6 +116,11 @@ src/design/api/generated/models/adminBusinessControllerCreateManual201PlanType.t
 src/design/api/generated/models/adminBusinessControllerCreateManual201RegistrationType.ts
 src/design/api/generated/models/adminBusinessControllerCreateManual201SocialMedia.ts
 src/design/api/generated/models/adminBusinessControllerCreateManual201Status.ts
+src/design/api/generated/models/adminBusinessControllerCreateManual400.ts
+src/design/api/generated/models/adminBusinessControllerCreateManual401.ts
+src/design/api/generated/models/adminBusinessControllerCreateManual403.ts
+src/design/api/generated/models/adminBusinessControllerCreateManual409.ts
+src/design/api/generated/models/adminBusinessControllerCreateManual429.ts
 src/design/api/generated/models/adminBusinessControllerDowngradeToFree200.ts
 src/design/api/generated/models/adminBusinessControllerGrantPlan200.ts
 src/design/api/generated/models/adminMessageControllerSendMessage201.ts
@@ -228,6 +233,7 @@ src/design/api/generated/models/businessControllerGetAllBusinesses200DataItemSta
 src/design/api/generated/models/businessControllerGetAllBusinessesParams.ts
 src/design/api/generated/models/businessControllerGetById200.ts
 src/design/api/generated/models/businessControllerGetById200BusinessType.ts
+src/design/api/generated/models/businessControllerGetById200CategoriesItem.ts
 src/design/api/generated/models/businessControllerGetById200PlanType.ts
 src/design/api/generated/models/businessControllerGetById200RegistrationType.ts
 src/design/api/generated/models/businessControllerGetById200SocialMedia.ts
@@ -291,6 +297,11 @@ src/design/api/generated/models/businessControllerSuspend200PlanType.ts
 src/design/api/generated/models/businessControllerSuspend200RegistrationType.ts
 src/design/api/generated/models/businessControllerSuspend200SocialMedia.ts
 src/design/api/generated/models/businessControllerSuspend200Status.ts
+src/design/api/generated/models/businessControllerSuspend400.ts
+src/design/api/generated/models/businessControllerSuspend401.ts
+src/design/api/generated/models/businessControllerSuspend403.ts
+src/design/api/generated/models/businessControllerSuspend404.ts
+src/design/api/generated/models/businessControllerSuspend429.ts
 src/design/api/generated/models/businessControllerUpdate400.ts
 src/design/api/generated/models/businessControllerUpdate401.ts
 src/design/api/generated/models/businessControllerUpdate403.ts

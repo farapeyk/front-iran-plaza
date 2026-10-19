@@ -10,8 +10,8 @@ export type AdminMessageControllerSendMessage201Channel = typeof AdminMessageCon
 
 
 export const AdminMessageControllerSendMessage201Channel = {
-  IN_APP: 'IN_APP',
   SMS: 'SMS',
   EMAIL: 'EMAIL',
+  IN_APP: 'IN_APP',
   PUSH: 'PUSH',
 } as const;

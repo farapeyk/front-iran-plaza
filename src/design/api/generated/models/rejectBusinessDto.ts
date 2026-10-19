@@ -7,5 +7,9 @@
  */
 
 export interface RejectBusinessDto {
+  /**
+     * @minLength 5
+     * @maxLength 1000
+     */
   reason: string;
 }

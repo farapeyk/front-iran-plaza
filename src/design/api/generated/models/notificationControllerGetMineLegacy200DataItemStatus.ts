@@ -11,7 +11,7 @@ export type NotificationControllerGetMineLegacy200DataItemStatus = typeof Notifi
 
 export const NotificationControllerGetMineLegacy200DataItemStatus = {
   PENDING: 'PENDING',
-  FAILED: 'FAILED',
   SENT: 'SENT',
+  FAILED: 'FAILED',
   READ: 'READ',
 } as const;

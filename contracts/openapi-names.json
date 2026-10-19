@@ -159,8 +159,6 @@
       "BRANCH"
     ],
     "schemas/CreateManualBusinessDto/properties/registrationType": [
-      "USER_SELF",
-      "ADMIN_MANUAL",
       "IN_PERSON",
       "TELEPHONE"
     ],

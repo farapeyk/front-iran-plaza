@@ -14,6 +14,13 @@ export interface CreateManualBusinessDto {
   ownerNationalCode?: string;
   name: string;
   phone: string;
+  /**
+     * @minItems 1
+     * @maxItems 5
+     */
+  categoryIds: string[];
+  /** @maxLength 150 */
+  city: string;
   description?: string;
   address?: string;
   businessType?: CreateManualBusinessDtoBusinessType;

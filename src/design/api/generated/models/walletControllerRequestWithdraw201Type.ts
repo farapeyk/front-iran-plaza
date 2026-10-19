@@ -10,8 +10,8 @@ export type WalletControllerRequestWithdraw201Type = typeof WalletControllerRequ
 
 
 export const WalletControllerRequestWithdraw201Type = {
+  SUBSCRIPTION: 'SUBSCRIPTION',
   DEPOSIT: 'DEPOSIT',
   WITHDRAW: 'WITHDRAW',
-  SUBSCRIPTION: 'SUBSCRIPTION',
   REFUND: 'REFUND',
 } as const;

@@ -590,7 +590,7 @@ export const getFileAssetControllerUploadUrl = () => {
 }
 
 /**
- * فایل غیرخالی تا 20 MiB؛ JPEG, PNG, GIF, WebP, PDF, MP4, WebM و TXT. پسوند و MIME باید تطابق داشته باشند؛ امضای ابتدایی محتوا بررسی می‌شود.
+ * فایل غیرخالی تا 20 MiB؛ JPEG, PNG, GIF, WebP, AVIF, TIFF, BMP, PDF, MP4, WebM و TXT. همه تصاویر پس از اعتبارسنجی با کیفیت 90 و فرمت WebP ذخیره می‌شوند؛ فایل‌های غیرتصویری فرمت اصلی خود را حفظ می‌کنند.
  * @summary آپلود فایل با چک سهمیه
  */
 export const fileAssetControllerUpload = async (fileAssetControllerUploadBody: FileAssetControllerUploadBody, options?: Parameters<typeof browserFetch>[1]): Promise<FileAssetControllerUpload201> => {

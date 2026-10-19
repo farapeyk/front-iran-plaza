@@ -10,8 +10,6 @@ export type CreateManualBusinessDtoRegistrationType = typeof CreateManualBusines
 
 
 export const CreateManualBusinessDtoRegistrationType = {
-  USER_SELF: 'USER_SELF',
-  ADMIN_MANUAL: 'ADMIN_MANUAL',
   IN_PERSON: 'IN_PERSON',
   TELEPHONE: 'TELEPHONE',
 } as const;

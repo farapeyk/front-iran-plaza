@@ -1,0 +1,108 @@
+name: Production CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+  workflow_dispatch:
+
+concurrency:
+  group: iranplaza-production-frontend
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  verify-and-deploy:
+    name: Verify and deploy frontend
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Check out the exact revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: '.node-version'
+
+      - name: Enable the pinned package manager
+        run: corepack enable
+
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run final frontend QA
+        run: |
+          pnpm run typecheck
+          pnpm run lint
+          pnpm run test
+          pnpm run api:check
+          BACKEND_INTERNAL_URL=http://127.0.0.1:1 \
+          SITE_URL=https://iran-plaza.ir \
+          JWT_ACCESS_SECRET=github-actions-build-only-secret-32-bytes \
+          pnpm run build
+          pnpm run test:production
+
+      - name: Validate deployment secrets
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.PROD_SSH_KNOWN_HOSTS }}
+          IRAN_TARGET: ${{ secrets.PROD_IRAN_SSH_TARGET }}
+          IRAN_PORT: ${{ secrets.PROD_IRAN_SSH_PORT }}
+          FOREIGN_TARGET: ${{ secrets.PROD_FOREIGN_SSH_TARGET }}
+          FOREIGN_PORT: ${{ secrets.PROD_FOREIGN_SSH_PORT }}
+        run: |
+          for name in DEPLOY_SSH_KEY DEPLOY_KNOWN_HOSTS IRAN_TARGET IRAN_PORT FOREIGN_TARGET FOREIGN_PORT; do
+            test -n "${!name:-}" || { echo "Missing production secret: $name" >&2; exit 1; }
+          done
+
+      - name: Package the reviewed source
+        run: |
+          tar \
+            --exclude=.git \
+            --exclude=node_modules \
+            --exclude=.next \
+            --exclude=playwright-report \
+            --exclude=test-results \
+            --exclude=.env \
+            --exclude='.env.*' \
+            -czf "$RUNNER_TEMP/frontend-source.tar.gz" .
+
+      - name: Deploy Iran, then foreign region
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.PROD_SSH_KNOWN_HOSTS }}
+          IRAN_TARGET: ${{ secrets.PROD_IRAN_SSH_TARGET }}
+          IRAN_PORT: ${{ secrets.PROD_IRAN_SSH_PORT }}
+          FOREIGN_TARGET: ${{ secrets.PROD_FOREIGN_SSH_TARGET }}
+          FOREIGN_PORT: ${{ secrets.PROD_FOREIGN_SSH_PORT }}
+        run: |
+          install -d -m 0700 "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_SSH_KEY" >"$HOME/.ssh/id_ed25519"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" >"$HOME/.ssh/known_hosts"
+          chmod 0600 "$HOME/.ssh/id_ed25519" "$HOME/.ssh/known_hosts"
+
+          ssh_options=(
+            -i "$HOME/.ssh/id_ed25519"
+            -o BatchMode=yes
+            -o IdentitiesOnly=yes
+            -o StrictHostKeyChecking=yes
+            -o ConnectTimeout=20
+            -o ServerAliveInterval=30
+            -o ServerAliveCountMax=20
+          )
+
+          deploy_region() {
+            local target=$1
+            local port=$2
+            cat "$RUNNER_TEMP/frontend-source.tar.gz" | ssh "${ssh_options[@]}" -p "$port" "$target" "upload frontend $GITHUB_SHA"
+            ssh "${ssh_options[@]}" -p "$port" "$target" "deploy frontend $GITHUB_SHA"
+          }
+
+          deploy_region "$IRAN_TARGET" "$IRAN_PORT"
+          deploy_region "$FOREIGN_TARGET" "$FOREIGN_PORT"

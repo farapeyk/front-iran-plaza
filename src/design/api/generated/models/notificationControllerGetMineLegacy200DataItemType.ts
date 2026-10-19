@@ -10,10 +10,10 @@ export type NotificationControllerGetMineLegacy200DataItemType = typeof Notifica
 
 
 export const NotificationControllerGetMineLegacy200DataItemType = {
-  SUBSCRIPTION: 'SUBSCRIPTION',
   SYSTEM: 'SYSTEM',
   FINANCIAL: 'FINANCIAL',
   BUSINESS: 'BUSINESS',
   REVIEW: 'REVIEW',
   REPORT: 'REPORT',
+  SUBSCRIPTION: 'SUBSCRIPTION',
 } as const;

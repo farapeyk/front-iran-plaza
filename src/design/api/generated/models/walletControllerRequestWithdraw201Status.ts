@@ -11,6 +11,6 @@ export type WalletControllerRequestWithdraw201Status = typeof WalletControllerRe
 
 export const WalletControllerRequestWithdraw201Status = {
   PENDING: 'PENDING',
-  SUCCESS: 'SUCCESS',
   FAILED: 'FAILED',
+  SUCCESS: 'SUCCESS',
 } as const;

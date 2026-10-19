@@ -10,10 +10,10 @@ export type AdminMessageControllerSendMessage201Type = typeof AdminMessageContro
 
 
 export const AdminMessageControllerSendMessage201Type = {
-  SUBSCRIPTION: 'SUBSCRIPTION',
   SYSTEM: 'SYSTEM',
   FINANCIAL: 'FINANCIAL',
   BUSINESS: 'BUSINESS',
   REVIEW: 'REVIEW',
   REPORT: 'REPORT',
+  SUBSCRIPTION: 'SUBSCRIPTION',
 } as const;

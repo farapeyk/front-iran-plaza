@@ -10,8 +10,8 @@ export type NotificationControllerGetMineLegacy200DataItemChannel = typeof Notif
 
 
 export const NotificationControllerGetMineLegacy200DataItemChannel = {
-  IN_APP: 'IN_APP',
   SMS: 'SMS',
   EMAIL: 'EMAIL',
+  IN_APP: 'IN_APP',
   PUSH: 'PUSH',
 } as const;

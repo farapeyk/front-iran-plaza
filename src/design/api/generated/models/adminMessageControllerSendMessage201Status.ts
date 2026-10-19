@@ -11,7 +11,7 @@ export type AdminMessageControllerSendMessage201Status = typeof AdminMessageCont
 
 export const AdminMessageControllerSendMessage201Status = {
   PENDING: 'PENDING',
-  FAILED: 'FAILED',
   SENT: 'SENT',
+  FAILED: 'FAILED',
   READ: 'READ',
 } as const;

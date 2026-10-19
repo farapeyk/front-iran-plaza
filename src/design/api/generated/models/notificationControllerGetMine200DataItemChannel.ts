@@ -10,8 +10,8 @@ export type NotificationControllerGetMine200DataItemChannel = typeof Notificatio
 
 
 export const NotificationControllerGetMine200DataItemChannel = {
-  IN_APP: 'IN_APP',
   SMS: 'SMS',
   EMAIL: 'EMAIL',
+  IN_APP: 'IN_APP',
   PUSH: 'PUSH',
 } as const;
