@@ -22,7 +22,6 @@ function EnamadSeal() {
     <a
       referrerPolicy="origin"
       target="_blank"
-      rel="noopener noreferrer"
       href={`https://trustseal.enamad.ir/?id=752601&Code=${enamadCode}`}
       aria-label="مشاهده نماد اعتماد الکترونیکی ایران پلازا"
       className="flex h-full w-full items-center justify-center"

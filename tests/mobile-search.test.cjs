@@ -75,7 +75,7 @@ test('desktop and mobile footer use the linked official Enamad trust seal', () =
   assert.ok(source.includes('src={`https://trustseal.enamad.ir/logo.aspx?id=752601&Code=${enamadCode}`}'));
   assert.match(source, /referrerPolicy="origin"/);
   assert.match(source, /target="_blank"/);
-  assert.match(source, /rel="noopener noreferrer"/);
+  assert.doesNotMatch(source, /rel=/);
   assert.equal((source.match(/<EnamadSeal \/>/g) ?? []).length, 2);
   assert.doesNotMatch(source, /src=\{enamad\}/);
 });

@@ -24,7 +24,11 @@ export async function GET(request: NextRequest) {
   if (!result.success && result.status === 503) return NextResponse.json({ message: 'تمدید نشست موقتاً در دسترس نیست؛ دوباره تلاش کنید.' }, {
     status: 503, headers: { 'Cache-Control': 'no-store' },
   });
-  const response = NextResponse.redirect(new URL(result.success ? redirectTo : loginPath, request.url));
-  response.headers.set('Cache-Control', 'no-store');
-  return response;
+  return new NextResponse(null, {
+    status: 307,
+    headers: {
+      Location: result.success ? redirectTo : loginPath,
+      'Cache-Control': 'no-store',
+    },
+  });
 }

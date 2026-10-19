@@ -38,6 +38,22 @@ test('page protection uses segment boundaries and an exact admin-login exception
   assert.equal(customer.headers.get('location'),'http://frontend.invalid/dashboard');
 });
 
+test('silent refresh redirects use a relative location instead of the internal listener origin', async () => {
+  const { NextRequest } = require('next/server');
+  const route = load('src/app/api/auth/silent-refresh/route.ts', {
+    '@/lib/auth/cookies': { getAccessTokenCookie: async () => null },
+    '@/lib/auth/verify-access-token': { verifyAccessToken: async () => null },
+    '@/lib/auth/refresh-session': { refreshSession: async () => ({ success: false, status: 401 }) },
+    '@/lib/auth/safe-redirect': { safeRedirect: value => value || '/dashboard' },
+    '@/lib/auth/same-origin': { isSameOrigin: () => true },
+  });
+
+  const response = await route.GET(new NextRequest('http://0.0.0.0:3000/api/auth/silent-refresh?redirect=%2Fdashboard%2Fbusiness%2Fnew'));
+  assert.equal(response.status, 307);
+  assert.equal(response.headers.get('location'), '/login');
+  assert.equal(response.headers.get('cache-control'), 'no-store');
+});
+
 test('mutation schemas reject forged identifiers, invalid content and unknown fields', () => {
   const { validateMutation } = load('src/lib/api/mutation-validation.ts');
   const rejected = [
