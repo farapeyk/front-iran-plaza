@@ -1,8 +1,8 @@
 # فهرست سورس
 
-این فهرست در تاریخ ۲۰۲۶-۱۰-۱۶ از فایل‌های موجود در `src/` و `tests/` به‌روز شده است. برای مسئولیت هر بخش، [معماری](ARCHITECTURE.md) و برای رفتار صفحات، [مسیرها](ROUTES.md) را بخوانید. فایل‌های نصب‌شده و خروجی build در این فهرست نیستند.
+این فهرست در تاریخ ۲۰۲۶-۱۰-۱۹ از فایل‌های موجود در `src/` و `tests/` به‌روز شده است. برای مسئولیت هر بخش، [معماری](ARCHITECTURE.md) و برای رفتار صفحات، [مسیرها](ROUTES.md) را بخوانید. فایل‌های نصب‌شده و خروجی build در این فهرست نیستند.
 
-تعداد فایل‌های فهرست‌شده: **909**.
+تعداد فایل‌های فهرست‌شده: **917**.
 
 ## فایل‌ها
 
@@ -81,6 +81,8 @@ src/app/admin/(panel)/users/page.tsx
 src/app/admin/login/page.tsx
 src/app/api/auth/silent-refresh/route.ts
 src/app/api/backend/[...path]/route.ts
+src/app/business-sitemap.xml/route.ts
+src/app/category-sitemap.xml/route.ts
 src/app/complete-profile/page.tsx
 src/app/content/articles/[id]/page.tsx
 src/app/content/articles/new/page.tsx
@@ -94,9 +96,12 @@ src/app/favicon.ico
 src/app/globals.css
 src/app/layout.tsx
 src/app/not-found.tsx
+src/app/page-sitemap.xml/route.ts
 src/app/page.tsx
+src/app/post-sitemap.xml/route.ts
 src/app/robots.ts
 src/app/sitemap.ts
+src/app/sitemap_index.xml/route.ts
 src/components/category-icon.tsx
 src/components/pagination.tsx
 src/components/ui/accordion.tsx
@@ -886,6 +891,8 @@ src/features/public/components/static-location-map.tsx
 src/features/public/lib/business-slug.ts
 src/features/public/types/public-business.ts
 src/features/public/types/review.ts
+src/features/seo/sitemap-data.ts
+src/features/seo/sitemap-xml.ts
 src/lib/api/action-fetch.ts
 src/lib/api/backend-get.ts
 src/lib/api/client.ts
@@ -933,6 +940,7 @@ tests/mobile-search.test.cjs
 tests/onboarding.test.cjs
 tests/same-origin.test.cjs
 tests/security.test.cjs
+tests/sitemap.test.cjs
 ```
 
 ## فایل‌های ریشه مرتبط
