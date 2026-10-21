@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from 'next/navigation';
 import { toast } from "sonner";
 import { approveBusinessAction, rejectBusinessAction, suspendBusinessAction } from "@/features/admin/actions/moderation.action";
 
@@ -11,7 +12,8 @@ const STATUS_LABEL: Record<string, { label: string; className: string }> = {
   SUSPENDED: { label: "معلق", className: "text-neutral-600 bg-neutral-100" },
 };
 
-export function BusinessApprovalActions({ businessId, status }: { businessId: string; status: string }) {
+export function BusinessApprovalActions({ businessId, status, suspendedReason }: { businessId: string; status: string; suspendedReason?: string | null }) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [action, setAction] = useState<"reject" | "suspend" | null>(null);
   const [reason, setReason] = useState("");
@@ -22,13 +24,13 @@ export function BusinessApprovalActions({ businessId, status }: { businessId: st
     startTransition(async () => {
       const result = await approveBusinessAction(businessId);
       if (!result.success) toast.error(result.message);
-      else toast.success("کسب‌وکار تایید شد");
+      else { toast.success("کسب‌وکار تایید شد"); router.refresh(); }
     });
   }
 
   function handleConfirmReason() {
-    if (!reason.trim()) {
-      toast.error("دلیل را وارد کنید");
+    if (reason.trim().length < 5) {
+      toast.error("دلیل را با حداقل ۵ کاراکتر وارد کنید");
       return;
     }
     startTransition(async () => {
@@ -39,6 +41,7 @@ export function BusinessApprovalActions({ businessId, status }: { businessId: st
         toast.success(action === "reject" ? "کسب‌وکار رد شد" : "کسب‌وکار معلق شد");
         setAction(null);
         setReason("");
+        router.refresh();
       }
     });
   }
@@ -56,7 +59,7 @@ export function BusinessApprovalActions({ businessId, status }: { businessId: st
           disabled={isPending || status === "APPROVED"}
           className="flex-1 text-sm py-2 rounded-md bg-emerald-950 text-white hover:bg-emerald-900 disabled:opacity-50"
         >
-          تایید کسب‌وکار
+          {status === 'SUSPENDED' ? 'رفع تعلیق و تأیید' : 'تایید کسب‌وکار'}
         </button>
         <button
           onClick={() => setAction((v) => (v === "reject" ? null : "reject"))}
@@ -67,17 +70,21 @@ export function BusinessApprovalActions({ businessId, status }: { businessId: st
         </button>
         <button
           onClick={() => setAction((v) => (v === "suspend" ? null : "suspend"))}
-          disabled={isPending}
+          disabled={isPending || status === 'SUSPENDED'}
           className="flex-1 text-sm py-2 rounded-md border border-neutral-300 text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
         >
           تعلیق
         </button>
       </div>
 
+      {status === 'SUSPENDED' && <p role="status" className="mt-3 text-sm text-amber-900">این کسب‌وکار نمایش عمومی ندارد. دلیل تعلیق: {suspendedReason || 'ثبت نشده'}</p>}
+
       {action && (
         <div className="mt-3 flex gap-2">
           <input
             value={reason}
+            aria-label={action === 'reject' ? 'دلیل رد' : 'دلیل تعلیق'}
+            maxLength={1000}
             onChange={(e) => setReason(e.target.value)}
             placeholder={action === "reject" ? "دلیل رد" : "دلیل تعلیق"}
             className="flex-1 h-9 rounded-md border border-input px-3 text-sm"

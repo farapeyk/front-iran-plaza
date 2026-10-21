@@ -243,15 +243,17 @@ test('cookie migration removes the legacy scope and matches JWT expiry', async (
 });
 
 test('successful category updates are not downgraded when the response omits relations', async () => {
-  let revalidated=0;
+  const revalidated=[];
   const action=load('src/features/business/actions/update-business-profile.action.ts',{
     '@/lib/api/action-fetch':{actionFetch:async()=>Response.json({id:'business_1'})},
     '@/lib/auth/action-access-token':{getActionAccessToken:async()=>'token'},
     '@/lib/api/error-message':{extractErrorMessage:()=> 'error'},
-    'next/cache':{revalidatePath:()=>revalidated++},
+    'next/cache':{revalidatePath:path=>revalidated.push(path)},
   });
   assert.equal((await action.updateBusinessProfileAction('business_1',{categoryIds:['category_1']})).success,true);
-  assert.equal(revalidated,1);
+  assert.ok(revalidated.includes('/dashboard/business/profile'));
+  assert.ok(revalidated.includes('/admin/businesses/business_1'));
+  assert.ok(revalidated.includes('/admin/businesses/business_1/edit'));
 });
 
 test('gallery creation returns its record ID so an immediate delete targets the gallery record', async () => {

@@ -8,7 +8,7 @@
 ۲. مرورگر از `/api/backend/...` استفاده می‌کند؛ handler پایه بک‌اند و `/api/` را اضافه می‌کند، query و body را منتقل و `host` و `cookie` را حذف می‌کند.
 ۳. silent-refresh زیر `/api/auth` برای navigation و handshake کلاینت است؛ refresh cookie جدید Path برابر `/` دارد و نسخه قدیمی هنگام refresh مهاجرت می‌کند.
 
-`src/lib/api/client.ts` فعلاً فقط `API_BASE_URL = "/api/backend"` و توضیحات آماده‌سازی SDK دارد. SDK تولیدشده یا فرمان تولید آن در پروژه موجود نیست؛ interfaceهای دستی را generated client تلقی نکنید.
+قرارداد بازبینی‌شده در `contracts/openapi.json` نگهداری می‌شود و Orval کلاینت‌های browser/server و modelها را در `src/design/api/generated/` تولید می‌کند. فرمان‌های `api:generate` و `api:check` به‌ترتیب بازتولید و کنترل reproducibility را انجام می‌دهند. Server Action ساخت مدیر ارشد برای حفظ لایهٔ اعتبارسنجی mutation از `authedFetch` استفاده می‌کند؛ کلاینت تولیدشده همچنان قرارداد typed همین endpoint را برای مصرف‌کنندگان دیگر فراهم می‌کند.
 
 ## کوکی، JWT و دسترسی
 
@@ -80,8 +80,11 @@ Server Actionهای JSON از actionFetch و schemaهای mutation-validation ا
 | مدیر دسته | PATCH / DELETE `/api/admin/categories/{id}` | ویرایش / حذف |
 | مدیر کاربر | GET `/api/admin/users`، `/api/admin/users/{id}` | فهرست / جزئیات |
 | مدیر کاربر | PATCH `/api/admin/users/{id}/suspend`، `/reinstate` | تعلیق با reason / بازگردانی |
+| مدیر ارشد | POST `/api/admin/users/super-admin` | ساخت حساب مدیر ارشد با رمز؛ فقط برای مدیر ارشد و فقط با شمارهٔ جدید |
 | مدیر نظر | GET `/api/admin/reviews` | فیلتر status و page/limit |
 | مدیر نظر | PATCH / DELETE `/api/admin/reviews/{id}` | وضعیت / حذف |
+
+رمز ارسالی حداقل ۱۲ نویسه و حداکثر ۷۲ بایت UTF-8 است. API رمز را بازنمی‌گرداند و درخواست آن در لاگ‌های action چاپ نمی‌شود؛ فرم پس از موفقیت مقدار رمز را پاک می‌کند.
 
 ## خطا، upload و قرارداد
 
@@ -89,7 +92,7 @@ Server Actionهای JSON از actionFetch و schemaهای mutation-validation ا
 
 برای multipart، Content-Type دستی نگذارید تا boundary ساخته شود. inputهای `accept="image/*"` یا `video/*` و چک اندازه در مرورگر جای اعتبارسنجی فایل سمت سرور را نمی‌گیرند. سقف ۲۰ مگابایت اکنون در Server Action upload برای همه مصرف‌کنندگان اعمال می‌شود؛ نوع و امضای ابتدایی نیز بررسی می‌شوند.
 
-برای هر تغییر قرارداد یا client، پنج کنترل مرجع QA لازم است: تولید کامل schema با validation سخت‌گیرانه و مقایسه نام‌ها با baseline بررسی‌شده؛ دنبال‌کردن URLهای تولیدشده با HTTP واقعی؛ binary بودن فیلد multipart؛ نوع واقعی و required بودن path parameter؛ و اعلان پاسخ‌های خطای کسب‌وکار و فیلدهای DTO. وضعیت این پنج کنترل در BACKEND-COMPATIBILITY.md ثبت شده است؛ بک‌اند زنده و baseline رسمی در دسترس نبودند.
+برای هر تغییر قرارداد یا client، پنج کنترل مرجع QA لازم است: تولید کامل schema با validation سخت‌گیرانه و مقایسه نام‌ها با baseline بررسی‌شده؛ دنبال‌کردن URLهای تولیدشده با HTTP واقعی؛ binary بودن فیلد multipart؛ نوع واقعی و required بودن path parameter؛ و اعلان پاسخ‌های خطای کسب‌وکار و فیلدهای DTO. در ادغام ۲۰۲۶-۱۰-۲۱ قرارداد مستقیماً از بک‌اند نهایی تولید شد، baseline نام‌ها/enumها/operationIdها فقط برای افزوده‌های بازبینی‌شده به‌روز شد و ۳۵ کنترل OpenAPI/HTTP موفق بودند. HTTP روی app ایزوله و providerهای mock اجرا شد، نه production E2E.
 
 ## مقصد ورود بر اساس نقش
 

@@ -119,6 +119,8 @@ import type {
   CreateReviewDto,
   CreateRoleDto,
   CreateServiceDto,
+  CreateSuperAdminDto,
+  CreateSuperAdminResponseDto,
   CreateTaxRuleDto,
   FavoriteControllerGetMine200Item,
   FavoriteControllerToggle201,
@@ -458,6 +460,44 @@ return serverFetch<UsersControllerUpdateMe200>(getUsersControllerUpdateMeUrl(),
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
     body: JSON.stringify(updateProfileDto)
+  }
+);}
+
+
+
+export const getUsersAdminControllerCreateSuperAdminUrl = () => {
+
+
+
+
+  return `/api/admin/users/super-admin`
+}
+
+/**
+ * @summary ایجاد مدیر ارشد پلتفرم با رمز عبور
+ */
+export const usersAdminControllerCreateSuperAdmin = async (createSuperAdminDto: CreateSuperAdminDto, options?: Parameters<typeof serverFetch>[1]): Promise<CreateSuperAdminResponseDto> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return serverFetch<CreateSuperAdminResponseDto>(getUsersAdminControllerCreateSuperAdminUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createSuperAdminDto)
   }
 );}
 

@@ -7,12 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createManualBusinessAction } from "@/features/admin/actions/manual-business.action";
 import type { PlanSummary } from "@/features/admin/types/plan";
+import { categoryOptions, type BusinessCategoryOption } from '@/features/business/lib/category-options';
 
 function fieldClass() {
   return "w-full h-10 rounded-md border border-input bg-transparent px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring";
 }
 
-export function ManualBusinessForm({ plans }: { plans: PlanSummary[] }) {
+export function ManualBusinessForm({ plans, categories }: { plans: PlanSummary[]; categories: BusinessCategoryOption[] }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [registrationType, setRegistrationType] = useState<"IN_PERSON" | "TELEPHONE">("IN_PERSON");
@@ -23,12 +24,15 @@ export function ManualBusinessForm({ plans }: { plans: PlanSummary[] }) {
   const [phone, setPhone] = useState("");
   const [description, setDescription] = useState("");
   const [address, setAddress] = useState("");
+  const [city, setCity] = useState('شیراز');
+  const [categoryId, setCategoryId] = useState('');
   const [planId, setPlanId] = useState("");
+  const [businessType, setBusinessType] = useState<'SOLE_PROPRIETOR' | 'COMPANY' | 'BRANCH'>('SOLE_PROPRIETOR');
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!ownerPhone.trim() || !name.trim() || !phone.trim()) {
-      toast.error("شماره مراجعه‌کننده، و نام و شماره کسب‌وکار الزامی است");
+    if (!ownerPhone.trim() || !name.trim() || !phone.trim() || !city.trim() || !categoryId) {
+      toast.error("شماره مالک، نام، تماس، شهر و دسته‌بندی کسب‌وکار الزامی است");
       return;
     }
     startTransition(async () => {
@@ -39,9 +43,11 @@ export function ManualBusinessForm({ plans }: { plans: PlanSummary[] }) {
           ownerNationalCode: ownerNationalCode || undefined,
           name,
           phone,
+          city: city.trim(),
+          categoryIds: [categoryId],
           description: description || undefined,
           address: address || undefined,
-          businessType: "SOLE_PROPRIETOR",
+          businessType,
           registrationType,
         },
         planId || undefined,
@@ -57,7 +63,7 @@ export function ManualBusinessForm({ plans }: { plans: PlanSummary[] }) {
       } else {
         toast.success("کسب‌وکار با موفقیت ثبت شد");
       }
-      router.push(`/admin/businesses/${result.businessId}`);
+      router.push(`/admin/businesses/${result.businessId}/edit`);
     });
   }
 
@@ -97,6 +103,15 @@ export function ManualBusinessForm({ plans }: { plans: PlanSummary[] }) {
       <p className="text-sm font-bold text-neutral-800 pt-2">اطلاعات کسب‌وکار</p>
 
       <div className="space-y-2">
+        <label htmlFor="manual-business-type" className="text-sm font-medium">نوع کسب‌وکار</label>
+        <select id="manual-business-type" value={businessType} onChange={event => setBusinessType(event.target.value as typeof businessType)} disabled={isPending} className={fieldClass()}>
+          <option value="SOLE_PROPRIETOR">شخص حقیقی</option>
+          <option value="COMPANY">شرکت</option>
+          <option value="BRANCH">شعبه</option>
+        </select>
+      </div>
+
+      <div className="space-y-2">
         <label className="text-sm font-medium">نام کسب‌وکار</label>
         <Input value={name} onChange={(e) => setName(e.target.value)} disabled={isPending} />
       </div>
@@ -107,8 +122,21 @@ export function ManualBusinessForm({ plans }: { plans: PlanSummary[] }) {
       </div>
 
       <div className="space-y-2">
+        <label htmlFor="manual-city" className="text-sm font-medium">شهر</label>
+        <Input id="manual-city" value={city} onChange={e => setCity(e.target.value)} required maxLength={150} disabled={isPending} />
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="manual-category" className="text-sm font-medium">دسته‌بندی کسب‌وکار</label>
+        <select id="manual-category" value={categoryId} onChange={e => setCategoryId(e.target.value)} required disabled={isPending} className={fieldClass()}>
+          <option value="">انتخاب دسته‌بندی</option>
+          {categoryOptions(categories).map(category => <option key={category.id} value={category.id}>{category.label}</option>)}
+        </select>
+      </div>
+
+      <div className="space-y-2">
         <label className="text-sm font-medium">توضیحات <span className="text-muted-foreground">(اختیاری)</span></label>
-        <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} disabled={isPending} className={fieldClass()} />
+        <textarea value={description} onChange={(e) => setDescription(e.target.value)} maxLength={100} rows={2} disabled={isPending} className={fieldClass()} />
       </div>
 
       <div className="space-y-2">
@@ -129,7 +157,7 @@ export function ManualBusinessForm({ plans }: { plans: PlanSummary[] }) {
       </div>
 
       <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "در حال ثبت..." : "ثبت کسب‌وکار"}
+        {isPending ? "در حال ثبت..." : "ثبت و تکمیل پروفایل کسب‌وکار"}
       </Button>
     </form>
   );

@@ -8,6 +8,8 @@ export interface CreateManualBusinessInput {
   ownerNationalCode?: string;
   name: string;
   phone: string;
+  city: string;
+  categoryIds: string[];
   description?: string;
   address?: string;
   businessType?: "SOLE_PROPRIETOR" | "COMPANY" | "BRANCH";

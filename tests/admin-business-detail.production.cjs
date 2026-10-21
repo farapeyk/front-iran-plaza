@@ -80,7 +80,7 @@ async function main() {
     requestedPaths.push(req.url);
     res.setHeader('Content-Type', 'application/json');
     if (!(req.url in fixtures)) { res.statusCode = 404; return res.end('{}'); }
-    const publicRequest=req.url===publicPath||req.url.startsWith('/api/businesses/public-fixture/')||req.url.startsWith('/api/articles');
+    const publicRequest=req.url===publicPath||req.url==='/api/categories'||req.url.startsWith('/api/businesses/public-fixture/')||req.url.startsWith('/api/articles');
     if (!publicRequest&&!req.headers.authorization?.startsWith('Bearer ')) { res.statusCode = 401; return res.end('{}'); }
     res.end(JSON.stringify(fixtures[req.url]));
   });
@@ -187,11 +187,36 @@ async function main() {
     console.log('PASS: production HTTP redirects ADMIN and SUPER_ADMIN from user pages and login screens to /admin.');
     const response = await fetch(origin + '/admin/businesses/' + id, { headers, redirect: 'manual' });
     const html = await response.text();
-    assert.equal(response.status, 200);
+    assert.equal(response.status, 200, 'admin detail page');
     for (const text of ['کسب‌وکار آزمایشی مدیر', 'دریافت پلن‌ها انجام نشد', 'پارکینگ آزمایشی', 'شعبه آزمایشی', 'خدمت آزمایشی', 'محصول آزمایشی']) assert.ok(html.includes(text), text);
     // Next serializes its not-found fallback in the RSC payload even on successful pages.
     // Check the rendered heading rather than searching that fallback's text globally.
     assert.match(html, /<h1[^>]*>کسب‌وکار آزمایشی مدیر<\/h1>/);
+    fixtures['/api/users/me']={id:'fixture-admin',userType:'ADMIN',fullName:'QA Admin',phone:'09120000001',isProfileCompleted:true};
+    fixtures['/api/categories']=[{id:'business-category',name:'QA category',parentId:null}];
+    fixtures['/api/businesses/admin?skip=0&take=20&status=SUSPENDED']={data:[{id,name:'Suspended QA shop',suspendedReason:'Visible QA suspension reason'}],total:1};
+    const manualPage=await fetch(origin+'/admin/businesses/new',{headers,redirect:'manual'});
+    assert.equal(manualPage.status,200,'manual create page');
+    const manualHtml=await manualPage.text();
+    for(const text of ['manual-category','manual-city','QA category']) assert.ok(manualHtml.includes(text),text);
+    const editPage=await fetch(origin+'/admin/businesses/'+id+'/edit',{headers,redirect:'manual'});
+    assert.equal(editPage.status,200,'admin edit page');
+    const editHtml=await editPage.text();
+    for(const text of ['اطلاعات اصلی و لوگو','گالری و ویدیوی معرفی','دسته‌ها و محصولات','ساعات کاری','شرایط اقساط']) assert.ok(editHtml.includes(text),text);
+    assert.ok(!editHtml.includes('href="/dashboard/business/profile/products/new"'));
+    const suspendedPage=await fetch(origin+'/admin/businesses/suspended',{headers,redirect:'manual'});
+    assert.equal(suspendedPage.status,200,'suspended inventory page');
+    assert.ok((await suspendedPage.text()).includes('Suspended QA shop'));
+    fixtures['/api/users/me']={id:'fixture-customer',userType:'CUSTOMER',fullName:'QA Owner',phone:'09120000001',isProfileCompleted:true};
+    fixtures['/api/businesses/mine']=[{...fixtures[mainPath],status:'SUSPENDED',registrationType:'IN_PERSON',suspendedReason:'Visible QA suspension reason'}];
+    fixtures['/api/notifications?page=1&limit=50']={data:[{id:'notice',title:'Business suspended',message:'Visible QA suspension reason',type:'BUSINESS',isRead:false,createdAt:'2026-10-18T10:00:00.000Z'}],total:1,page:1,limit:50};
+    const ownerHeaders={cookie:'access_token='+customerToken};
+    for(const route of ['/dashboard','/dashboard/notifications']){
+      const ownerPage=await fetch(origin+route,{headers:ownerHeaders,redirect:'manual'});
+      assert.equal(ownerPage.status,200,route);
+      assert.ok((await ownerPage.text()).includes('Visible QA suspension reason'),route);
+    }
+    console.log('PASS: production manual form, complete admin editor, suspension inventory, owner dashboard banner and notification page.');
     const missing = await fetch(origin + '/admin/businesses/missing-business', { headers, redirect: 'manual' });
     assert.equal(missing.status, 404); await missing.text();
     console.log('PASS: production admin page HTTP 200 with plans HTTP 404 and pending-business extras; truly missing business HTTP 404.');

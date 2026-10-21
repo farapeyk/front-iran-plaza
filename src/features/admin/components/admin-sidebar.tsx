@@ -9,6 +9,8 @@ import { adminLogoutAction } from "@/features/admin/actions/admin-auth.action";
 const NAV_ITEMS = [
   { href: "/admin", label: "داشبورد", icon: LayoutDashboard },
   { href: "/admin/businesses", label: "تمام کسب‌وکارها", icon: Building2 },
+  { href: "/admin/businesses/new", label: "ثبت دستی کسب‌وکار", icon: BookPlusIcon },
+  { href: "/admin/businesses/suspended", label: "کسب‌وکارهای معلق", icon: Ban },
   { href: "/admin/categories", label: "دسته بندی ها", icon: BookPlusIcon },
   { href: "/admin/businesses/pending", label: "کسب‌وکارهای در انتظار", icon: Building2 },
   { href: "/admin/businesses/rejected", label: "کسب‌وکارهای رد شده", icon: Ban }, 

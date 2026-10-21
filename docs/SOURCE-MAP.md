@@ -1,8 +1,8 @@
 # فهرست سورس
 
-این فهرست در تاریخ ۲۰۲۶-۱۰-۱۹ از فایل‌های موجود در `src/` و `tests/` به‌روز شده است. برای مسئولیت هر بخش، [معماری](ARCHITECTURE.md) و برای رفتار صفحات، [مسیرها](ROUTES.md) را بخوانید. فایل‌های نصب‌شده و خروجی build در این فهرست نیستند.
+این فهرست در تاریخ ۲۰۲۶-۱۰-۲۱ از فایل‌های موجود در `src/` و `tests/` به‌روز شده است. برای مسئولیت هر بخش، [معماری](ARCHITECTURE.md) و برای رفتار صفحات، [مسیرها](ROUTES.md) را بخوانید. فایل‌های نصب‌شده و خروجی build در این فهرست نیستند.
 
-تعداد فایل‌های فهرست‌شده: **917**.
+تعداد فایل‌های فهرست‌شده: **951**.
 
 ## فایل‌ها
 
@@ -66,11 +66,13 @@ src/app/(public)/subscription/page.tsx
 src/app/(public)/support/page.tsx
 src/app/(public)/terms/page.tsx
 src/app/(public)/user-info/page.tsx
+src/app/admin/(panel)/businesses/[id]/edit/page.tsx
 src/app/admin/(panel)/businesses/[id]/page.tsx
 src/app/admin/(panel)/businesses/new/page.tsx
 src/app/admin/(panel)/businesses/page.tsx
 src/app/admin/(panel)/businesses/pending/page.tsx
 src/app/admin/(panel)/businesses/rejected/page.tsx
+src/app/admin/(panel)/businesses/suspended/page.tsx
 src/app/admin/(panel)/categories/page.tsx
 src/app/admin/(panel)/content/authors/page.tsx
 src/app/admin/(panel)/layout.tsx
@@ -78,6 +80,7 @@ src/app/admin/(panel)/page.tsx
 src/app/admin/(panel)/reviews/page.tsx
 src/app/admin/(panel)/users/[id]/page.tsx
 src/app/admin/(panel)/users/page.tsx
+src/app/admin/(panel)/users/super-admin/new/page.tsx
 src/app/admin/login/page.tsx
 src/app/api/auth/silent-refresh/route.ts
 src/app/api/backend/[...path]/route.ts
@@ -472,6 +475,8 @@ src/design/api/generated/models/createBusinessFeatureDto.ts
 src/design/api/generated/models/createCategoryDto.ts
 src/design/api/generated/models/createCouponDto.ts
 src/design/api/generated/models/createCouponDtoScope.ts
+src/design/api/generated/models/createdSuperAdminDataDto.ts
+src/design/api/generated/models/createdSuperAdminDataDtoUserType.ts
 src/design/api/generated/models/createInvoiceDto.ts
 src/design/api/generated/models/createInvoiceDtoStatus.ts
 src/design/api/generated/models/createManualBusinessDto.ts
@@ -490,6 +495,8 @@ src/design/api/generated/models/createReplyDto.ts
 src/design/api/generated/models/createReviewDto.ts
 src/design/api/generated/models/createRoleDto.ts
 src/design/api/generated/models/createServiceDto.ts
+src/design/api/generated/models/createSuperAdminDto.ts
+src/design/api/generated/models/createSuperAdminResponseDto.ts
 src/design/api/generated/models/createTaxRuleDto.ts
 src/design/api/generated/models/favoriteControllerGetMine200Item.ts
 src/design/api/generated/models/favoriteControllerToggle201.ts
@@ -603,6 +610,11 @@ src/design/api/generated/models/updateReviewStatusDtoStatus.ts
 src/design/api/generated/models/updateServiceDto.ts
 src/design/api/generated/models/updateSettingDto.ts
 src/design/api/generated/models/updateWorkingHoursDto.ts
+src/design/api/generated/models/usersAdminControllerCreateSuperAdmin400.ts
+src/design/api/generated/models/usersAdminControllerCreateSuperAdmin401.ts
+src/design/api/generated/models/usersAdminControllerCreateSuperAdmin403.ts
+src/design/api/generated/models/usersAdminControllerCreateSuperAdmin409.ts
+src/design/api/generated/models/usersAdminControllerCreateSuperAdmin429.ts
 src/design/api/generated/models/usersAdminControllerGetById200.ts
 src/design/api/generated/models/usersAdminControllerGetById200BusinessesItem.ts
 src/design/api/generated/models/usersAdminControllerGetById200BusinessesItemStatus.ts
@@ -766,10 +778,13 @@ src/features/admin/actions/manual-business.action.ts
 src/features/admin/actions/moderation.action.ts
 src/features/admin/actions/plan.action.ts
 src/features/admin/actions/reviews.action.ts
+src/features/admin/actions/super-admin.action.ts
 src/features/admin/actions/users.action.ts
 src/features/admin/components/admin-login-form.tsx
 src/features/admin/components/admin-sidebar.tsx
 src/features/admin/components/business-approval-actions.tsx
+src/features/admin/components/business-city-form.tsx
+src/features/admin/components/create-super-admin-form.tsx
 src/features/admin/components/business-profile-overview.tsx
 src/features/admin/components/category-manager.tsx
 src/features/admin/components/document-review-card.tsx
@@ -922,6 +937,7 @@ src/styles/shadcn.css
 src/types/auth.ts
 tests/admin-business-detail.production.cjs
 tests/admin-business-detail.test.cjs
+tests/admin-business-management.test.cjs
 tests/admin-routing.test.cjs
 tests/browser/design-transfer.spec.ts
 tests/browser/reference-layout.spec.ts
@@ -941,6 +957,7 @@ tests/onboarding.test.cjs
 tests/same-origin.test.cjs
 tests/security.test.cjs
 tests/sitemap.test.cjs
+tests/super-admin.test.cjs
 ```
 
 ## فایل‌های ریشه مرتبط

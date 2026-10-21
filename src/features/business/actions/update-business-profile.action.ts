@@ -39,5 +39,7 @@ export async function updateBusinessProfileAction(
   }
 
   revalidatePath(`/dashboard/business/profile`);
+  revalidatePath(`/admin/businesses/${businessId}`);
+  revalidatePath(`/admin/businesses/${businessId}/edit`);
   return { success: true };
 }

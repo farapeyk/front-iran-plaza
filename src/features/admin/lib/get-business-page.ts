@@ -4,7 +4,7 @@ export function pageNumber(value?: string): number {
   const number = Number(value ?? 1);
   return Number.isSafeInteger(number) && number > 0 && number <= 100000 ? number : 1;
 }
-export async function getBusinessPage<T>(token: string, page: number, status?: 'PENDING' | 'REJECTED') {
+export async function getBusinessPage<T>(token: string, page: number, status?: 'PENDING' | 'REJECTED' | 'SUSPENDED') {
   const take = 20;
   const query = new URLSearchParams({ skip: String((page - 1) * take), take: String(take) });
   if (status) query.set('status', status);

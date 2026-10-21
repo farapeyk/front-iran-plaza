@@ -23,10 +23,12 @@ export function ProductsManager({
   businessId,
   initialCategories,
   initialProducts,
+  showProductPageLink = true,
 }: {
   businessId: string;
   initialCategories: ProductCategoryItem[];
   initialProducts: ProductItem[];
+  showProductPageLink?: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
   useProfileBusy(isPending);
@@ -145,7 +147,7 @@ export function ProductsManager({
 
   return (
     <div dir="rtl" className="space-y-5">
-      <Link href="/dashboard/business/profile/products/new" className="inline-flex rounded-md bg-primary-700 px-5 py-3 text-white">افزودن محصول جدید</Link>
+      {showProductPageLink && <Link href="/dashboard/business/profile/products/new" className="inline-flex rounded-md bg-primary-700 px-5 py-3 text-white">افزودن محصول جدید</Link>}
       {categories.length === 0 && !showAddCategory && (
         <p className="text-sm text-neutral-500">هنوز دسته‌بندی‌ای نساخته‌اید.</p>
       )}

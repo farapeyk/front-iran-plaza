@@ -5,8 +5,10 @@ import type { NotificationItem } from "@/features/notifications/types";
 import { DashboardAccountLayout } from '@/design/components/dashboard-account-layout';
 
 async function getNotifications(accessToken: string): Promise<NotificationItem[]> {
-  const data = await backendGet<NotificationItem[] | { data: NotificationItem[] }>('/api/notifications?page=1&limit=50', accessToken);
-  return Array.isArray(data) ? data : data.data;
+  const data = await backendGet<NotificationItem[] | { data?: NotificationItem[]; items?: NotificationItem[] }>('/api/notifications?page=1&limit=50', accessToken);
+  const items = Array.isArray(data) ? data : data.items ?? data.data;
+  if (!Array.isArray(items)) throw new Error('پاسخ اعلان‌ها معتبر نیست.');
+  return items;
 }
 
 export default async function NotificationsPage() {

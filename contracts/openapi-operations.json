@@ -45,6 +45,11 @@
     "operationId": "UsersAdminController_list"
   },
   {
+    "route": "/api/admin/users/super-admin",
+    "method": "post",
+    "operationId": "UsersAdminController_createSuperAdmin"
+  },
+  {
     "route": "/api/admin/users/{id}",
     "method": "get",
     "operationId": "UsersAdminController_getById"

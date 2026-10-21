@@ -28,7 +28,10 @@
     "CreateReviewDto",
     "CreateRoleDto",
     "CreateServiceDto",
+    "CreateSuperAdminDto",
+    "CreateSuperAdminResponseDto",
     "CreateTaxRuleDto",
+    "CreatedSuperAdminDataDto",
     "GrantPlanDto",
     "LoginWithPasswordDto",
     "ModerateArticleFeedbackDto",
@@ -183,6 +186,9 @@
       2,
       3,
       4
+    ],
+    "schemas/CreatedSuperAdminDataDto/properties/userType": [
+      "SUPER_ADMIN"
     ],
     "schemas/ModerateArticleFeedbackDto/properties/status": [
       "APPROVED",

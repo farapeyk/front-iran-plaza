@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { BackendError } from '@/lib/api/backend-get';
 import { getAdminBusinessDetail } from '@/features/admin/lib/get-business-detail';
@@ -39,7 +40,9 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
         plans={plans} 
       />
 
-      <BusinessApprovalActions businessId={business.id} status={business.status} />
+      <Link href={`/admin/businesses/${business.id}/edit`} className="inline-flex rounded-md bg-emerald-950 px-5 py-3 text-sm text-white">ویرایش و تکمیل تمام اطلاعات کسب‌وکار</Link>
+
+      <BusinessApprovalActions businessId={business.id} status={business.status} suspendedReason={business.suspendedReason} />
 
       <BusinessProfileOverview business={business} unavailable={unavailable} />
 

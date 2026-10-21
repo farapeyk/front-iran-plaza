@@ -13,6 +13,8 @@ export interface BusinessProfile {
   introVideoId: string | null;
   status: "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED"; 
   rejectionReason?: string | null;
+  suspendedReason?: string | null;
+  registrationType?: 'USER_SELF' | 'IN_PERSON' | 'TELEPHONE';
   updatedAt: string;
 }
 

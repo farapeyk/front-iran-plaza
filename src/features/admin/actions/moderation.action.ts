@@ -42,18 +42,28 @@ async function postAdmin(path: string, body?: unknown): Promise<ModerationResult
 
 export async function approveBusinessAction(businessId: string): Promise<ModerationResult> {
   const result = await postAdmin(`/api/businesses/${businessId}/approve`);
-  if (result.success) revalidatePath("/admin/businesses/pending");
+  if (result.success) refreshBusinessViews(businessId);
   return result;
 }
 
 export async function rejectBusinessAction(businessId: string, reason: string): Promise<ModerationResult> {
   const result = await postAdmin(`/api/businesses/${businessId}/reject`, { reason });
-  if (result.success) revalidatePath("/admin/businesses/pending");
+  if (result.success) refreshBusinessViews(businessId);
   return result;
 }
 
 export async function suspendBusinessAction(businessId: string, reason: string): Promise<ModerationResult> {
-  return postAdmin(`/api/businesses/${businessId}/suspend`, { reason });
+  const result = await postAdmin(`/api/businesses/${businessId}/suspend`, { reason: reason.trim() });
+  if (result.success) refreshBusinessViews(businessId);
+  return result;
+}
+
+function refreshBusinessViews(businessId: string) {
+  revalidatePath(`/admin/businesses/${businessId}`);
+  revalidatePath('/admin/businesses');
+  revalidatePath('/admin/businesses/pending');
+  revalidatePath('/dashboard', 'layout');
+  revalidatePath('/businesses', 'layout');
 }
 
 export async function approveDocumentAction(documentId: string, businessId: string): Promise<ModerationResult> {

@@ -4,7 +4,7 @@ const id = z.string().regex(/^[A-Za-z0-9_-]{1,100}$/);
 const text = z.string().trim().min(1).max(10000);
 const optionalText = z.string().max(10000).optional();
 const empty = z.object({}).strict();
-const reason = z.object({ reason: text.max(1000) }).strict();
+const reason = z.object({ reason: text.min(5).max(1000) }).strict();
 const slug = z.string().trim().min(2).max(120).regex(/^[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)*$/u);
 const lucideIconName = z.string().max(100).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 const articleBlock = z.object({
@@ -74,6 +74,11 @@ const articleBanner = z.object({
   endsAt: z.iso.datetime({ offset: true }).nullable().optional(),
   sortOrder: z.number().int().min(0).optional(),
 }).strict();
+const createSuperAdmin = z.object({
+  phone: z.string().regex(/^09\d{9}$/),
+  fullName: text.min(2).max(120),
+  password: z.string().min(12).max(72).refine(value => new TextEncoder().encode(value).length <= 72, 'رمز عبور نباید بیشتر از ۷۲ بایت باشد'),
+}).strict();
 const hour = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/).nullable();
 const weekday = z.enum(['SATURDAY', 'SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY']);
 const workingHour = z.object({
@@ -111,7 +116,8 @@ const schemas: Record<string, z.ZodType> = {
   'PATCH admin/categories/id': z.object({ name: text.max(150).optional(), parentId: id.nullable().optional(), icon: lucideIconName.optional(), isActive: z.boolean().optional(), sortOrder: z.number().int().optional() }).strict(),
   'PATCH admin/reviews/id': z.object({ status: z.enum(['PENDING','APPROVED','REJECTED']) }).strict(),
   'PATCH admin/businesses/id/plan': z.object({ planId: id }).strict(),
-  'POST admin/businesses': z.object({ ownerPhone: z.string().regex(/^09\d{9}$/), ownerFullName: optionalText, ownerNationalCode: z.string().regex(/^\d{10}$/).optional(), name: text.max(150), phone: text.max(30), description: optionalText, address: optionalText, businessType: z.enum(['SOLE_PROPRIETOR','COMPANY','BRANCH']).optional(), registrationType: z.enum(['IN_PERSON','TELEPHONE']) }).strict(),
+  'POST admin/businesses': z.object({ ownerPhone: z.string().regex(/^09\d{9}$/), ownerFullName: z.string().max(200).optional(), ownerNationalCode: z.string().regex(/^\d{10}$/).optional(), name: text.min(2).max(150), phone: z.string().regex(/^(?:0|\+98|0098)[1-9]\d{9}$/), city: text.max(150), categoryIds: z.array(id).min(1).max(5), description: z.string().max(100).optional(), address: z.string().max(1000).optional(), businessType: z.enum(['SOLE_PROPRIETOR','COMPANY','BRANCH']).optional(), registrationType: z.enum(['IN_PERSON','TELEPHONE']) }).strict(),
+  'POST admin/users/super-admin': createSuperAdmin,
   'PATCH users/me': z.object({ fullName: text.max(200).optional(), fatherName: optionalText, nationalCode: z.string().regex(/^\d{10}$/).optional(), email: z.union([z.email(), z.literal('')]).optional(), birthDate: z.iso.datetime().optional(), gender: z.enum(['MALE','FEMALE','OTHER']).optional(), province: text.optional(), city: text.optional() }).strict(),
   'POST articles/id/feedback': z.object({ rating: z.number().int().min(1).max(5), comment: z.string().trim().max(2000).optional() }).strict(),
   'POST content/articles': createArticle,
@@ -144,7 +150,8 @@ export function validateMutation(path: string, method: string, body: unknown): s
   const normalized = parts.map((part, i) => {
     const previous = parts[i-1];
     if (previous && (resourceRoots.has(previous) || resourceCollections.has(previous)) &&
-        !(i === 1 && part === 'me') && !(previous === 'businesses' && i === 1 && part === 'mine')) return 'id';
+        !(i === 1 && part === 'me') && !(previous === 'businesses' && i === 1 && part === 'mine') &&
+        !(previous === 'users' && i === 2 && part === 'super-admin')) return 'id';
     return part;
   }).join('/');
   const key = method + ' ' + normalized;

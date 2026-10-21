@@ -2,6 +2,7 @@ import { pageFetch } from '@/lib/api/page-fetch';
 import Link from "next/link";
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import type { AdminUserListResponse } from "@/features/admin/types/user";
+import { getCurrentUser } from "@/lib/auth/get-current-user";
 
 const USER_TYPE_LABEL: Record<string, string> = {
   CUSTOMER: "مشتری",
@@ -37,6 +38,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
   query.set("limit", String(LIMIT));
 
   const accessToken = await getAccessTokenCookie();
+  const currentUser = await getCurrentUser();
   const result = accessToken ? await getUsers(query, accessToken) : { data: [], total: 0, page: 1, limit: LIMIT };
 
   const totalPages = Math.max(1, Math.ceil(result.total / LIMIT));
@@ -50,6 +52,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
   return (
     <div>
       <h1 className="text-lg font-bold text-neutral-900 mb-1">مدیریت کاربران</h1>
+      {currentUser?.userType === "SUPER_ADMIN" && <Link href="/admin/users/super-admin/new" className="mb-4 inline-flex h-9 items-center rounded-md bg-emerald-950 px-4 text-sm text-white">ایجاد مدیر ارشد</Link>}
       <p className="text-sm text-neutral-500 mb-6">{result.total} کاربر</p>
 
       <form method="get" className="flex flex-wrap gap-2 mb-5">

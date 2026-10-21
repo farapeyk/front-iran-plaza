@@ -34,6 +34,7 @@ export default async function AllBusinessesPage({ searchParams }: { searchParams
           <h1 className="text-lg font-bold text-neutral-900">تمام کسب‌وکارها</h1>
           <p className="text-sm text-neutral-500 mt-1">{result.total} مورد یافت شد</p>
         </div>
+        <Link href="/admin/businesses/new" className="rounded-md bg-emerald-950 px-4 py-2 text-sm text-white">ثبت دستی کسب‌وکار</Link>
       </div>
 
       {businesses.length === 0 ? (

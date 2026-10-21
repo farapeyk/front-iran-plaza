@@ -11,7 +11,8 @@ export default async function ProfileLayout({ children }: { children: React.Reac
   const token = await getAccessTokenCookie();
   if (!token) redirect('/dashboard/business/new');
   const documents = await getRegistrationDocuments(token, business.id);
-  if (registrationIncomplete(documents)) redirect('/dashboard/business/new');
+  const manual = business.registrationType === 'IN_PERSON' || business.registrationType === 'TELEPHONE';
+  if (!manual && registrationIncomplete(documents)) redirect('/dashboard/business/new');
   if (business.status !== 'APPROVED') redirect('/dashboard');
   return <OnboardingProvider key={`${business.id}:${business.onboardingStep ?? 11}`} businessId={business.id} savedStep={business.onboardingStep ?? 11}>{children}</OnboardingProvider>;
 }
