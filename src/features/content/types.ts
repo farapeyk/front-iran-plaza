@@ -30,6 +30,7 @@ export type ArticleBlock = {
   imageId?: string;
   imageAlt?: string;
   businessIds?: string[];
+  listTitle?: string;
   table?: ArticleTable;
 };
 

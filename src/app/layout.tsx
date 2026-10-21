@@ -1,11 +1,29 @@
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
+import { siteOrigin } from "@/features/seo/article-seo";
+import { JsonLd } from "@/features/seo/json-ld";
+import { buildSiteStructuredData } from "@/features/seo/site-structured-data";
 import "./globals.css";
 
+const title = "Iran Plaza | ایران پلازا";
+const description = "مرجع معرفی و انتخاب بهترین کسب‌وکارهای ایران";
+
 export const metadata: Metadata = {
-  metadataBase: process.env.SITE_URL ? new URL(process.env.SITE_URL) : undefined,
-  title: "Iran Plaza | ایران پلازا",
-  description: "مرجع معرفی بهترین کسب و کارها",
+  metadataBase: new URL(siteOrigin()),
+  title,
+  description,
+  applicationName: "ایران پلازا",
+  referrer: "origin-when-cross-origin",
+  formatDetection: { address: false, email: false, telephone: false },
+  openGraph: {
+    type: "website",
+    locale: "fa_IR",
+    siteName: "ایران پلازا",
+    url: "/",
+    title,
+    description,
+  },
+  twitter: { card: "summary", title, description },
 };
 
 export default function RootLayout({
@@ -20,6 +38,7 @@ export default function RootLayout({
       className="h-full antialiased"
     >
       <body className="min-h-full flex flex-col">
+        <JsonLd data={buildSiteStructuredData()} />
         {children}
         <Toaster richColors position="top-center" dir="rtl" />
       </body>

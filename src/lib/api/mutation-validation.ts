@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z, type ZodIssue } from 'zod';
 
 const id = z.string().regex(/^[A-Za-z0-9_-]{1,100}$/);
 const text = z.string().trim().min(1).max(10000);
@@ -16,6 +16,7 @@ const articleBlock = z.object({
   imageId: id.optional(),
   imageAlt: z.string().trim().max(160).optional(),
   businessIds: z.array(id).max(30).optional(),
+  listTitle: z.string().trim().max(160).optional(),
   table: z.object({
     headers: z.array(z.string().trim().max(120)).min(1).max(8),
     rows: z.array(z.object({
@@ -33,9 +34,10 @@ const articleBlock = z.object({
 const articleFaq = z.object({
   question: z.string().trim().min(5).max(300),
   answer: z.string().trim().min(10).max(3000),
+  isActive: z.boolean().optional(),
 }).strict();
 const createArticle = z.object({
-  title: text.max(180),
+  title: z.string().trim().min(3).max(180),
   slug: slug.min(3),
   excerpt: z.string().trim().min(10).max(5000),
   bodyBlocks: z.array(articleBlock).max(500),
@@ -142,6 +144,101 @@ const withReason = new Set(['POST businesses/id/reject','POST businesses/id/susp
 const resourceRoots = new Set(['businesses','reviews','notifications','users','documents','categories','articles','feedback','authors','banners']);
 const resourceCollections = new Set(['gallery','features','branches','services','products','product-categories']);
 
+const validationFieldLabels: Record<string, string> = {
+  title: 'عنوان',
+  slug: 'اسلاگ',
+  excerpt: 'خلاصه مقاله',
+  bodyBlocks: 'بدنه مقاله',
+  categoryId: 'دسته‌بندی',
+  coverImageId: 'تصویر شاخص',
+  coverImageAlt: 'متن جایگزین تصویر شاخص',
+  faqs: 'پرسش‌های متداول',
+  seoTitle: 'عنوان سئو',
+  seoDescription: 'توضیحات متای سئو',
+  canonicalUrl: 'آدرس Canonical',
+  expectedRevision: 'نسخه ویرایش مقاله',
+  changeNote: 'یادداشت تغییرات',
+  question: 'متن پرسش',
+  answer: 'پاسخ پرسش',
+  isActive: 'وضعیت قابل انتشار',
+  text: 'متن',
+  imageId: 'تصویر',
+  imageAlt: 'متن جایگزین تصویر',
+  businessIds: 'کسب‌وکارهای انتخاب‌شده',
+  listTitle: 'عنوان فهرست',
+  table: 'جدول',
+  headers: 'عنوان ستون‌های جدول',
+  rows: 'سطرهای جدول',
+  cells: 'خانه‌های جدول',
+  phone: 'شماره تماس',
+  targetUrl: 'آدرس مقصد',
+  name: 'نام',
+  description: 'توضیحات',
+  address: 'آدرس',
+  city: 'شهر',
+  email: 'ایمیل',
+};
+
+function persianNumber(value: number | bigint): string {
+  return Number(value).toLocaleString('fa-IR', { useGrouping: false });
+}
+
+function validationFieldLabel(path: PropertyKey[], isArticleMutation: boolean): string {
+  const root = String(path[0] ?? 'اطلاعات ارسالی');
+  if (isArticleMutation && root === 'title') return 'عنوان مقاله';
+  if (isArticleMutation && root === 'slug') return 'اسلاگ مقاله';
+  if (root === 'bodyBlocks' && typeof path[1] === 'number') {
+    const block = `بلوک شماره ${persianNumber(path[1] + 1)} از بدنه مقاله`;
+    const detail = path[2] === undefined ? '' : validationFieldLabels[String(path[2])] ?? String(path[2]);
+    return detail ? `${block}، ${detail}` : block;
+  }
+  if (root === 'faqs' && typeof path[1] === 'number') {
+    const faq = `پرسش متداول شماره ${persianNumber(path[1] + 1)}`;
+    const detail = path[2] === undefined ? '' : validationFieldLabels[String(path[2])] ?? String(path[2]);
+    return detail ? `${faq}، ${detail}` : faq;
+  }
+  return validationFieldLabels[root] ?? `فیلد «${root}»`;
+}
+
+function validationRequirement(issue: ZodIssue): string {
+  if (issue.code === 'too_small') {
+    const amount = persianNumber(issue.minimum);
+    const unit = issue.origin === 'string' ? ' کاراکتر' : issue.origin === 'array' ? ' مورد' : '';
+    return issue.exact
+      ? `دقیقاً ${amount}${unit} وارد کنید.`
+      : `حداقل ${amount}${unit} وارد کنید.`;
+  }
+  if (issue.code === 'too_big') {
+    const amount = persianNumber(issue.maximum);
+    const unit = issue.origin === 'string' ? ' کاراکتر' : issue.origin === 'array' ? ' مورد' : '';
+    return issue.exact
+      ? `دقیقاً ${amount}${unit} وارد کنید.`
+      : `حداکثر ${amount}${unit} مجاز است.`;
+  }
+  if (issue.code === 'invalid_format') {
+    const field = String(issue.path.at(-1) ?? '');
+    if (field === 'slug') return 'فقط حروف، عدد و خط تیره وارد کنید؛ فاصله و نشانه‌های دیگر مجاز نیست.';
+    if (field === 'canonicalUrl' || field === 'targetUrl') return 'یک آدرس کامل و معتبر با http:// یا https:// وارد کنید.';
+    if (issue.format === 'email') return 'یک ایمیل معتبر مانند name@example.com وارد کنید.';
+    return 'فرمت مقدار واردشده معتبر نیست.';
+  }
+  if (issue.code === 'invalid_type') return 'مقدار این بخش از نوع درست نیست.';
+  if (issue.code === 'invalid_value' || issue.code === 'invalid_union') return 'یکی از گزینه‌های مجاز را انتخاب کنید.';
+  if (issue.code === 'unrecognized_keys') return 'اطلاعات ناشناخته در این بخش ارسال شده است.';
+  if (issue.code === 'custom' && /[\u0600-\u06ff]/u.test(issue.message)) {
+    return /[.!؟]$/u.test(issue.message) ? issue.message : `${issue.message}.`;
+  }
+  return 'مقدار واردشده معتبر نیست.';
+}
+
+function formatValidationIssues(issues: ZodIssue[], isArticleMutation: boolean): string {
+  const messages = [...new Set(issues.map(issue =>
+    `${validationFieldLabel(issue.path, isArticleMutation)}: ${validationRequirement(issue)}`,
+  ))].slice(0, 8);
+  if (messages.length === 1) return messages[0];
+  return `موارد زیر را اصلاح کنید:\n${messages.map(message => `• ${message}`).join('\n')}`;
+}
+
 /** Validates the path before normalization and the payload against consumed DTO fields. */
 export function validateMutation(path: string, method: string, body: unknown): string | null {
   if (!path.startsWith('/api/') || /[?#%\\]/.test(path)) return 'مسیر درخواست معتبر نیست.';
@@ -161,5 +258,6 @@ export function validateMutation(path: string, method: string, body: unknown): s
   if (method === 'DELETE' && /^(businesses\/id\/(gallery|features|branches|services|products|product-categories)\/id|admin\/(categories|reviews)\/id)$/.test(normalized)) schema = empty;
   if (!schema) return 'این عملیات پشتیبانی نمی‌شود.';
   const result = schema.safeParse(body ?? {});
-  return result.success ? null : 'اطلاعات ارسالی معتبر نیست: ' + result.error.issues[0].message;
+  const isArticleMutation = key === 'POST content/articles' || key === 'PATCH content/articles/id';
+  return result.success ? null : formatValidationIssues(result.error.issues, isArticleMutation);
 }

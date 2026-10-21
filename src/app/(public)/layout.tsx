@@ -1,3 +1,7 @@
 import { DesignProvider } from '@/design/provider';
-import { getCurrentUser } from '@/lib/auth/get-current-user';
-export default async function Layout({children}:{children:React.ReactNode}) { return <DesignProvider user={await getCurrentUser()}>{children}</DesignProvider>; }
+import { getDesignAccount } from '@/design/lib/get-design-account';
+
+export default async function Layout({children}:{children:React.ReactNode}) {
+  const { user, business } = await getDesignAccount();
+  return <DesignProvider user={user} business={business}>{children}</DesignProvider>;
+}

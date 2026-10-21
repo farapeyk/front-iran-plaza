@@ -161,6 +161,33 @@ test('article actions send normalized canonical URLs and stop invalid ones local
   assert.equal(calls.length,1);
 });
 
+test('article validation names every invalid field and explains the expected value in Persian', () => {
+  const { validateMutation } = load('src/lib/api/mutation-validation.ts');
+  const valid = {
+    title: 'عنوان معتبر مقاله',
+    slug: 'valid-article-slug',
+    excerpt: 'این خلاصه بیشتر از ده کاراکتر دارد.',
+    bodyBlocks: [],
+  };
+
+  assert.equal(
+    validateMutation('/api/content/articles', 'POST', { ...valid, excerpt: 'کوتاه' }),
+    'خلاصه مقاله: حداقل ۱۰ کاراکتر وارد کنید.',
+  );
+
+  const multiple = validateMutation('/api/content/articles', 'POST', {
+    ...valid,
+    title: 'دو',
+    slug: 'invalid slug',
+    faqs: [{ question: 'کم', answer: 'کوتاه' }],
+  });
+  assert.match(multiple, /عنوان مقاله: حداقل ۳ کاراکتر وارد کنید/);
+  assert.match(multiple, /اسلاگ مقاله: فقط حروف، عدد و خط تیره وارد کنید/);
+  assert.match(multiple, /پرسش متداول شماره ۱، متن پرسش: حداقل ۵ کاراکتر وارد کنید/);
+  assert.match(multiple, /پرسش متداول شماره ۱، پاسخ پرسش: حداقل ۱۰ کاراکتر وارد کنید/);
+  assert.doesNotMatch(multiple, /Too small|expected string|Invalid/);
+});
+
 test('working hours reject duplicates, reversed shifts and incomplete times', () => {
   const { validateMutation } = load('src/lib/api/mutation-validation.ts');
   const day = { weekday: 'SATURDAY', isTwoShift: false, openTime1: '09:00', closeTime1: '17:00', openTime2: null, closeTime2: null };

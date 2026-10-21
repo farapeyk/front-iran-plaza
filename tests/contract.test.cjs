@@ -40,6 +40,8 @@ test('frontend contract keeps the reviewed backend names and operations, with co
   assert.ok(articleBlock.properties.type.enum.includes('business-list'));
   assert.equal(articleBlock.properties.businessIds.type, 'array');
   assert.equal(articleBlock.properties.businessIds.items.type, 'string');
+  assert.equal(articleBlock.properties.listTitle.type, 'string');
+  assert.equal(schema.components.schemas.ArticleFaqDto.properties.isActive.type, 'boolean');
   const createArticle = schema.components.schemas.CreateArticleDto;
   for (const field of ['title', 'slug', 'excerpt', 'bodyBlocks']) assert.ok(createArticle.required.includes(field));
   assert.equal(createArticle.properties.excerpt.maxLength, 5000);

@@ -26,7 +26,7 @@ function MobileHeader({
     <header
       dir="ltr"
       className={cn(
-        "flex h-[72px] w-full items-center justify-between px-5 lg:hidden",
+        "sticky top-0 z-50 flex h-[72px] w-full items-center justify-between px-5 lg:hidden",
         isDark ? "bg-primary-950" : "bg-[var(--surface-muted)]",
         divider && "border-b border-[var(--border-default)]",
         className

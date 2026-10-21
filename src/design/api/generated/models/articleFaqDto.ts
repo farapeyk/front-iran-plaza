@@ -9,4 +9,6 @@
 export interface ArticleFaqDto {
   question: string;
   answer: string;
+  /** نمایش پرسش در مقاله و اسکیمای FAQPage */
+  isActive?: boolean;
 }

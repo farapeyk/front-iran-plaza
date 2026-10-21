@@ -53,12 +53,17 @@ export function ProductLivePage({businessId,categories}:{businessId:string;categ
     <form className="design-form space-y-6" onSubmit={event=>{
       event.preventDefault()
       const form=new FormData(event.currentTarget)
+      const categoryId=String(form.get("categoryId")).trim()
+      if(!categoryId) {
+        setMessage("انتخاب زیر‌دسته محصول الزامی است.")
+        return
+      }
       startTransition(async()=>{
         const result=await addProductAction(businessId,{
           name:String(form.get("name")).trim(),
           description:String(form.get("description")).trim()||undefined,
           price:Number(form.get("price")),
-          productCategoryId:String(form.get("categoryId"))||undefined,
+          productCategoryId:categoryId,
           imageId:imageId??undefined,
         })
         if(result.success)router.push("/dashboard/business/profile/products")
@@ -74,14 +79,15 @@ export function ProductLivePage({businessId,categories}:{businessId:string;categ
 
       <ImageEditor file={imageToEdit} title="تنظیم تصویر محصول" initialAspect="square" aspects={["square","portrait","landscape","original"]} maxOutputWidth={1600} onCancel={()=>setImageToEdit(null)} onConfirm={uploadImage}/>
 
+      {categories.length===0?<p role="alert" className="rounded border border-amber-300 bg-amber-50 p-4 text-amber-900">پیش از افزودن محصول، از صفحه محصولات حداقل یک زیر‌دسته محصول ایجاد کنید.</p>:null}
       <div className="grid gap-5 md:grid-cols-2">
-        <label className="space-y-2"><span className="text-lg font-bold">دسته‌بندی</span><select name="categoryId" className="h-14 w-full rounded border px-4"><option value="">بدون دسته‌بندی</option>{categories.map(category=><option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
+        <label className="space-y-2"><span className="text-lg font-bold">زیر‌دسته محصول <span className="text-[var(--danger)]">*</span></span><select name="categoryId" required defaultValue="" className="h-14 w-full rounded border px-4"><option value="" disabled>یک زیر‌دسته انتخاب کنید</option>{categories.map(category=><option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
         <Field label="نام محصول" name="name" required maxLength={180}/>
         <label className="space-y-2 md:col-span-2"><span className="text-lg font-bold">توضیح</span><textarea name="description" maxLength={100} rows={4} className="w-full rounded border p-4"/><span className="text-sm">حداکثر ۱۰۰ کاراکتر</span></label>
         <Field label="قیمت (تومان)" name="price" type="number" required min={0} step="1"/>
       </div>
       {message&&<p role="status">{message}</p>}
-      <Button type="submit" disabled={pending||uploading} className="h-12 w-full max-w-md">{pending?"در حال ثبت…":"ثبت محصول"}</Button>
+      <Button type="submit" disabled={pending||uploading||categories.length===0} className="h-12 w-full max-w-md">{pending?"در حال ثبت…":"ثبت محصول"}</Button>
     </form>
   </DashboardAccountLayout>
 }

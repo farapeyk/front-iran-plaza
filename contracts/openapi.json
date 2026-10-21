@@ -24264,6 +24264,10 @@
               "type": "string"
             }
           },
+          "listTitle": {
+            "type": "string",
+            "description": "عنوان نمایشی و ItemList بلوک business-list"
+          },
           "table": {
             "description": "تنظیمات جدول؛ فقط برای بلوک table",
             "allOf": [
@@ -24286,6 +24290,11 @@
           },
           "answer": {
             "type": "string"
+          },
+          "isActive": {
+            "type": "boolean",
+            "default": true,
+            "description": "نمایش پرسش در مقاله و اسکیمای FAQPage"
           }
         },
         "required": [

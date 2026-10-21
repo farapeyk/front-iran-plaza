@@ -10,59 +10,10 @@ import { RichTextRenderer } from "@/features/content/components/rich-text-render
 import { articlePath } from "@/features/content/lib/public-paths";
 import { displayArticleExcerpt, withoutLegacyArticleWidgets } from "@/features/content/lib/article-content";
 import type { ArticleBanner, ArticleBlock, PublicArticle, PublicArticleListItem } from "@/features/content/types";
+import { buildArticleStructuredData } from "@/features/seo/article-seo";
+import { JsonLd } from "@/features/seo/json-ld";
 
 const fileUrl = (id: string) => `/api/backend/files/${encodeURIComponent(id)}`;
-
-function StructuredData({ article, categoryPath, description }: { article: PublicArticle; categoryPath?: string; description: string }) {
-  const base = process.env.SITE_URL?.replace(/\/$/, "");
-  const publicPath = articlePath(article.slug);
-  const articleUrl = article.canonicalUrl || (base ? `${base}${publicPath}` : publicPath);
-  const graph: Record<string, unknown>[] = [
-    {
-      "@type": "Article",
-      "@id": `${articleUrl}#article`,
-      headline: article.title,
-      description: article.seoDescription || description,
-      datePublished: article.publishedAt,
-      dateModified: article.updatedAt,
-      author: { "@type": "Person", name: article.author.fullName || "تیم ایران پلازا" },
-      publisher: { "@type": "Organization", name: "ایران پلازا", ...(base ? { url: base } : {}) },
-      mainEntityOfPage: articleUrl,
-      ...(article.coverImageId ? { image: fileUrl(article.coverImageId) } : {}),
-    },
-    {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "خانه", item: base || "/" },
-        categoryPath
-          ? { "@type": "ListItem", position: 2, name: article.category?.name || "مقالات", item: base ? `${base}${categoryPath}` : categoryPath }
-          : { "@type": "ListItem", position: 2, name: "مقالات", item: base ? `${base}/articles/` : "/articles/" },
-        { "@type": "ListItem", position: 3, name: article.title, item: articleUrl },
-      ],
-    },
-  ];
-  const activeFaqs = article.faqs.filter(item => item.isActive !== false);
-  if (activeFaqs.length) {
-    graph.push({
-      "@type": "FAQPage",
-      mainEntity: activeFaqs.map(item => ({ "@type": "Question", name: item.question, acceptedAnswer: { "@type": "Answer", text: item.answer } })),
-    });
-  }
-  if (article.businesses.length) {
-    graph.push({
-      "@type": "ItemList",
-      name: article.title,
-      itemListElement: article.businesses.map((item, index) => ({
-        "@type": "ListItem",
-        position: index + 1,
-        name: item.business.name,
-        item: base ? `${base}/businesses/${item.business.slug}` : `/businesses/${item.business.slug}`,
-      })),
-    });
-  }
-  const json = JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c");
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: json }} />;
-}
 
 function TextBlock({ block }: { block: ArticleBlock }) {
   if (block.type === "heading") {
@@ -97,10 +48,11 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath 
   const banners = article.banners ?? [];
   const topBanners = banners.filter(banner => banner.placement === "TOP");
   const sidebarBanners = banners.filter(banner => banner.placement === "SIDEBAR");
+  const activeFaqs = article.faqs.filter(item => item.isActive !== false);
 
   return (
     <SiteLayout>
-      <StructuredData article={article} categoryPath={categoryPath} description={excerpt} />
+      <JsonLd data={buildArticleStructuredData(article, categoryPath)} />
       <main className="mx-auto w-full max-w-[1440px] px-[var(--page-gutter)] py-[var(--5xl)] lg:px-[var(--8xl)] lg:pb-[var(--9xl)]">
         <Breadcrumb items={[{ label: "خانه", to: "/" }, { label: article.category?.name || "مقالات", to: categoryPath || "/articles/" }, { label: article.title }]} />
         <header className="mx-auto mt-[var(--5xl)] max-w-[1000px] space-y-4 text-start">
@@ -133,6 +85,7 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath 
                 const businesses = (block.businessIds ?? []).map(id => businessById.get(id)).filter((item): item is NonNullable<typeof item> => Boolean(item));
                 return (
                   <section key={block.id} id={block.id} className="space-y-3">
+                    {block.listTitle ? <h2 className="text-2xl font-black text-[var(--text-title)]">{block.listTitle}</h2> : null}
                     {businesses.map(business => {
                       const vip = business.planType === "VIP" && Boolean(business.planExpiryDate && new Date(business.planExpiryDate) > new Date());
                       const card = { id: business.id, name: business.name, description: business.description || "", location: [business.city, business.neighborhood, business.address].filter(Boolean).join("، "), image: business.logoId ? fileUrl(business.logoId) : "/design/icons/briefcase.svg", vip, status: vip ? "vip" as const : "free" as const, href: `/businesses/${business.slug}`, phone: business.phone };
@@ -145,10 +98,10 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath 
               return <TextBlock key={block.id} block={block} />;
             })}
 
-            {article.faqs.length ? (
+            {activeFaqs.length ? (
               <section className="space-y-4">
                 <h2 className="text-2xl font-black">پرسش‌های متداول</h2>
-                {article.faqs.filter(item => item.isActive !== false).map(item => <details key={item.id ?? item.question} className="rounded-[var(--radius-xs)] border bg-[var(--surface)] p-4"><summary className="cursor-pointer font-bold">{item.question}</summary><p className="mt-3 leading-loose text-[var(--text-body)]">{item.answer}</p></details>)}
+                {activeFaqs.map(item => <details key={item.id ?? item.question} className="rounded-[var(--radius-xs)] border bg-[var(--surface)] p-4"><summary className="cursor-pointer font-bold">{item.question}</summary><p className="mt-3 leading-loose text-[var(--text-body)]">{item.answer}</p></details>)}
               </section>
             ) : null}
 

@@ -24,7 +24,7 @@ function SiteHeader({
       data-slot="site-header"
       data-auth={auth}
       className={cn(
-        "w-full bg-[var(--surface-muted)]",
+        "sticky top-0 z-50 w-full bg-[var(--surface-muted)]",
         divider && "border-b border-[var(--border-default)]",
         className
       )}

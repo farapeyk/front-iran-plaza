@@ -738,6 +738,7 @@ src/design/data/home-categories.ts
 src/design/data/new-members.ts
 src/design/data/site-index.ts
 src/design/fonts.css
+src/design/lib/get-design-account.ts
 src/design/lib/image-crop.ts
 src/design/lib/search-history.ts
 src/design/lib/use-modal-focus.ts
@@ -846,6 +847,7 @@ src/features/business/lib/category-options.ts
 src/features/business/lib/get-my-business.ts
 src/features/business/lib/get-registration-documents.ts
 src/features/business/lib/onboarding-steps.ts
+src/features/business/lib/product-categories.ts
 src/features/business/lib/registration.ts
 src/features/business/schemas/business-info.schema.ts
 src/features/business/schemas/identity.schema.ts
@@ -906,6 +908,9 @@ src/features/public/components/static-location-map.tsx
 src/features/public/lib/business-slug.ts
 src/features/public/types/public-business.ts
 src/features/public/types/review.ts
+src/features/seo/article-seo.ts
+src/features/seo/json-ld.tsx
+src/features/seo/site-structured-data.ts
 src/features/seo/sitemap-data.ts
 src/features/seo/sitemap-xml.ts
 src/lib/api/action-fetch.ts
@@ -935,10 +940,12 @@ src/lib/validators/national-code.ts
 src/proxy.ts
 src/styles/shadcn.css
 src/types/auth.ts
+tests/account-menu.test.cjs
 tests/admin-business-detail.production.cjs
 tests/admin-business-detail.test.cjs
 tests/admin-business-management.test.cjs
 tests/admin-routing.test.cjs
+tests/article-seo.test.cjs
 tests/browser/design-transfer.spec.ts
 tests/browser/reference-layout.spec.ts
 tests/business-slug.test.cjs
@@ -954,6 +961,7 @@ tests/http.test.cjs
 tests/image-crop.test.cjs
 tests/mobile-search.test.cjs
 tests/onboarding.test.cjs
+tests/products.test.cjs
 tests/same-origin.test.cjs
 tests/security.test.cjs
 tests/sitemap.test.cjs

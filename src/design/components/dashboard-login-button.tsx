@@ -6,7 +6,7 @@ import { Link } from "@/design/navigation"
 import { cn } from "@/design/lib/utils"
 import { buttonVariants } from "@/design/components/ui/button-variants"
 import { UserAvatar } from "@/design/components/user-avatar"
-import { useDesignUser } from '@/design/provider'
+import { useDesignBusiness, useDesignUser } from '@/design/provider'
 const arrowDown = "/design/icons/arrow-down.svg"
 const addIcon = "/design/icons/add.svg"
 const briefcase = "/design/icons/briefcase.svg"
@@ -52,6 +52,7 @@ function DashboardLoginButton({
 }: DashboardLoginButtonProps) {
   const [open, setOpen] = useState(defaultOpen)
   const user=useDesignUser()
+  const business=useDesignBusiness()
   const phone=suppliedPhone??user?.phone??''
   const name=suppliedName??user?.fullName??'حساب کاربری'
 
@@ -99,20 +100,22 @@ function DashboardLoginButton({
               <span className="text-[var(--text-danger)]">{vipStatus}</span>
               <span className="text-[var(--text-title)]">اشتراک پروفایل VIP شما</span>
             </div>
-            <Link
-              to="/business-registration"
-              className={cn(buttonVariants({ size: "sm" }), "w-full")}
-              onClick={() => setOpen(false)}
-            >
-              ثبت رایگان کسب وکار
-              <Image
-                alt=""
-                className="size-6 brightness-0 invert"
-                height={24}
-                src={addIcon}
-                width={24}
-              />
-            </Link>
+            {!business ? (
+              <Link
+                to="/business-registration"
+                className={cn(buttonVariants({ size: "sm" }), "w-full")}
+                onClick={() => setOpen(false)}
+              >
+                ثبت رایگان کسب وکار
+                <Image
+                  alt=""
+                  className="size-6 brightness-0 invert"
+                  height={24}
+                  src={addIcon}
+                  width={24}
+                />
+              </Link>
+            ) : null}
           </div>
 
           <nav className="flex w-full flex-col">

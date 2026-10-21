@@ -10,12 +10,19 @@ export interface ProductCategoryInput {
 
 export interface ProductInput {
   name: string;
-  productCategoryId?: string;
+  productCategoryId: string;
   price: number;
   description?: string;
   discountPercent?: number;
   hasInstallment?: boolean;
   imageId?: string;
+}
+
+function validateProductInput(input: ProductInput): string | null {
+  if (!input || typeof input.name !== "string" || !input.name.trim()) return "نام محصول الزامی است";
+  if (typeof input.productCategoryId !== "string" || !input.productCategoryId.trim()) return "انتخاب زیر‌دسته محصول الزامی است";
+  if (typeof input.price !== "number" || !Number.isFinite(input.price) || input.price < 0) return "قیمت محصول معتبر نیست";
+  return null;
 }
 
 export async function addProductCategoryAction(businessId: string, input: ProductCategoryInput) {
@@ -31,7 +38,17 @@ export async function removeProductCategoryAction(businessId: string, categoryId
 }
 
 export async function addProductAction(businessId: string, input: ProductInput) {
+  const validationError = validateProductInput(input);
+  if (validationError) return { success: false as const, message: validationError };
   const result = await authedFetch<ProductItem>(`/api/businesses/${businessId}/products`, "POST", input);
+  if (result.success) revalidatePath("/dashboard/business/profile/products");
+  return result;
+}
+
+export async function updateProductAction(businessId: string, productId: string, input: ProductInput) {
+  const validationError = validateProductInput(input);
+  if (validationError) return { success: false as const, message: validationError };
+  const result = await authedFetch<ProductItem>(`/api/businesses/${businessId}/products/${productId}`, "PATCH", input);
   if (result.success) revalidatePath("/dashboard/business/profile/products");
   return result;
 }

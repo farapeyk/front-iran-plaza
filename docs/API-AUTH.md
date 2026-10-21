@@ -60,7 +60,7 @@ Server Actionهای JSON از actionFetch و schemaهای mutation-validation ا
 | خدمات | GET / POST `/api/businesses/{id}/services` | دریافت / ایجاد |
 | خدمات | DELETE `/api/businesses/{id}/services/{serviceId}` | حذف |
 | محصولات | GET / POST `/api/businesses/{id}/products` | دریافت / ایجاد |
-| محصولات | DELETE `/api/businesses/{id}/products/{productId}` | حذف |
+| محصولات | PATCH / DELETE `/api/businesses/{id}/products/{productId}` | ویرایش / حذف؛ فرم فرانت برای ایجاد و ویرایش، زیر‌دسته را الزامی می‌کند |
 | دسته محصول | GET / POST `/api/businesses/{id}/product-categories` | دریافت / ایجاد |
 | دسته محصول | DELETE `/api/businesses/{id}/product-categories/{categoryId}` | حذف |
 | اقساط | GET / PATCH `/api/businesses/{id}/installment-plan` | دریافت / ذخیره |

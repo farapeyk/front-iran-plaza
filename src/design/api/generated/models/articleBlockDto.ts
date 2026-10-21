@@ -24,6 +24,8 @@ export interface ArticleBlockDto {
   imageAlt?: string;
   /** شناسه کسب‌وکارهای تاییدشده؛ فقط برای business-list */
   businessIds?: string[];
+  /** عنوان نمایشی و ItemList بلوک business-list */
+  listTitle?: string;
   /** تنظیمات جدول؛ فقط برای بلوک table */
   table?: ArticleTableDto;
 }
