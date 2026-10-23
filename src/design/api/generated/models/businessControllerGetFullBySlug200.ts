@@ -10,6 +10,7 @@ import type { BusinessControllerGetFullBySlug200BusinessType } from './businessC
 import type { BusinessControllerGetFullBySlug200CategoriesItem } from './businessControllerGetFullBySlug200CategoriesItem';
 import type { BusinessControllerGetFullBySlug200GalleryItem } from './businessControllerGetFullBySlug200GalleryItem';
 import type { BusinessControllerGetFullBySlug200InstallmentPlan } from './businessControllerGetFullBySlug200InstallmentPlan';
+import type { BusinessControllerGetFullBySlug200PlanType } from './businessControllerGetFullBySlug200PlanType';
 import type { BusinessControllerGetFullBySlug200ProductCategoriesItem } from './businessControllerGetFullBySlug200ProductCategoriesItem';
 import type { BusinessControllerGetFullBySlug200ProductsItem } from './businessControllerGetFullBySlug200ProductsItem';
 import type { BusinessControllerGetFullBySlug200ServicesItem } from './businessControllerGetFullBySlug200ServicesItem';
@@ -53,4 +54,7 @@ export type BusinessControllerGetFullBySlug200 = {
   /** @nullable */
   whatsapp: string | null;
   workingHours: BusinessControllerGetFullBySlug200WorkingHoursItem[];
+  planType: BusinessControllerGetFullBySlug200PlanType;
+  /** @nullable */
+  planExpiryDate: string | null;
 };

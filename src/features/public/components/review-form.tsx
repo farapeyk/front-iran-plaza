@@ -27,12 +27,12 @@ export function ReviewForm({ businessId, isLoggedIn }: { businessId: string; isL
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (rating === 0) {
-      toast.error("امتیاز را انتخاب کنید");
+    if (rating === 0 && !comment.trim()) {
+      toast.error("متن نظر یا امتیاز را وارد کنید");
       return;
     }
     startTransition(async () => {
-      const result = await submitReviewAction(businessId, { rating, comment: comment || undefined });
+      const result = await submitReviewAction(businessId, { rating: rating || undefined, comment: comment.trim() || undefined });
       if (!result.success) {
         toast.error(result.message);
         return;

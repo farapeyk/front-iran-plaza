@@ -82,7 +82,7 @@ function GalleryLightboxContent({
               fill
               sizes="(min-width: 1024px) calc(100vw - 256px), 100vw"
               src={current.src}
-              className="absolute inset-0 size-full object-cover"
+              className="absolute inset-0 size-full object-contain"
             />
             {current.isVideo ? (
               <div className="absolute inset-0 flex items-center justify-center">

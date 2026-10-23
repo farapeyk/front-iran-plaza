@@ -8,7 +8,7 @@ export interface ReviewReplyData {
 export interface ReviewData {
   id: string;
   businessId: string;
-  rating: number;
+  rating: number | null;
   comment: string | null;
   status: string;
   createdAt: string;

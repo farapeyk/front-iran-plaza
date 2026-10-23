@@ -11,6 +11,6 @@ export interface CreateReviewDto {
      * @minimum 1
      * @maximum 5
      */
-  rating: number;
+  rating?: number;
   comment?: string;
 }

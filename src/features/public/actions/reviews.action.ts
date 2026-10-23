@@ -10,7 +10,7 @@ export type ReviewActionResult = { success: true } | { success: false; message: 
 
 export async function submitReviewAction(
   businessId: string,
-  input: { rating: number; comment?: string },
+  input: { rating?: number; comment?: string },
 ): Promise<ReviewActionResult> {
   const accessToken = await getActionAccessToken();
   if (!accessToken) {

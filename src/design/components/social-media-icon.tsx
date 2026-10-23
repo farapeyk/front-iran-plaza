@@ -1,5 +1,6 @@
 "use client"
 import Image from "next/image";
+import { Globe } from "lucide-react";
 
 import { cn } from "@/design/lib/utils"
 const facebook = "/design/icons/social-facebook.svg"
@@ -59,7 +60,9 @@ function SocialMediaIcon({
   const src = SOCIAL_ICONS[name]
   const isButton = type === "Button"
 
-  const inner = (
+  const inner = name === "Website" ? (
+    <Globe aria-hidden="true" className={cn(isButton ? "size-6" : "size-[22px]", "text-primary-700")} />
+  ) : (
     <Image
       alt=""
       src={src}

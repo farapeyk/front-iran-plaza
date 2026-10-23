@@ -5,9 +5,14 @@
  * Iran Plaza backend API
  * OpenAPI spec version: 0.1
  */
+import type { BusinessControllerGetFullBySlug200CategoriesItemCategoryParent } from './businessControllerGetFullBySlug200CategoriesItemCategoryParent';
 
 export type BusinessControllerGetFullBySlug200CategoriesItemCategory = {
   id: string;
   name: string;
   slug: string;
+  /** @nullable */
+  parentId: string | null;
+  /** @nullable */
+  parent: BusinessControllerGetFullBySlug200CategoriesItemCategoryParent;
 };

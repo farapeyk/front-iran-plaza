@@ -1,10 +1,4 @@
-# فهرست سورس
-
-این فهرست در تاریخ ۲۰۲۶-۱۰-۲۱ از فایل‌های موجود در `src/` و `tests/` به‌روز شده است. برای مسئولیت هر بخش، [معماری](ARCHITECTURE.md) و برای رفتار صفحات، [مسیرها](ROUTES.md) را بخوانید. فایل‌های نصب‌شده و خروجی build در این فهرست نیستند.
-
-تعداد فایل‌های فهرست‌شده: **951**.
-
-## فایل‌ها
+## Source and test files
 
 ```text
 src/app/(auth)/layout.tsx
@@ -265,8 +259,10 @@ src/design/api/generated/models/businessControllerGetFullBySlug200BranchesItem.t
 src/design/api/generated/models/businessControllerGetFullBySlug200BusinessType.ts
 src/design/api/generated/models/businessControllerGetFullBySlug200CategoriesItem.ts
 src/design/api/generated/models/businessControllerGetFullBySlug200CategoriesItemCategory.ts
+src/design/api/generated/models/businessControllerGetFullBySlug200CategoriesItemCategoryParent.ts
 src/design/api/generated/models/businessControllerGetFullBySlug200GalleryItem.ts
 src/design/api/generated/models/businessControllerGetFullBySlug200InstallmentPlan.ts
+src/design/api/generated/models/businessControllerGetFullBySlug200PlanType.ts
 src/design/api/generated/models/businessControllerGetFullBySlug200ProductCategoriesItem.ts
 src/design/api/generated/models/businessControllerGetFullBySlug200ProductsItem.ts
 src/design/api/generated/models/businessControllerGetFullBySlug200ServicesItem.ts
@@ -475,8 +471,6 @@ src/design/api/generated/models/createBusinessFeatureDto.ts
 src/design/api/generated/models/createCategoryDto.ts
 src/design/api/generated/models/createCouponDto.ts
 src/design/api/generated/models/createCouponDtoScope.ts
-src/design/api/generated/models/createdSuperAdminDataDto.ts
-src/design/api/generated/models/createdSuperAdminDataDtoUserType.ts
 src/design/api/generated/models/createInvoiceDto.ts
 src/design/api/generated/models/createInvoiceDtoStatus.ts
 src/design/api/generated/models/createManualBusinessDto.ts
@@ -498,6 +492,8 @@ src/design/api/generated/models/createServiceDto.ts
 src/design/api/generated/models/createSuperAdminDto.ts
 src/design/api/generated/models/createSuperAdminResponseDto.ts
 src/design/api/generated/models/createTaxRuleDto.ts
+src/design/api/generated/models/createdSuperAdminDataDto.ts
+src/design/api/generated/models/createdSuperAdminDataDtoUserType.ts
 src/design/api/generated/models/favoriteControllerGetMine200Item.ts
 src/design/api/generated/models/favoriteControllerToggle201.ts
 src/design/api/generated/models/fileAssetControllerDelete200.ts
@@ -785,9 +781,9 @@ src/features/admin/components/admin-login-form.tsx
 src/features/admin/components/admin-sidebar.tsx
 src/features/admin/components/business-approval-actions.tsx
 src/features/admin/components/business-city-form.tsx
-src/features/admin/components/create-super-admin-form.tsx
 src/features/admin/components/business-profile-overview.tsx
 src/features/admin/components/category-manager.tsx
+src/features/admin/components/create-super-admin-form.tsx
 src/features/admin/components/document-review-card.tsx
 src/features/admin/components/manual-business-form.tsx
 src/features/admin/components/pending-business-row.tsx
@@ -898,10 +894,13 @@ src/features/public/actions/reviews.action.ts
 src/features/public/components/breadcrumb.tsx
 src/features/public/components/business-card.tsx
 src/features/public/components/business-location-map.tsx
+src/features/public/components/business-locations.tsx
+src/features/public/components/business-profile-media.tsx
 src/features/public/components/favorite-button.tsx
 src/features/public/components/features-checklist.tsx
 src/features/public/components/promo-banner.tsx
 src/features/public/components/review-form.tsx
+src/features/public/components/review-replies-dialog.tsx
 src/features/public/components/reviews-list.tsx
 src/features/public/components/site-header.tsx
 src/features/public/components/static-location-map.tsx
@@ -962,26 +961,9 @@ tests/image-crop.test.cjs
 tests/mobile-search.test.cjs
 tests/onboarding.test.cjs
 tests/products.test.cjs
+tests/reviews.test.cjs
 tests/same-origin.test.cjs
 tests/security.test.cjs
 tests/sitemap.test.cjs
 tests/super-admin.test.cjs
 ```
-
-## فایل‌های ریشه مرتبط
-
-| فایل | کاربرد |
-| --- | --- |
-| `package.json` | dependencyها و scriptها |
-| `package-lock.json` / `pnpm-lock.yaml` | دو lockfile حفظ شده؛ pnpm مرجع ثبت‌شده است |
-| `pnpm-workspace.yaml` | تنظیم build dependencyها برای pnpm |
-| `tsconfig.json` | strict TypeScript و alias |
-| `next.config.ts` | سقف Server Action و origin توسعه |
-| `eslint.config.mjs` | قواعد Next، TypeScript و ignoreهای build |
-| `postcss.config.mjs` | پردازش Tailwind |
-| `components.json` | تنظیم تولید اجزای shadcn |
-| `.gitignore` | حذف env، dependency و build از نسخه‌بندی |
-| `README.md` | معرفی پروژه، اجرای سریع و لینک مستندات |
-| `ONBOARDING-UPDATE.md` | سابقه بسته تغییر onboarding؛ QA آن تاریخی است |
-
-فایل خصوصی `.env` در این فهرست محتوایی بررسی نشده و مقادیر آن مستند نشده‌اند. `src/error.tsx` حذف و error boundary در `src/app/error.tsx` ایجاد شده است.

@@ -13,7 +13,8 @@ export type ReviewControllerCreate201 = {
   comment: string | null;
   createdAt: string;
   id: string;
-  rating: number;
+  /** @nullable */
+  rating: number | null;
   status: ReviewControllerCreate201Status;
   updatedAt: string;
   userId: string;

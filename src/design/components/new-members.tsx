@@ -13,9 +13,9 @@ const arrowRight = "/design/icons/arrow-right.svg"
 
 
 
-function NewMembers({ className, title = "عضوهای جدید ما" }: { className?: string; title?: string }) {
+function NewMembers({ className, title = "عضوهای جدید ما", categoryId, excludeBusinessId }: { className?: string; title?: string; categoryId?: string; excludeBusinessId?: string }) {
   const scroller = useRef<HTMLDivElement>(null)
-  const { items: newMembers, error } = useNewMembers()
+  const { items: newMembers, error } = useNewMembers(categoryId, excludeBusinessId)
 
   const scrollBy = (dir: 1 | -1) => {
     scroller.current?.scrollBy({ left: dir * -280, behavior: "smooth" })

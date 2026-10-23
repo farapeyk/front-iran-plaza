@@ -49,7 +49,7 @@ export function ReviewsList({ reviews, isLoggedIn }: { reviews: ReviewData[]; is
             <span className="text-sm font-medium text-neutral-800">{review.user.fullName ?? "کاربر"}</span>
             <div className="flex gap-0.5">
               {[1, 2, 3, 4, 5].map((star) => (
-                <Star key={star} size={14} className={star <= review.rating ? "fill-amber-400 text-amber-400" : "text-neutral-200"} />
+                <Star key={star} size={14} className={review.rating != null && star <= review.rating ? "fill-amber-400 text-amber-400" : "text-neutral-200"} />
               ))}
             </div>
           </div>

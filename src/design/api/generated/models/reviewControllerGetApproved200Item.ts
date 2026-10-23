@@ -13,7 +13,8 @@ export type ReviewControllerGetApproved200Item = {
   comment: string | null;
   createdAt: string;
   id: string;
-  rating: number;
+  /** @nullable */
+  rating: number | null;
   replies: ReviewControllerGetApproved200ItemRepliesItem[];
   user: ReviewControllerGetApproved200ItemUser;
 };

@@ -5271,12 +5271,38 @@
                               },
                               "slug": {
                                 "type": "string"
+                              },
+                              "parentId": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "parent": {
+                                "type": "object",
+                                "nullable": true,
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "slug": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "slug"
+                                ]
                               }
                             },
                             "required": [
                               "id",
                               "name",
-                              "slug"
+                              "slug",
+                              "parentId",
+                              "parent"
                             ]
                           }
                         },
@@ -5787,6 +5813,18 @@
                           "weekday"
                         ]
                       }
+                    },
+                    "planType": {
+                      "type": "string",
+                      "enum": [
+                        "FREE",
+                        "VIP"
+                      ]
+                    },
+                    "planExpiryDate": {
+                      "type": "string",
+                      "format": "date-time",
+                      "nullable": true
                     }
                   },
                   "required": [
@@ -5814,7 +5852,9 @@
                     "viewCount",
                     "website",
                     "whatsapp",
-                    "workingHours"
+                    "workingHours",
+                    "planType",
+                    "planExpiryDate"
                   ]
                 }
               }
@@ -15752,7 +15792,8 @@
                       "type": "string"
                     },
                     "rating": {
-                      "type": "number"
+                      "type": "number",
+                      "nullable": true
                     },
                     "status": {
                       "type": "string",
@@ -15783,6 +15824,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "ارسال نظر در فاصله کوتاه مجاز نیست"
           }
         },
         "security": [
@@ -15829,7 +15873,8 @@
                         "type": "string"
                       },
                       "rating": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                       },
                       "replies": {
                         "type": "array",
@@ -24054,10 +24099,7 @@
           "comment": {
             "type": "string"
           }
-        },
-        "required": [
-          "rating"
-        ]
+        }
       },
       "CreateReplyDto": {
         "type": "object",
