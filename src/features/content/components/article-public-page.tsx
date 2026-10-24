@@ -75,6 +75,7 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath 
               </figure>
             ) : null}
             {tocItems.length ? <TableOfContent items={tocItems} className="w-full" /> : null}
+            {article.keyTakeaways?.length ? <aside className="rounded-[var(--radius-xs)] border border-emerald-200 bg-emerald-50/70 p-5"><h2 className="font-black text-emerald-950">خلاصه سریع</h2><ul className="mt-3 list-disc space-y-2 pe-5 leading-7 text-emerald-950">{article.keyTakeaways.map(item => <li key={item}>{item}</li>)}</ul></aside> : null}
             <p className="whitespace-pre-line text-lg leading-loose text-[var(--text-body)]">{excerpt}</p>
 
             {bodyBlocks.map(block => {

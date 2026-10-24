@@ -5269,16 +5269,8 @@
                               "name": {
                                 "type": "string"
                               },
-                              "slug": {
-                                "type": "string"
-                              },
-                              "parentId": {
-                                "type": "string",
-                                "nullable": true
-                              },
                               "parent": {
                                 "type": "object",
-                                "nullable": true,
                                 "properties": {
                                   "id": {
                                     "type": "string"
@@ -5294,15 +5286,23 @@
                                   "id",
                                   "name",
                                   "slug"
-                                ]
+                                ],
+                                "nullable": true
+                              },
+                              "parentId": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "slug": {
+                                "type": "string"
                               }
                             },
                             "required": [
                               "id",
                               "name",
-                              "slug",
+                              "parent",
                               "parentId",
-                              "parent"
+                              "slug"
                             ]
                           }
                         },
@@ -5430,6 +5430,18 @@
                     "phone2": {
                       "type": "string",
                       "nullable": true
+                    },
+                    "planExpiryDate": {
+                      "type": "string",
+                      "format": "date-time",
+                      "nullable": true
+                    },
+                    "planType": {
+                      "type": "string",
+                      "enum": [
+                        "FREE",
+                        "VIP"
+                      ]
                     },
                     "productCategories": {
                       "type": "array",
@@ -5813,18 +5825,6 @@
                           "weekday"
                         ]
                       }
-                    },
-                    "planType": {
-                      "type": "string",
-                      "enum": [
-                        "FREE",
-                        "VIP"
-                      ]
-                    },
-                    "planExpiryDate": {
-                      "type": "string",
-                      "format": "date-time",
-                      "nullable": true
                     }
                   },
                   "required": [
@@ -5844,6 +5844,8 @@
                     "name",
                     "phone",
                     "phone2",
+                    "planExpiryDate",
+                    "planType",
                     "productCategories",
                     "products",
                     "services",
@@ -5852,9 +5854,7 @@
                     "viewCount",
                     "website",
                     "whatsapp",
-                    "workingHours",
-                    "planType",
-                    "planExpiryDate"
+                    "workingHours"
                   ]
                 }
               }
@@ -15089,7 +15089,8 @@
                             "type": "string"
                           },
                           "rating": {
-                            "type": "number"
+                            "type": "number",
+                            "nullable": true
                           },
                           "status": {
                             "type": "string",
@@ -15218,7 +15219,8 @@
                       "type": "string"
                     },
                     "rating": {
-                      "type": "number"
+                      "type": "number",
+                      "nullable": true
                     },
                     "status": {
                       "type": "string",
@@ -15824,9 +15826,6 @@
                 }
               }
             }
-          },
-          "429": {
-            "description": "ارسال نظر در فاصله کوتاه مجاز نیست"
           }
         },
         "security": [
@@ -17556,6 +17555,37 @@
             }
           },
           {
+            "name": "categoryId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mine",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "newest",
+              "type": "string",
+              "enum": [
+                "newest",
+                "oldest",
+                "title"
+              ]
+            }
+          },
+          {
             "name": "page",
             "required": false,
             "in": "query",
@@ -17979,6 +18009,210 @@
           }
         ],
         "summary": "ساخت پیش‌نویس مقاله",
+        "tags": [
+          "Content CMS"
+        ]
+      }
+    },
+    "/api/content/media": {
+      "get": {
+        "operationId": "ContentController_media",
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "maximum": 60,
+              "default": 30,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Request failed (400)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "statusCode",
+                    "errorCode",
+                    "message",
+                    "path",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "example": 400
+                    },
+                    "errorCode": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request failed (401)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "statusCode",
+                    "errorCode",
+                    "message",
+                    "path",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "errorCode": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request failed (403)\n\nRequires permission: CONTENT:WRITE",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "statusCode",
+                    "errorCode",
+                    "message",
+                    "path",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "example": 403
+                    },
+                    "errorCode": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "کتابخانه تصاویر قابل استفاده در تحریریه",
         "tags": [
           "Content CMS"
         ]
@@ -18463,6 +18697,191 @@
           }
         ],
         "summary": "ذخیره مقاله با قفل خوش‌بینانه و ثبت نسخه",
+        "tags": [
+          "Content CMS"
+        ]
+      }
+    },
+    "/api/content/articles/{id}/revisions": {
+      "get": {
+        "operationId": "ContentController_revisions",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Request failed (401)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "statusCode",
+                    "errorCode",
+                    "message",
+                    "path",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "errorCode": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request failed (403)\n\nRequires permission: CONTENT:WRITE",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "statusCode",
+                    "errorCode",
+                    "message",
+                    "path",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "example": 403
+                    },
+                    "errorCode": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Request failed (404)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "statusCode",
+                    "errorCode",
+                    "message",
+                    "path",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "example": 404
+                    },
+                    "errorCode": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "تاریخچه نسخه‌های ذخیره‌شده مقاله",
         "tags": [
           "Content CMS"
         ]
@@ -24094,10 +24513,14 @@
           "rating": {
             "type": "number",
             "minimum": 1,
-            "maximum": 5
+            "maximum": 5,
+            "description": "امتیاز اختیاری است؛ در صورت ارسال باید بین ۱ و ۵ باشد."
           },
           "comment": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "description": "برای ثبت نظر بدون امتیاز، متن نظر الزامی است."
           }
         }
       },
@@ -24361,6 +24784,45 @@
             "example": "راهنمای انتخاب بهترین رستوران‌های ثبت‌شده در ایران پلازا",
             "maxLength": 5000
           },
+          "tags": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "string",
+              "maxLength": 60
+            }
+          },
+          "keyTakeaways": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "maxLength": 240
+            },
+            "description": "گزیده‌های کوتاه تحریریه"
+          },
+          "primaryKeyword": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "کلیدواژه کانونی برای تحلیل سئو"
+          },
+          "schemaType": {
+            "type": "string",
+            "enum": [
+              "ARTICLE",
+              "LISTING"
+            ],
+            "default": "LISTING"
+          },
+          "isFeatured": {
+            "type": "boolean",
+            "default": false
+          },
+          "featuredOrder": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 999
+          },
           "bodyBlocks": {
             "maxItems": 500,
             "type": "array",
@@ -24430,6 +24892,45 @@
             "type": "string",
             "example": "راهنمای انتخاب بهترین رستوران‌های ثبت‌شده در ایران پلازا",
             "maxLength": 5000
+          },
+          "tags": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "string",
+              "maxLength": 60
+            }
+          },
+          "keyTakeaways": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "maxLength": 240
+            },
+            "description": "گزیده‌های کوتاه تحریریه"
+          },
+          "primaryKeyword": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "کلیدواژه کانونی برای تحلیل سئو"
+          },
+          "schemaType": {
+            "type": "string",
+            "enum": [
+              "ARTICLE",
+              "LISTING"
+            ],
+            "default": "LISTING"
+          },
+          "isFeatured": {
+            "type": "boolean",
+            "default": false
+          },
+          "featuredOrder": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 999
           },
           "bodyBlocks": {
             "maxItems": 500,

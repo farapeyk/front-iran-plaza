@@ -6,6 +6,8 @@ export type ArticleStatus =
   | "PUBLISHED"
   | "ARCHIVED";
 
+export type ArticleSchemaType = "ARTICLE" | "LISTING";
+
 export type RichTextNode = {
   type: string;
   text?: string;
@@ -88,6 +90,12 @@ export type EditorArticle = {
   title: string;
   slug: string;
   excerpt: string;
+  tags: string[];
+  keyTakeaways: string[];
+  primaryKeyword: string | null;
+  schemaType: ArticleSchemaType;
+  isFeatured: boolean;
+  featuredOrder: number | null;
   bodyBlocks: ArticleBlock[];
   status: ArticleStatus;
   reviewNote: string | null;
@@ -114,8 +122,8 @@ export type EditorArticle = {
 
 export type EditorArticleListItem = Pick<
   EditorArticle,
-  "id" | "title" | "slug" | "excerpt" | "status" | "revision" | "coverImageId" | "publishedAt" | "updatedAt" | "author" | "category"
->;
+  "id" | "title" | "slug" | "excerpt" | "status" | "revision" | "coverImageId" | "publishedAt" | "updatedAt" | "author" | "category" | "schemaType" | "isFeatured" | "featuredOrder" | "tags"
+> & { _count?: { feedback: number; revisions: number } };
 
 export type ArticleListResponse = { data: EditorArticleListItem[]; total: number; page: number; limit: number };
 
@@ -152,6 +160,29 @@ export type PublicArticle = Omit<EditorArticle, "categoryId" | "status" | "revie
 };
 
 export type ContentIdentity = { id: string; fullName: string | null; canWrite: true; canPublish: boolean };
+
+export type ArticleRevision = {
+  id: string;
+  revision: number;
+  title: string;
+  status: ArticleStatus;
+  changeNote: string | null;
+  createdAt: string;
+  editor: { id: string; fullName: string | null };
+};
+
+export type ContentMediaItem = {
+  id: string;
+  fileName: string;
+  mimeType: string;
+  size: string;
+  width: number | null;
+  height: number | null;
+  createdAt: string;
+  uploader: { id: string; fullName: string | null };
+};
+
+export type ContentMediaResponse = { data: ContentMediaItem[]; total: number; page: number; limit: number };
 
 export type ContentAuthorAssignment = {
   id: string;

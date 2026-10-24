@@ -4,12 +4,18 @@ import { revalidatePath } from "next/cache";
 import { authedFetch } from "@/features/business/actions/authed-fetch";
 import { normalizeCanonicalUrl } from "@/features/content/lib/canonical-url";
 import { articlePath } from "@/features/content/lib/public-paths";
-import type { ArticleBanner, ArticleBlock, ArticleFaq, EditorArticle } from "@/features/content/types";
+import type { ArticleBanner, ArticleBlock, ArticleFaq, ArticleSchemaType, EditorArticle } from "@/features/content/types";
 
 export type ArticleInput = {
   title: string;
   slug: string;
   excerpt: string;
+  tags?: string[];
+  keyTakeaways?: string[];
+  primaryKeyword?: string;
+  schemaType?: ArticleSchemaType;
+  isFeatured?: boolean;
+  featuredOrder?: number;
   bodyBlocks: ArticleBlock[];
   categoryId?: string;
   coverImageId?: string;

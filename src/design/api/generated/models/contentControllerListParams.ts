@@ -5,11 +5,15 @@
  * Iran Plaza backend API
  * OpenAPI spec version: 0.1
  */
+import type { ContentControllerListSort } from './contentControllerListSort';
 import type { ContentControllerListStatus } from './contentControllerListStatus';
 
 export type ContentControllerListParams = {
 search?: string;
 status?: ContentControllerListStatus;
+categoryId?: string;
+mine?: boolean;
+sort?: ContentControllerListSort;
 page?: number;
 /**
  * @maximum 50

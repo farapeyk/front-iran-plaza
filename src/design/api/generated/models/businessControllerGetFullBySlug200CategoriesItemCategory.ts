@@ -10,9 +10,9 @@ import type { BusinessControllerGetFullBySlug200CategoriesItemCategoryParent } f
 export type BusinessControllerGetFullBySlug200CategoriesItemCategory = {
   id: string;
   name: string;
-  slug: string;
-  /** @nullable */
-  parentId: string | null;
   /** @nullable */
   parent: BusinessControllerGetFullBySlug200CategoriesItemCategoryParent;
+  /** @nullable */
+  parentId: string | null;
+  slug: string;
 };

@@ -100,6 +100,7 @@ import type {
   ContentControllerBusinessesParams,
   ContentControllerFeedbackParams,
   ContentControllerListParams,
+  ContentControllerMediaParams,
   CreateArticleBannerDto,
   CreateArticleCategoryDto,
   CreateArticleDto,
@@ -3953,6 +3954,37 @@ return serverFetch<unknown>(getContentControllerCreateUrl(),
 
 
 
+export const getContentControllerMediaUrl = (params?: ContentControllerMediaParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/content/media?${stringifiedParams}` : `/api/content/media`
+}
+
+/**
+ * @summary کتابخانه تصاویر قابل استفاده در تحریریه
+ */
+export const contentControllerMedia = async (params?: ContentControllerMediaParams, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getContentControllerMediaUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
 export const getContentControllerGetUrl = (id: string,) => {
 
 
@@ -4011,6 +4043,30 @@ return serverFetch<unknown>(getContentControllerUpdateUrl(id),
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
     body: JSON.stringify(updateArticleDto)
+  }
+);}
+
+
+
+export const getContentControllerRevisionsUrl = (id: string,) => {
+
+
+
+
+  return `/api/content/articles/${encodeURIComponent(String(id))}/revisions`
+}
+
+/**
+ * @summary تاریخچه نسخه‌های ذخیره‌شده مقاله
+ */
+export const contentControllerRevisions = async (id: string, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
+
+  return serverFetch<unknown>(getContentControllerRevisionsUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
   }
 );}
 

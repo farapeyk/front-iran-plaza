@@ -5,6 +5,7 @@ const text = z.string().trim().min(1).max(10000);
 const optionalText = z.string().max(10000).optional();
 const empty = z.object({}).strict();
 const reason = z.object({ reason: text.min(5).max(1000) }).strict();
+const deleteUserReason = z.object({ reason: text.min(5).max(500) }).strict();
 const slug = z.string().trim().min(2).max(120).regex(/^[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)*$/u);
 const lucideIconName = z.string().max(100).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 const articleBlock = z.object({
@@ -40,6 +41,12 @@ const createArticle = z.object({
   title: z.string().trim().min(3).max(180),
   slug: slug.min(3),
   excerpt: z.string().trim().min(10).max(5000),
+  tags: z.array(z.string().trim().min(1).max(60)).max(20).optional(),
+  keyTakeaways: z.array(z.string().trim().min(1).max(240)).max(8).optional(),
+  primaryKeyword: z.string().trim().max(120).optional(),
+  schemaType: z.enum(['ARTICLE', 'LISTING']).optional(),
+  isFeatured: z.boolean().optional(),
+  featuredOrder: z.number().int().min(0).max(999).optional(),
   bodyBlocks: z.array(articleBlock).max(500),
   categoryId: id.optional(),
   coverImageId: id.optional(),
@@ -120,6 +127,7 @@ const schemas: Record<string, z.ZodType> = {
   'PATCH admin/businesses/id/plan': z.object({ planId: id }).strict(),
   'POST admin/businesses': z.object({ ownerPhone: z.string().regex(/^09\d{9}$/), ownerFullName: z.string().max(200).optional(), ownerNationalCode: z.string().regex(/^\d{10}$/).optional(), name: text.min(2).max(150), phone: z.string().regex(/^(?:0|\+98|0098)[1-9]\d{9}$/), city: text.max(150), categoryIds: z.array(id).min(1).max(5), description: z.string().max(100).optional(), address: z.string().max(1000).optional(), businessType: z.enum(['SOLE_PROPRIETOR','COMPANY','BRANCH']).optional(), registrationType: z.enum(['IN_PERSON','TELEPHONE']) }).strict(),
   'POST admin/users/super-admin': createSuperAdmin,
+  'DELETE admin/users/id': deleteUserReason,
   'PATCH users/me': z.object({ fullName: text.max(200).optional(), fatherName: optionalText, nationalCode: z.string().regex(/^\d{10}$/).optional(), email: z.union([z.email(), z.literal('')]).optional(), birthDate: z.iso.datetime().optional(), gender: z.enum(['MALE','FEMALE','OTHER']).optional(), province: text.optional(), city: text.optional() }).strict(),
   'POST articles/id/feedback': z.object({ rating: z.number().int().min(1).max(5), comment: z.string().trim().max(2000).optional() }).strict(),
   'POST content/articles': createArticle,
@@ -148,6 +156,12 @@ const validationFieldLabels: Record<string, string> = {
   title: 'عنوان',
   slug: 'اسلاگ',
   excerpt: 'خلاصه مقاله',
+  tags: 'برچسب‌ها',
+  keyTakeaways: 'خلاصه سریع',
+  primaryKeyword: 'کلیدواژه کانونی',
+  schemaType: 'نوع اسکیما',
+  isFeatured: 'انتخاب سردبیر',
+  featuredOrder: 'ترتیب نمایش',
   bodyBlocks: 'بدنه مقاله',
   categoryId: 'دسته‌بندی',
   coverImageId: 'تصویر شاخص',

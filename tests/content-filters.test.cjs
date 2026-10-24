@@ -36,20 +36,20 @@ test('content workspace exposes distinct draft/published filters and keeps the a
   const requests = [];
   const page = load('src/app/content/page.tsx', {
     'next/link': 'a',
-    '@/lib/api/backend-get': { backendGet: async url => { requests.push(url); return result; } },
+    '@/lib/api/backend-get': { backendGet: async url => { requests.push(url); return url === '/api/content/categories' ? [] : result; } },
     '@/lib/auth/cookies': { getAccessTokenCookie: async () => 'token' },
   }).default;
 
   const tree = await page({ searchParams: Promise.resolve({ page: '2', status: 'DRAFT', q: 'نمونه' }) });
   const links = linksIn(tree);
 
-  assert.equal(requests[0], '/api/content/articles?page=2&limit=20&status=DRAFT&search=%D9%86%D9%85%D9%88%D9%86%D9%87');
+  assert.equal(requests[0], '/api/content/articles?page=2&limit=20&sort=newest&status=DRAFT&search=%D9%86%D9%85%D9%88%D9%86%D9%87');
   assert.deepEqual(
-    links.filter(link => ['همه مقاله‌ها', 'پیش‌نویس‌ها', 'منتشرشده‌ها'].includes(link.label)),
+    links.filter(link => ['همه', 'پیش‌نویس', 'منتشرشده'].includes(link.label)),
     [
-      { href: '/content?q=%D9%86%D9%85%D9%88%D9%86%D9%87', label: 'همه مقاله‌ها', current: undefined },
-      { href: '/content?status=DRAFT&q=%D9%86%D9%85%D9%88%D9%86%D9%87', label: 'پیش‌نویس‌ها', current: 'page' },
-      { href: '/content?status=PUBLISHED&q=%D9%86%D9%85%D9%88%D9%86%D9%87', label: 'منتشرشده‌ها', current: undefined },
+      { href: '/content?q=%D9%86%D9%85%D9%88%D9%86%D9%87', label: 'همه', current: undefined },
+      { href: '/content?status=DRAFT&q=%D9%86%D9%85%D9%88%D9%86%D9%87', label: 'پیش‌نویس', current: 'page' },
+      { href: '/content?status=PUBLISHED&q=%D9%86%D9%85%D9%88%D9%86%D9%87', label: 'منتشرشده', current: undefined },
     ],
   );
   assert.ok(links.some(link => link.label === 'صفحه قبل' && link.href.includes('status=DRAFT')));
@@ -60,11 +60,11 @@ test('content workspace does not forward an unknown article status to the API', 
   const requests = [];
   const page = load('src/app/content/page.tsx', {
     'next/link': 'a',
-    '@/lib/api/backend-get': { backendGet: async url => { requests.push(url); return { ...result, page: 1, total: 1 }; } },
+    '@/lib/api/backend-get': { backendGet: async url => { requests.push(url); return url === '/api/content/categories' ? [] : { ...result, page: 1, total: 1 }; } },
     '@/lib/auth/cookies': { getAccessTokenCookie: async () => 'token' },
   }).default;
 
   await page({ searchParams: Promise.resolve({ status: 'NOT_A_STATUS' }) });
 
-  assert.equal(requests[0], '/api/content/articles?page=1&limit=20');
+  assert.equal(requests[0], '/api/content/articles?page=1&limit=20&sort=newest');
 });

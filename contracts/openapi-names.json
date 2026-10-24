@@ -193,6 +193,14 @@
     "schemas/ModerateArticleFeedbackDto/properties/status": [
       "APPROVED",
       "REJECTED"
+    ],
+    "schemas/CreateArticleDto/properties/schemaType": [
+      "ARTICLE",
+      "LISTING"
+    ],
+    "schemas/UpdateArticleDto/properties/schemaType": [
+      "ARTICLE",
+      "LISTING"
     ]
   }
 }

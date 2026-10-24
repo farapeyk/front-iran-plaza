@@ -15,6 +15,9 @@ function article() {
     title: 'بهترین رستوران‌های شیراز',
     slug: 'best-restaurants-shiraz',
     excerpt: 'راهنمای کامل انتخاب رستوران در شیراز',
+    tags: ['رستوران', 'شیراز'],
+    keyTakeaways: [],
+    schemaType: 'LISTING',
     bodyBlocks: [{
       id: 'restaurants',
       type: 'business-list',
@@ -89,6 +92,28 @@ test('article collection JSON-LD uses stable absolute URLs and paginated positio
   assert.equal(data.itemListElement[0].item.url, 'https://iran-plaza.ir/best-restaurants-shiraz/');
 });
 
+test('legacy listing articles receive ItemList schema from their imported table rows', () => {
+  const input = article();
+  input.businesses = [];
+  input.bodyBlocks = [{
+    id: 'legacy-table', type: 'table',
+    table: { headers: ['نام', 'شهر'], rows: [{ cells: ['کسب‌وکار قدیمی', 'شیراز'] }] },
+  }];
+  const data = seo.buildArticleStructuredData(input, undefined, 'https://iran-plaza.ir');
+  const list = data['@graph'].find(node => node['@type'] === 'ItemList');
+  assert.equal(list.numberOfItems, 1);
+  assert.equal(list.itemListElement[0].item.name, 'کسب‌وکار قدیمی');
+  assert.match(list.itemListElement[0].item.description, /شیراز/);
+});
+
+test('Article schema mode omits ItemList while preserving BlogPosting', () => {
+  const input = article();
+  input.schemaType = 'ARTICLE';
+  const graph = seo.buildArticleStructuredData(input)['@graph'];
+  assert.ok(graph.some(node => node['@type'] === 'BlogPosting'));
+  assert.ok(!graph.some(node => node['@type'] === 'ItemList'));
+});
+
 test('content editor exposes FAQ visibility and ItemList title controls', () => {
   const source = fs.readFileSync(path.join(__dirname, '../src/features/content/components/article-editor-form.tsx'), 'utf8');
   assert.match(source, /isActive: item\.isActive !== false/);
@@ -103,6 +128,12 @@ test('frontend mutation boundary accepts only typed FAQ and list SEO controls', 
     title: 'عنوان مقاله',
     slug: 'article-slug',
     excerpt: 'این یک خلاصه معتبر برای مقاله است.',
+    tags: ['شیراز'],
+    keyTakeaways: ['نکته تحریریه'],
+    primaryKeyword: 'مقاله شیراز',
+    schemaType: 'LISTING',
+    isFeatured: true,
+    featuredOrder: 10,
     bodyBlocks: [{ id: 'list-1', type: 'business-list', listTitle: 'بهترین‌ها', businessIds: ['business-1'] }],
     faqs: [{ question: 'پرسش معتبر چیست؟', answer: 'این پاسخ معتبر و کامل است.', isActive: false }],
   };

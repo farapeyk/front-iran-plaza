@@ -13,7 +13,8 @@ export type AdminPanelControllerUpdateReviewStatus200 = {
   comment: string | null;
   createdAt: string;
   id: string;
-  rating: number;
+  /** @nullable */
+  rating: number | null;
   status: AdminPanelControllerUpdateReviewStatus200Status;
   updatedAt: string;
   userId: string;

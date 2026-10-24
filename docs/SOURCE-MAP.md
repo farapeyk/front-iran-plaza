@@ -87,6 +87,7 @@ src/app/content/banners/page.tsx
 src/app/content/categories/page.tsx
 src/app/content/feedback/page.tsx
 src/app/content/layout.tsx
+src/app/content/media/page.tsx
 src/app/content/page.tsx
 src/app/error.tsx
 src/app/favicon.ico
@@ -421,7 +422,12 @@ src/design/api/generated/models/contentControllerList400.ts
 src/design/api/generated/models/contentControllerList401.ts
 src/design/api/generated/models/contentControllerList403.ts
 src/design/api/generated/models/contentControllerListParams.ts
+src/design/api/generated/models/contentControllerListSort.ts
 src/design/api/generated/models/contentControllerListStatus.ts
+src/design/api/generated/models/contentControllerMedia400.ts
+src/design/api/generated/models/contentControllerMedia401.ts
+src/design/api/generated/models/contentControllerMedia403.ts
+src/design/api/generated/models/contentControllerMediaParams.ts
 src/design/api/generated/models/contentControllerModerateFeedback400.ts
 src/design/api/generated/models/contentControllerModerateFeedback401.ts
 src/design/api/generated/models/contentControllerModerateFeedback403.ts
@@ -436,6 +442,9 @@ src/design/api/generated/models/contentControllerRequestChanges401.ts
 src/design/api/generated/models/contentControllerRequestChanges403.ts
 src/design/api/generated/models/contentControllerRequestChanges404.ts
 src/design/api/generated/models/contentControllerRequestChanges409.ts
+src/design/api/generated/models/contentControllerRevisions401.ts
+src/design/api/generated/models/contentControllerRevisions403.ts
+src/design/api/generated/models/contentControllerRevisions404.ts
 src/design/api/generated/models/contentControllerSubmit400.ts
 src/design/api/generated/models/contentControllerSubmit401.ts
 src/design/api/generated/models/contentControllerSubmit403.ts
@@ -463,6 +472,7 @@ src/design/api/generated/models/createArticleBannerDto.ts
 src/design/api/generated/models/createArticleBannerDtoPlacement.ts
 src/design/api/generated/models/createArticleCategoryDto.ts
 src/design/api/generated/models/createArticleDto.ts
+src/design/api/generated/models/createArticleDtoSchemaType.ts
 src/design/api/generated/models/createArticleFeedbackDto.ts
 src/design/api/generated/models/createBranchDto.ts
 src/design/api/generated/models/createBusinessDto.ts
@@ -585,6 +595,7 @@ src/design/api/generated/models/updateArticleBannerDto.ts
 src/design/api/generated/models/updateArticleBannerDtoPlacement.ts
 src/design/api/generated/models/updateArticleCategoryDto.ts
 src/design/api/generated/models/updateArticleDto.ts
+src/design/api/generated/models/updateArticleDtoSchemaType.ts
 src/design/api/generated/models/updateBranchDto.ts
 src/design/api/generated/models/updateBusinessDto.ts
 src/design/api/generated/models/updateBusinessFeatureDto.ts
@@ -854,15 +865,18 @@ src/features/content/actions/content.action.ts
 src/features/content/actions/feedback.action.ts
 src/features/content/components/article-banner-manager.tsx
 src/features/content/components/article-editor-form.tsx
+src/features/content/components/article-editor-insights.tsx
 src/features/content/components/article-feedback-form.tsx
 src/features/content/components/article-public-page.tsx
 src/features/content/components/content-authors-manager.tsx
 src/features/content/components/content-category-manager.tsx
+src/features/content/components/content-media-library.tsx
 src/features/content/components/content-sidebar.tsx
 src/features/content/components/feedback-queue.tsx
 src/features/content/components/rich-text-editor.tsx
 src/features/content/components/rich-text-renderer.tsx
 src/features/content/lib/article-content.ts
+src/features/content/lib/article-seo-audit.ts
 src/features/content/lib/canonical-url.ts
 src/features/content/lib/public-paths.ts
 src/features/content/types.ts
@@ -944,6 +958,7 @@ tests/admin-business-detail.production.cjs
 tests/admin-business-detail.test.cjs
 tests/admin-business-management.test.cjs
 tests/admin-routing.test.cjs
+tests/article-seo-audit.test.cjs
 tests/article-seo.test.cjs
 tests/browser/design-transfer.spec.ts
 tests/browser/reference-layout.spec.ts

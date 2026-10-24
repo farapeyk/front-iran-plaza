@@ -74,6 +74,7 @@
 | `/content` | فهرست مقاله‌های نویسنده یا همه مقاله‌ها برای مدیر محتوا | `CONTENT:WRITE` |
 | `/content/articles/new` | پیش‌نویس جدید | `CONTENT:WRITE` |
 | `/content/articles/[id]` | ویرایش، ارسال، بازبینی و انتشار طبق نقش | مالک یا مدیر محتوا |
+| `/content/media` | کتابخانه تصاویر تحریریه، بارگذاری و انتخاب رسانه | `CONTENT:WRITE` |
 | `/content/categories` | مدیریت دسته‌های مقاله | `CONTENT:PUBLISH` |
 | `/content/banners` | مدیریت بنرهای بالا و سایدبار مقاله | `CONTENT:PUBLISH` |
 | `/content/feedback` | moderation نظر و امتیاز مقاله | `CONTENT:PUBLISH` |

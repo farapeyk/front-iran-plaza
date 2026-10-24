@@ -10,6 +10,7 @@ export function ContentSidebar({ canPublish }: { canPublish: boolean }) {
   const items = [
     { href: "/content", label: "مقاله‌ها", icon: BookOpen },
     { href: "/content/articles/new", label: "مقاله جدید", icon: FilePlus2 },
+    { href: "/content/media", label: "کتابخانه رسانه", icon: Images },
     ...(canPublish ? [
       { href: "/content/categories", label: "دسته‌بندی‌ها", icon: FolderTree },
       { href: "/content/banners", label: "بنرهای مقاله", icon: Images },

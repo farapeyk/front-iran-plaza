@@ -7,6 +7,7 @@
  */
 import type { ArticleBlockDto } from './articleBlockDto';
 import type { ArticleFaqDto } from './articleFaqDto';
+import type { CreateArticleDtoSchemaType } from './createArticleDtoSchemaType';
 
 export interface CreateArticleDto {
   title: string;
@@ -14,6 +15,29 @@ export interface CreateArticleDto {
   slug: string;
   /** @maxLength 5000 */
   excerpt: string;
+  /**
+     * @maxItems 20
+     * @items.maxLength 60
+     */
+  tags?: string[];
+  /**
+     * گزیده‌های کوتاه تحریریه
+     * @maxItems 8
+     * @items.maxLength 240
+     */
+  keyTakeaways?: string[];
+  /**
+     * کلیدواژه کانونی برای تحلیل سئو
+     * @maxLength 120
+     */
+  primaryKeyword?: string;
+  schemaType?: CreateArticleDtoSchemaType;
+  isFeatured?: boolean;
+  /**
+     * @minimum 0
+     * @maximum 999
+     */
+  featuredOrder?: number;
   /** @maxItems 500 */
   bodyBlocks: ArticleBlockDto[];
   categoryId?: string;

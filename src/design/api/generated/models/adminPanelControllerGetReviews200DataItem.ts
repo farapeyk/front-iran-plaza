@@ -16,7 +16,8 @@ export type AdminPanelControllerGetReviews200DataItem = {
   comment: string | null;
   createdAt: string;
   id: string;
-  rating: number;
+  /** @nullable */
+  rating: number | null;
   status: AdminPanelControllerGetReviews200DataItemStatus;
   updatedAt: string;
   user: AdminPanelControllerGetReviews200DataItemUser;

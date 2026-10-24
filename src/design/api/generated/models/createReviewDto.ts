@@ -8,9 +8,15 @@
 
 export interface CreateReviewDto {
   /**
+     * امتیاز اختیاری است؛ در صورت ارسال باید بین ۱ و ۵ باشد.
      * @minimum 1
      * @maximum 5
      */
   rating?: number;
+  /**
+     * برای ثبت نظر بدون امتیاز، متن نظر الزامی است.
+     * @minLength 1
+     * @maxLength 1000
+     */
   comment?: string;
 }

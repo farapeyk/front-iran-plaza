@@ -132,6 +132,7 @@ export function buildArticleStructuredData(
       datePublished: article.publishedAt,
       dateModified: article.updatedAt,
       wordCount: articleWordCount(article),
+      ...(article.tags?.length ? { keywords: article.tags.join(", ") } : {}),
       ...(article.category?.name ? { articleSection: article.category.name } : {}),
       author: authorName
         ? { "@type": "Person", name: authorName }
@@ -173,16 +174,20 @@ export function buildArticleStructuredData(
     });
   }
 
-  for (const block of article.bodyBlocks.filter(item => item.type === "business-list")) {
-    const businesses = (block.businessIds || []).map(id => businessById.get(id)).filter((item): item is NonNullable<typeof item> => Boolean(item));
-    if (!businesses.length) continue;
-    graph.push({
-      "@type": "ItemList",
-      "@id": `${articleUrl}#${block.id}-item-list`,
-      name: block.listTitle?.trim() || article.title,
-      numberOfItems: businesses.length,
-      itemListOrder: "https://schema.org/ItemListOrderAscending",
-      itemListElement: businesses.map((business, index) => {
+  if (article.schemaType === "LISTING") {
+    const businessItems = article.bodyBlocks.flatMap(block => block.type === "business-list"
+      ? (block.businessIds || []).map(id => businessById.get(id)).filter((item): item is NonNullable<typeof item> => Boolean(item))
+      : []);
+    const tableItems = article.bodyBlocks.flatMap(block => block.type === "table"
+      ? (block.table?.rows || []).filter(row => row.cells.some(Boolean)).map(row => ({
+          name: row.cells[0] || article.title,
+          description: row.cells.slice(1).map((cell, index) => `${block.table?.headers[index + 1] || "ویژگی"}: ${cell}`).filter(value => !value.endsWith(": ")).join("، "),
+          phone: row.phone,
+        }))
+      : []);
+    const headingItems = article.bodyBlocks.filter(block => block.type === "heading" && block.text?.trim());
+    const itemListElement = businessItems.length
+      ? businessItems.map((business, index) => {
         const businessUrl = absoluteSiteUrl(`/businesses/${encodeURIComponent(business.slug)}`, configured);
         return {
           "@type": "ListItem",
@@ -197,7 +202,23 @@ export function buildArticleStructuredData(
             ...(businessAddress(business) ? { address: businessAddress(business) } : {}),
           },
         };
-      }),
+      })
+      : tableItems.length
+        ? tableItems.map((item, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            item: { "@type": "Thing", name: item.name, ...(item.description ? { description: item.description } : {}), ...(item.phone ? { telephone: item.phone } : {}) },
+          }))
+        : headingItems.length
+          ? headingItems.map((item, index) => ({ "@type": "ListItem", position: index + 1, item: { "@type": "WebPage", name: item.text, url: `${articleUrl}#${item.id}` } }))
+          : [{ "@type": "ListItem", position: 1, item: { "@id": articleId } }];
+    graph.push({
+      "@type": "ItemList",
+      "@id": `${articleUrl}#listing`,
+      name: article.bodyBlocks.find(block => block.type === "business-list" && block.listTitle?.trim())?.listTitle || article.title,
+      numberOfItems: itemListElement.length,
+      itemListOrder: "https://schema.org/ItemListOrderAscending",
+      itemListElement,
     });
   }
 

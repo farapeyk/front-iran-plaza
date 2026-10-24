@@ -43,6 +43,9 @@ export type BusinessControllerGetFullBySlug200 = {
   phone: string;
   /** @nullable */
   phone2: string | null;
+  /** @nullable */
+  planExpiryDate: string | null;
+  planType: BusinessControllerGetFullBySlug200PlanType;
   productCategories: BusinessControllerGetFullBySlug200ProductCategoriesItem[];
   products: BusinessControllerGetFullBySlug200ProductsItem[];
   services: BusinessControllerGetFullBySlug200ServicesItem[];
@@ -54,7 +57,4 @@ export type BusinessControllerGetFullBySlug200 = {
   /** @nullable */
   whatsapp: string | null;
   workingHours: BusinessControllerGetFullBySlug200WorkingHoursItem[];
-  planType: BusinessControllerGetFullBySlug200PlanType;
-  /** @nullable */
-  planExpiryDate: string | null;
 };

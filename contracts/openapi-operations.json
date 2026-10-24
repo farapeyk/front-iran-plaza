@@ -630,6 +630,16 @@
     "operationId": "ContentController_submit"
   },
   {
+    "route": "/api/content/articles/{id}/revisions",
+    "method": "get",
+    "operationId": "ContentController_revisions"
+  },
+  {
+    "route": "/api/content/media",
+    "method": "get",
+    "operationId": "ContentController_media"
+  },
+  {
     "route": "/api/content/articles/{id}/request-changes",
     "method": "post",
     "operationId": "ContentController_requestChanges"

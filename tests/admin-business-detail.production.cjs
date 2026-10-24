@@ -75,6 +75,7 @@ async function main() {
   fixtures['/api/content/banners']=[];
   fixtures['/api/content/categories']=[];
   fixtures['/api/content/articles/'+article.id]={...article,revision:1,reviewNote:null,submittedAt:null,approvedAt:null};
+  fixtures['/api/content/articles/'+article.id+'/revisions']=[];
   const requestedPaths=[];
   const backend = http.createServer((req, res) => {
     requestedPaths.push(req.url);
