@@ -8,16 +8,19 @@ import type { PlanSummary } from "@/features/admin/types/plan";
 export function PlanChangeControl({
   businessId,
   currentPlanType,
+  planExpiryDate,
   plans,
   plansUnavailable = false,
 }: {
   businessId: string;
   currentPlanType: string;
+  planExpiryDate?: string | null;
   plans: PlanSummary[];
   plansUnavailable?: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
   const [planId, setPlanId] = useState("");
+  const vipPlans = plans.filter(plan => plan.tier === "VIP");
 
   function handleAssign() {
     if (!planId) {
@@ -42,20 +45,21 @@ export function PlanChangeControl({
   return (
     <div className="border border-neutral-200 rounded-lg p-4" dir="rtl">
       <p className="text-sm font-bold text-neutral-900 mb-1">پلن فعلی: {currentPlanType === "VIP" ? "ویژه (VIP)" : "رایگان (FREE)"}</p>
+      {currentPlanType === "VIP" && planExpiryDate && <p className="mb-2 text-xs text-emerald-800">اعتبار تا {new Date(planExpiryDate).toLocaleDateString("fa-IR", { timeZone: "Asia/Tehran" })}</p>}
       <p className="text-xs text-neutral-500 mb-3">اعطای پلن جدید یا بازگرداندن به رایگان</p>
       {plansUnavailable && <p role="status" className="text-sm text-amber-800 mb-3">دریافت پلن‌ها انجام نشد. جزئیات کسب‌وکار قابل مشاهده است؛ اعطای پلن پس از بازیابی این بخش فعال می‌شود.</p>}
 
       <div className="flex gap-2 items-center flex-wrap">
         <select value={planId} onChange={(e) => setPlanId(e.target.value)} disabled={isPending || plansUnavailable} className="h-9 rounded-md border border-input px-3 text-sm flex-1 min-w-[180px]">
           <option value="">انتخاب پلن برای اعطا...</option>
-          {plans.map((p) => (
+          {vipPlans.map((p) => (
             <option key={p.id} value={p.id}>
               {p.name} — {Number(p.price).toLocaleString("fa-IR")} تومان / {p.durationDays} روز
             </option>
           ))}
         </select>
 
-        <button onClick={handleAssign} disabled={isPending || plansUnavailable || plans.length === 0} className="h-9 px-4 rounded-md bg-emerald-950 text-white text-sm hover:bg-emerald-900 disabled:opacity-50">
+        <button onClick={handleAssign} disabled={isPending || plansUnavailable || vipPlans.length === 0} className="h-9 px-4 rounded-md bg-emerald-950 text-white text-sm hover:bg-emerald-900 disabled:opacity-50">
           اعطای پلن
         </button>
 

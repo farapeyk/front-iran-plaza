@@ -5,17 +5,24 @@
  * Iran Plaza backend API
  * OpenAPI spec version: 0.1
  */
+import type { BusinessControllerListPublic200DataItemPlanType } from './businessControllerListPublic200DataItemPlanType';
 
 export type BusinessControllerListPublic200DataItem = {
   /** @nullable */
   address: string | null;
+  city: string;
   /** @nullable */
   description: string | null;
   id: string;
   /** @nullable */
   logoId: string | null;
   name: string;
+  /** @nullable */
+  neighborhood: string | null;
   phone: string;
+  /** @nullable */
+  planExpiryDate: string | null;
+  planType: BusinessControllerListPublic200DataItemPlanType;
   slug: string;
   viewCount: number;
 };

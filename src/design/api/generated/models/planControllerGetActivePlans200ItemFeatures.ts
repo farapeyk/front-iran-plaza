@@ -6,4 +6,13 @@
  * OpenAPI spec version: 0.1
  */
 
-export type PlanControllerGetActivePlans200ItemFeatures = string | number | false | true | {[key: string]: string | number | false | true | unknown | (string | number | false | true | unknown | null)[] | null} | (string | number | false | true | {[key: string]: string | number | false | true | unknown | null} | unknown | null)[] | null;
+export type PlanControllerGetActivePlans200ItemFeatures = {
+  analytics: boolean;
+  branches: boolean;
+  customFeatures: boolean;
+  installments: boolean;
+  introVideo: boolean;
+  map: boolean;
+  socialMedia: boolean;
+  workingHours: boolean;
+};

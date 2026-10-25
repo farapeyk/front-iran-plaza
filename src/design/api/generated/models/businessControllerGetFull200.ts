@@ -11,6 +11,7 @@ import type { BusinessControllerGetFull200CategoriesItem } from './businessContr
 import type { BusinessControllerGetFull200FeaturesItem } from './businessControllerGetFull200FeaturesItem';
 import type { BusinessControllerGetFull200GalleryItem } from './businessControllerGetFull200GalleryItem';
 import type { BusinessControllerGetFull200InstallmentPlan } from './businessControllerGetFull200InstallmentPlan';
+import type { BusinessControllerGetFull200PlanFeatures } from './businessControllerGetFull200PlanFeatures';
 import type { BusinessControllerGetFull200ProductCategoriesItem } from './businessControllerGetFull200ProductCategoriesItem';
 import type { BusinessControllerGetFull200ProductsItem } from './businessControllerGetFull200ProductsItem';
 import type { BusinessControllerGetFull200ServicesItem } from './businessControllerGetFull200ServicesItem';
@@ -47,6 +48,10 @@ export type BusinessControllerGetFull200 = {
   phone: string;
   /** @nullable */
   phone2: string | null;
+  /** @nullable */
+  planExpiryDate: string | null;
+  planFeatures: BusinessControllerGetFull200PlanFeatures;
+  planType: string;
   productCategories: BusinessControllerGetFull200ProductCategoriesItem[];
   products: BusinessControllerGetFull200ProductsItem[];
   services: BusinessControllerGetFull200ServicesItem[];

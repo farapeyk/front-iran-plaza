@@ -1,6 +1,7 @@
 {
   "schemas": [
     "AddGalleryImageDto",
+    "AdminPlanResponseDto",
     "AdvanceOnboardingDto",
     "ArticleBlockDto",
     "ArticleFaqDto",
@@ -36,6 +37,7 @@
     "GrantPlanDto",
     "LoginWithPasswordDto",
     "ModerateArticleFeedbackDto",
+    "PlanFeaturesDto",
     "RefreshTokenDto",
     "RejectBusinessDto",
     "RejectDocumentDto",
@@ -73,6 +75,10 @@
     "WorkingHourItemDto"
   ],
   "enums": {
+    "schemas/AdminPlanResponseDto/properties/tier": [
+      "FREE",
+      "VIP"
+    ],
     "schemas/UpdateProfileDto/properties/gender": [
       "MALE",
       "FEMALE"

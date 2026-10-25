@@ -9,11 +9,16 @@ import type { PlanControllerGetActivePlans200ItemFeatures } from './planControll
 import type { PlanControllerGetActivePlans200ItemTier } from './planControllerGetActivePlans200ItemTier';
 
 export type PlanControllerGetActivePlans200Item = {
+  discountLimit: number;
   durationDays: number;
   features: PlanControllerGetActivePlans200ItemFeatures;
+  galleryLimit: number;
   id: string;
   name: string;
   /** Decimal serialized by Prisma */
   price: string;
+  priority: number;
+  productLimit: number;
+  serviceLimit: number;
   tier: PlanControllerGetActivePlans200ItemTier;
 };

@@ -8,8 +8,6 @@
 import type {
   AddGalleryImageDto,
   AdminBusinessControllerCreateManual201,
-  AdminBusinessControllerDowngradeToFree200,
-  AdminBusinessControllerGrantPlan200,
   AdminMessageControllerSendMessage201,
   AdminPanelControllerCreateCoupon201,
   AdminPanelControllerCreateTaxRule201,
@@ -33,6 +31,7 @@ import type {
   AdminPanelControllerUpdateReport200,
   AdminPanelControllerUpdateReviewStatus200,
   AdminPanelControllerUpdateSetting200,
+  AdminPlanResponseDto,
   AdvanceOnboardingDto,
   ArticlesControllerCategories200Item,
   ArticlesControllerListParams,
@@ -2621,6 +2620,30 @@ export const planControllerGetActivePlans = async ( options?: Parameters<typeof 
 
 
 
+export const getPlanAdminControllerGetAllUrl = () => {
+
+
+
+
+  return `/api/admin/plans`
+}
+
+/**
+ * @summary [مدیر ارشد] دریافت همه پلن‌ها و محدودیت‌های قابل تنظیم
+ */
+export const planAdminControllerGetAll = async ( options?: Parameters<typeof serverFetch>[1]): Promise<AdminPlanResponseDto[]> => {
+
+  return serverFetch<AdminPlanResponseDto[]>(getPlanAdminControllerGetAllUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
 export const getPlanAdminControllerCreateUrl = () => {
 
 
@@ -3718,7 +3741,7 @@ export const getAdminBusinessControllerGrantPlanUrl = (id: string,) => {
  * @summary [ادمین] اعطای دستی پلن به کسب‌وکار
  */
 export const adminBusinessControllerGrantPlan = async (id: string,
-    grantPlanDto: GrantPlanDto, options?: Parameters<typeof serverFetch>[1]): Promise<AdminBusinessControllerGrantPlan200> => {
+    grantPlanDto: GrantPlanDto, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -3734,7 +3757,7 @@ export const adminBusinessControllerGrantPlan = async (id: string,
     }
     return headers;
   };
-return serverFetch<AdminBusinessControllerGrantPlan200>(getAdminBusinessControllerGrantPlanUrl(id),
+return serverFetch<unknown>(getAdminBusinessControllerGrantPlanUrl(id),
   {
     ...options,
     method: 'PATCH',
@@ -3756,9 +3779,9 @@ export const getAdminBusinessControllerDowngradeToFreeUrl = (id: string,) => {
 /**
  * @summary [ادمین] دانلگرید دستی و فوری کسب‌وکار به پلن FREE
  */
-export const adminBusinessControllerDowngradeToFree = async (id: string, options?: Parameters<typeof serverFetch>[1]): Promise<AdminBusinessControllerDowngradeToFree200> => {
+export const adminBusinessControllerDowngradeToFree = async (id: string, options?: Parameters<typeof serverFetch>[1]): Promise<unknown> => {
 
-  return serverFetch<AdminBusinessControllerDowngradeToFree200>(getAdminBusinessControllerDowngradeToFreeUrl(id),
+  return serverFetch<unknown>(getAdminBusinessControllerDowngradeToFreeUrl(id),
   {
     ...options,
     method: 'PATCH'

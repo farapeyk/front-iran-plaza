@@ -36,6 +36,7 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
       <PlanChangeControl 
         businessId={business.id} 
         currentPlanType={business.planType ?? "FREE"}
+        planExpiryDate={business.planExpiryDate ?? null}
         plansUnavailable={unavailable.includes("plans")}
         plans={plans} 
       />

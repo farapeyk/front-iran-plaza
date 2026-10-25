@@ -5,7 +5,7 @@
  * Iran Plaza backend API
  * OpenAPI spec version: 0.1
  */
-import type { UpdatePlanDtoFeatures } from './updatePlanDtoFeatures';
+import type { PlanFeaturesDto } from './planFeaturesDto';
 import type { UpdatePlanDtoTier } from './updatePlanDtoTier';
 
 export interface UpdatePlanDto {
@@ -21,5 +21,7 @@ export interface UpdatePlanDto {
   serviceLimit?: number;
   /** @minimum 0 */
   discountLimit?: number;
-  features?: UpdatePlanDtoFeatures;
+  features?: PlanFeaturesDto;
+  /** @minimum 0 */
+  priority?: number;
 }

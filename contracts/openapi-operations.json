@@ -396,6 +396,11 @@
   },
   {
     "route": "/api/admin/plans",
+    "method": "get",
+    "operationId": "PlanAdminController_getAll"
+  },
+  {
+    "route": "/api/admin/plans",
     "method": "post",
     "operationId": "PlanAdminController_create"
   },

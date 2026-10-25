@@ -22,4 +22,12 @@ limit?: number;
  * فیلتر بر اساس محله
  */
 neighborhood?: string;
+/**
+ * فقط کسب‌وکارهای دارای VIP معتبر
+ */
+vipOnly?: boolean;
+/**
+ * فقط کسب‌وکارهای دارای تصویر یا ویدیوی معرفی
+ */
+hasMedia?: boolean;
 };

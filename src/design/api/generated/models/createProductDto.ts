@@ -12,6 +12,10 @@ export interface CreateProductDto {
   price: number;
   imageId?: string;
   description?: string;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
   discountPercent?: number;
   hasInstallment?: boolean;
 }

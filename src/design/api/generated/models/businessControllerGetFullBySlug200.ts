@@ -10,7 +10,7 @@ import type { BusinessControllerGetFullBySlug200BusinessType } from './businessC
 import type { BusinessControllerGetFullBySlug200CategoriesItem } from './businessControllerGetFullBySlug200CategoriesItem';
 import type { BusinessControllerGetFullBySlug200GalleryItem } from './businessControllerGetFullBySlug200GalleryItem';
 import type { BusinessControllerGetFullBySlug200InstallmentPlan } from './businessControllerGetFullBySlug200InstallmentPlan';
-import type { BusinessControllerGetFullBySlug200PlanType } from './businessControllerGetFullBySlug200PlanType';
+import type { BusinessControllerGetFullBySlug200PlanFeatures } from './businessControllerGetFullBySlug200PlanFeatures';
 import type { BusinessControllerGetFullBySlug200ProductCategoriesItem } from './businessControllerGetFullBySlug200ProductCategoriesItem';
 import type { BusinessControllerGetFullBySlug200ProductsItem } from './businessControllerGetFullBySlug200ProductsItem';
 import type { BusinessControllerGetFullBySlug200ServicesItem } from './businessControllerGetFullBySlug200ServicesItem';
@@ -25,6 +25,7 @@ export type BusinessControllerGetFullBySlug200 = {
   branches: BusinessControllerGetFullBySlug200BranchesItem[];
   businessType: BusinessControllerGetFullBySlug200BusinessType;
   categories: BusinessControllerGetFullBySlug200CategoriesItem[];
+  city: string;
   /** @nullable */
   description: string | null;
   gallery: BusinessControllerGetFullBySlug200GalleryItem[];
@@ -40,12 +41,15 @@ export type BusinessControllerGetFullBySlug200 = {
   /** @nullable */
   longitude: number | null;
   name: string;
+  /** @nullable */
+  neighborhood: string | null;
   phone: string;
   /** @nullable */
   phone2: string | null;
   /** @nullable */
   planExpiryDate: string | null;
-  planType: BusinessControllerGetFullBySlug200PlanType;
+  planFeatures: BusinessControllerGetFullBySlug200PlanFeatures;
+  planType: string;
   productCategories: BusinessControllerGetFullBySlug200ProductCategoriesItem[];
   products: BusinessControllerGetFullBySlug200ProductsItem[];
   services: BusinessControllerGetFullBySlug200ServicesItem[];

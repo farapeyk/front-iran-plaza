@@ -148,7 +148,7 @@ function BusinessesPage() {
     const query=new URLSearchParams(queryKey);
     const parsed=Number(query.get('page')??1);
     const requestedPage=Number.isSafeInteger(parsed)&&parsed>0?parsed:1;
-    businessControllerListPublic({search:query.get('search')||undefined,city:query.get('city')||undefined,neighborhood:query.get('neighborhood')||undefined,categoryId:query.get('categoryId')||undefined,page:requestedPage,limit},{signal:controller.signal})
+    businessControllerListPublic({search:query.get('search')||undefined,city:query.get('city')||undefined,neighborhood:query.get('neighborhood')||undefined,categoryId:query.get('categoryId')||undefined,vipOnly:query.get('vipOnly')==='true'||undefined,hasMedia:query.get('hasMedia')==='true'||undefined,page:requestedPage,limit},{signal:controller.signal})
       .then(data=>{
         if(controller.signal.aborted)return;
         const items=decodeBusinesses(data.data).map(item=>({...businessCard(item),hasInstallment:item.hasInstallment}));
@@ -189,8 +189,8 @@ function BusinessesPage() {
           </details>)}
         </div>
         <div className="listing-switches">
-          <label title="این فیلتر در حال حاضر در دسترس نیست"><Switch aria-label="گالری تصاویر و ویدئو" disabled checked={false}/>گالری تصاویر / ویدئو</label>
-          <label title="این فیلتر در حال حاضر در دسترس نیست"><Switch aria-label="فقط VIP ها" disabled checked={false}/>فقط VIP ها</label>
+          <label><Switch aria-label="گالری تصاویر و ویدئو" checked={params.get('hasMedia')==='true'} onCheckedChange={checked=>update('hasMedia',checked?'true':'')}/>گالری تصاویر / ویدئو</label>
+          <label><Switch aria-label="فقط VIP ها" checked={params.get('vipOnly')==='true'} onCheckedChange={checked=>update('vipOnly',checked?'true':'')}/>فقط VIP ها</label>
         </div>
       </div>
       {!loading&&!result.error&&result.items.length===0&&<div className="listing-empty"><Image src="/design/icons/search-not-found.svg" width={102} height={80} alt=""/><p>نتیجه‌ای یافت نشد.</p></div>}
