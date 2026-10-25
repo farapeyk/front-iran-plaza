@@ -2,6 +2,9 @@ import { pageFetch } from '@/lib/api/page-fetch';
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import { UserSuspensionActions } from "@/features/admin/components/user-suspension-actions";
 import type { AdminUserDetail } from "@/features/admin/types/user";
+import { getCurrentUser } from "@/lib/auth/get-current-user";
+import { UserDeleteAction } from "@/features/admin/components/user-delete-action";
+import { UserEditForm } from "@/features/admin/components/user-edit-form";
 
 const USER_TYPE_LABEL: Record<string, string> = {
   CUSTOMER: "مشتری",
@@ -22,7 +25,10 @@ async function getUserDetail(id: string, accessToken: string): Promise<AdminUser
 export default async function AdminUserDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const accessToken = await getAccessTokenCookie();
-  const user = accessToken ? await getUserDetail(id, accessToken) : null;
+  const [user, currentUser] = await Promise.all([
+    accessToken ? getUserDetail(id, accessToken) : Promise.resolve(null),
+    getCurrentUser(),
+  ]);
 
   if (!user) {
     return <p className="text-sm text-neutral-500" dir="rtl">کاربر پیدا نشد.</p>;
@@ -43,6 +49,10 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
         </div>
         <UserSuspensionActions userId={user.id} isSuspended={user.isSuspended} />
       </div>
+
+      {currentUser?.userType === "SUPER_ADMIN" && (
+        <UserEditForm user={user} isCurrentUser={currentUser.id === user.id} />
+      )}
 
       <div className="border border-neutral-200 rounded-lg p-4">
         <p className="text-sm font-bold text-neutral-900 mb-3">کسب‌وکارهای متعلق به این کاربر</p>
@@ -78,6 +88,10 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
           </ul>
         )}
       </div>
+
+      {currentUser?.userType === "SUPER_ADMIN" && currentUser.id !== user.id && (
+        <UserDeleteAction userId={user.id} userName={user.fullName ?? user.phone} />
+      )}
     </div>
   );
 }

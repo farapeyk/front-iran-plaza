@@ -92,6 +92,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
                 <th className="text-right px-4 py-2 font-medium">موبایل</th>
                 <th className="text-right px-4 py-2 font-medium">نوع</th>
                 <th className="text-right px-4 py-2 font-medium">وضعیت</th>
+                <th className="text-right px-4 py-2 font-medium">عملیات</th>
               </tr>
             </thead>
             <tbody>
@@ -111,6 +112,24 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
                       <span className="text-xs px-2 py-0.5 rounded-full bg-red-50 text-red-600">تعلیق‌شده</span>
                     ) : (
                       <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">فعال</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-2.5">
+                    {currentUser?.userType === "SUPER_ADMIN" ? (
+                      <div className="flex flex-wrap items-center gap-3">
+                        <Link href={`/admin/users/${u.id}#edit-user`} className="text-xs font-medium text-emerald-800 hover:underline">
+                          ویرایش
+                        </Link>
+                        {currentUser.id !== u.id && (
+                          <Link href={`/admin/users/${u.id}#delete-user`} className="text-xs font-medium text-red-700 hover:underline">
+                            حذف کامل
+                          </Link>
+                        )}
+                      </div>
+                    ) : (
+                      <Link href={`/admin/users/${u.id}`} className="text-xs font-medium text-emerald-800 hover:underline">
+                        مشاهده
+                      </Link>
                     )}
                   </td>
                 </tr>

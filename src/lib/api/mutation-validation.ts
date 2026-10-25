@@ -6,6 +6,13 @@ const optionalText = z.string().max(10000).optional();
 const empty = z.object({}).strict();
 const reason = z.object({ reason: text.min(5).max(1000) }).strict();
 const deleteUserReason = z.object({ reason: text.min(5).max(500) }).strict();
+const updateAdminUser = z.object({
+  phone: z.string().regex(/^09\d{9}$/),
+  fullName: text.min(2).max(120),
+  email: z.email().max(254).optional(),
+  nationalCode: z.string().regex(/^\d{10}$/).optional(),
+  userType: z.enum(['CUSTOMER', 'BUSINESS_OWNER', 'ADMIN', 'SUPER_ADMIN']),
+}).strict();
 const slug = z.string().trim().min(2).max(120).regex(/^[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)*$/u);
 const lucideIconName = z.string().max(100).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 const articleBlock = z.object({
@@ -127,6 +134,7 @@ const schemas: Record<string, z.ZodType> = {
   'PATCH admin/businesses/id/plan': z.object({ planId: id }).strict(),
   'POST admin/businesses': z.object({ ownerPhone: z.string().regex(/^09\d{9}$/), ownerFullName: z.string().max(200).optional(), ownerNationalCode: z.string().regex(/^\d{10}$/).optional(), name: text.min(2).max(150), phone: z.string().regex(/^(?:0|\+98|0098)[1-9]\d{9}$/), city: text.max(150), categoryIds: z.array(id).min(1).max(5), description: z.string().max(100).optional(), address: z.string().max(1000).optional(), businessType: z.enum(['SOLE_PROPRIETOR','COMPANY','BRANCH']).optional(), registrationType: z.enum(['IN_PERSON','TELEPHONE']) }).strict(),
   'POST admin/users/super-admin': createSuperAdmin,
+  'PATCH admin/users/id': updateAdminUser,
   'DELETE admin/users/id': deleteUserReason,
   'PATCH users/me': z.object({ fullName: text.max(200).optional(), fatherName: optionalText, nationalCode: z.string().regex(/^\d{10}$/).optional(), email: z.union([z.email(), z.literal('')]).optional(), birthDate: z.iso.datetime().optional(), gender: z.enum(['MALE','FEMALE','OTHER']).optional(), province: text.optional(), city: text.optional() }).strict(),
   'POST articles/id/feedback': z.object({ rating: z.number().int().min(1).max(5), comment: z.string().trim().max(2000).optional() }).strict(),

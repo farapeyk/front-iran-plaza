@@ -123,6 +123,7 @@ import type {
   CreateSuperAdminDto,
   CreateSuperAdminResponseDto,
   CreateTaxRuleDto,
+  DeleteUserDto,
   FavoriteControllerGetMine200Item,
   FavoriteControllerToggle201,
   FileAssetControllerDelete200,
@@ -163,6 +164,7 @@ import type {
   SuspendUserDto,
   TrackEventDto,
   TrackingControllerTrack201,
+  UpdateAdminUserDto,
   UpdateArticleBannerDto,
   UpdateArticleCategoryDto,
   UpdateArticleDto,
@@ -181,6 +183,7 @@ import type {
   UpdateServiceDto,
   UpdateSettingDto,
   UpdateWorkingHoursDto,
+  UpdatedAdminUserDto,
   UsersAdminControllerGetById200,
   UsersAdminControllerList200,
   UsersAdminControllerListParams,
@@ -554,6 +557,84 @@ export const usersAdminControllerGetById = async (id: string, options?: Paramete
     method: 'GET'
 
 
+  }
+);}
+
+
+
+export const getUsersAdminControllerUpdateUserUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/users/${encodeURIComponent(String(id))}`
+}
+
+/**
+ * @summary [مدیر ارشد] ویرایش مشخصات و نوع حساب کاربر
+ */
+export const usersAdminControllerUpdateUser = async (id: string,
+    updateAdminUserDto: UpdateAdminUserDto, options?: Parameters<typeof serverFetch>[1]): Promise<UpdatedAdminUserDto> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return serverFetch<UpdatedAdminUserDto>(getUsersAdminControllerUpdateUserUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateAdminUserDto)
+  }
+);}
+
+
+
+export const getUsersAdminControllerDeleteUserUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/users/${encodeURIComponent(String(id))}`
+}
+
+/**
+ * @summary [مدیر ارشد] حذف نرم حساب کاربر و لغو دسترسی‌های فعال
+ */
+export const usersAdminControllerDeleteUser = async (id: string,
+    deleteUserDto: DeleteUserDto, options?: Parameters<typeof serverFetch>[1]): Promise<void> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return serverFetch<void>(getUsersAdminControllerDeleteUserUrl(id),
+  {
+    ...options,
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(deleteUserDto)
   }
 );}
 

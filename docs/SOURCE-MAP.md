@@ -504,6 +504,7 @@ src/design/api/generated/models/createSuperAdminResponseDto.ts
 src/design/api/generated/models/createTaxRuleDto.ts
 src/design/api/generated/models/createdSuperAdminDataDto.ts
 src/design/api/generated/models/createdSuperAdminDataDtoUserType.ts
+src/design/api/generated/models/deleteUserDto.ts
 src/design/api/generated/models/favoriteControllerGetMine200Item.ts
 src/design/api/generated/models/favoriteControllerToggle201.ts
 src/design/api/generated/models/fileAssetControllerDelete200.ts
@@ -593,6 +594,8 @@ src/design/api/generated/models/trackEventDtoType.ts
 src/design/api/generated/models/trackingControllerTrack201.ts
 src/design/api/generated/models/updateArticleBannerDto.ts
 src/design/api/generated/models/updateArticleBannerDtoPlacement.ts
+src/design/api/generated/models/updateAdminUserDto.ts
+src/design/api/generated/models/updateAdminUserDtoUserType.ts
 src/design/api/generated/models/updateArticleCategoryDto.ts
 src/design/api/generated/models/updateArticleDto.ts
 src/design/api/generated/models/updateArticleDtoSchemaType.ts
@@ -617,11 +620,19 @@ src/design/api/generated/models/updateReviewStatusDtoStatus.ts
 src/design/api/generated/models/updateServiceDto.ts
 src/design/api/generated/models/updateSettingDto.ts
 src/design/api/generated/models/updateWorkingHoursDto.ts
+src/design/api/generated/models/updatedAdminUserDto.ts
+src/design/api/generated/models/updatedAdminUserDtoUserType.ts
 src/design/api/generated/models/usersAdminControllerCreateSuperAdmin400.ts
 src/design/api/generated/models/usersAdminControllerCreateSuperAdmin401.ts
 src/design/api/generated/models/usersAdminControllerCreateSuperAdmin403.ts
 src/design/api/generated/models/usersAdminControllerCreateSuperAdmin409.ts
 src/design/api/generated/models/usersAdminControllerCreateSuperAdmin429.ts
+src/design/api/generated/models/usersAdminControllerDeleteUser400.ts
+src/design/api/generated/models/usersAdminControllerDeleteUser401.ts
+src/design/api/generated/models/usersAdminControllerDeleteUser403.ts
+src/design/api/generated/models/usersAdminControllerDeleteUser404.ts
+src/design/api/generated/models/usersAdminControllerDeleteUser409.ts
+src/design/api/generated/models/usersAdminControllerDeleteUser429.ts
 src/design/api/generated/models/usersAdminControllerGetById200.ts
 src/design/api/generated/models/usersAdminControllerGetById200BusinessesItem.ts
 src/design/api/generated/models/usersAdminControllerGetById200BusinessesItemStatus.ts
@@ -637,6 +648,12 @@ src/design/api/generated/models/usersAdminControllerListParams.ts
 src/design/api/generated/models/usersAdminControllerListUserType.ts
 src/design/api/generated/models/usersAdminControllerReinstate200.ts
 src/design/api/generated/models/usersAdminControllerSuspend200.ts
+src/design/api/generated/models/usersAdminControllerUpdateUser400.ts
+src/design/api/generated/models/usersAdminControllerUpdateUser401.ts
+src/design/api/generated/models/usersAdminControllerUpdateUser403.ts
+src/design/api/generated/models/usersAdminControllerUpdateUser404.ts
+src/design/api/generated/models/usersAdminControllerUpdateUser409.ts
+src/design/api/generated/models/usersAdminControllerUpdateUser429.ts
 src/design/api/generated/models/usersControllerGetMe200.ts
 src/design/api/generated/models/usersControllerGetMe200ContentAccess.ts
 src/design/api/generated/models/usersControllerGetMe200Gender.ts
@@ -800,6 +817,8 @@ src/features/admin/components/manual-business-form.tsx
 src/features/admin/components/pending-business-row.tsx
 src/features/admin/components/plan-change-control.tsx
 src/features/admin/components/review-row.tsx
+src/features/admin/components/user-delete-action.tsx
+src/features/admin/components/user-edit-form.tsx
 src/features/admin/components/user-suspension-actions.tsx
 src/features/admin/lib/get-business-detail.ts
 src/features/admin/lib/get-business-page.ts
@@ -981,4 +1000,5 @@ tests/same-origin.test.cjs
 tests/security.test.cjs
 tests/sitemap.test.cjs
 tests/super-admin.test.cjs
+tests/user-deletion.test.cjs
 ```

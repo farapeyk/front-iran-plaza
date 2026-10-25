@@ -55,6 +55,16 @@
     "operationId": "UsersAdminController_getById"
   },
   {
+    "route": "/api/admin/users/{id}",
+    "method": "patch",
+    "operationId": "UsersAdminController_updateUser"
+  },
+  {
+    "route": "/api/admin/users/{id}",
+    "method": "delete",
+    "operationId": "UsersAdminController_deleteUser"
+  },
+  {
     "route": "/api/admin/users/{id}/suspend",
     "method": "patch",
     "operationId": "UsersAdminController_suspend"
@@ -605,6 +615,11 @@
     "operationId": "ContentController_identity"
   },
   {
+    "route": "/api/content/media",
+    "method": "get",
+    "operationId": "ContentController_media"
+  },
+  {
     "route": "/api/content/articles",
     "method": "get",
     "operationId": "ContentController_list"
@@ -625,19 +640,14 @@
     "operationId": "ContentController_update"
   },
   {
-    "route": "/api/content/articles/{id}/submit",
-    "method": "post",
-    "operationId": "ContentController_submit"
-  },
-  {
     "route": "/api/content/articles/{id}/revisions",
     "method": "get",
     "operationId": "ContentController_revisions"
   },
   {
-    "route": "/api/content/media",
-    "method": "get",
-    "operationId": "ContentController_media"
+    "route": "/api/content/articles/{id}/submit",
+    "method": "post",
+    "operationId": "ContentController_submit"
   },
   {
     "route": "/api/content/articles/{id}/request-changes",

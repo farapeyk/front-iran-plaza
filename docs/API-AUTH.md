@@ -80,6 +80,8 @@ Server Actionهای JSON از actionFetch و schemaهای mutation-validation ا
 | مدیر دسته | PATCH / DELETE `/api/admin/categories/{id}` | ویرایش / حذف |
 | مدیر کاربر | GET `/api/admin/users`، `/api/admin/users/{id}` | فهرست / جزئیات |
 | مدیر کاربر | PATCH `/api/admin/users/{id}/suspend`، `/reinstate` | تعلیق با reason / بازگردانی |
+| مدیر ارشد | PATCH `/api/admin/users/{id}` | ویرایش نام، موبایل، ایمیل، کد ملی و نوع حساب با کنترل یکتایی و حفاظت آخرین مدیر ارشد |
+| مدیر ارشد | DELETE `/api/admin/users/{id}` | حذف نرم با reason؛ فقط مدیر ارشد، با پاسخ 204 و حفظ سوابق مرتبط |
 | مدیر ارشد | POST `/api/admin/users/super-admin` | ساخت حساب مدیر ارشد با رمز؛ فقط برای مدیر ارشد و فقط با شمارهٔ جدید |
 | مدیر نظر | GET `/api/admin/reviews` | فیلتر status و page/limit |
 | مدیر نظر | PATCH / DELETE `/api/admin/reviews/{id}` | وضعیت / حذف |
