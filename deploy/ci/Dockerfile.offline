@@ -1,0 +1,21 @@
+# Production deployment image assembled from the Alpine standalone bundle that
+# was built and tested on the GitHub runner. Production hosts perform no package
+# manager downloads or application build steps.
+FROM node:24.18.0-alpine AS production
+
+WORKDIR /app
+
+ARG SITE_URL
+ENV SITE_URL=$SITE_URL
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
+
+ADD --chown=node:node .deploy-frontend-runtime.tar.gz ./
+
+USER node
+
+EXPOSE 3000
+
+CMD ["node", "server.js"]

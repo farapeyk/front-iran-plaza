@@ -48,6 +48,39 @@ jobs:
           pnpm run build
           pnpm run test:production
 
+      - name: Prepare offline Alpine standalone bundle
+        run: |
+          alpine_source="$RUNNER_TEMP/frontend-alpine-source"
+          runtime_output="$RUNNER_TEMP/frontend-runtime-output"
+          pnpm_store="$RUNNER_TEMP/frontend-alpine-pnpm-store"
+          install -d -m 0755 "$alpine_source" "$runtime_output" "$pnpm_store"
+          git archive --format=tar "$GITHUB_SHA" | tar -xf - -C "$alpine_source"
+
+          docker run --rm \
+            --env BACKEND_INTERNAL_URL=http://127.0.0.1:1 \
+            --env SITE_URL=https://iran-plaza.ir \
+            --env JWT_ACCESS_SECRET=github-actions-build-only-secret-32-bytes \
+            --env NEXT_TELEMETRY_DISABLED=1 \
+            --volume "$alpine_source:/source:ro" \
+            --volume "$runtime_output:/output" \
+            --volume "$pnpm_store:/pnpm/store" \
+            node:24.18.0-alpine \
+            sh -euc '
+              corepack enable
+              install -d /work /runtime/.next
+              cp -a /source/. /work/
+              cd /work
+              pnpm config set store-dir /pnpm/store
+              pnpm install --frozen-lockfile
+              pnpm run build
+              cp -a .next/standalone/. /runtime/
+              cp -a .next/static /runtime/.next/static
+              cp -a public /runtime/public
+              tar -C /runtime -czf /output/frontend-runtime.tar.gz .
+            '
+
+          tar -tzf "$runtime_output/frontend-runtime.tar.gz" | grep -qx './server.js'
+
       - name: Validate deployment secrets
         env:
           DEPLOY_SSH_KEY: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
@@ -63,15 +96,18 @@ jobs:
 
       - name: Package the reviewed source
         run: |
-          tar \
-            --exclude=.git \
-            --exclude=node_modules \
-            --exclude=.next \
-            --exclude=playwright-report \
-            --exclude=test-results \
-            --exclude=.env \
-            --exclude='.env.*' \
-            -czf "$RUNNER_TEMP/frontend-source.tar.gz" .
+          package_root="$RUNNER_TEMP/frontend-source"
+          runtime_output="$RUNNER_TEMP/frontend-runtime-output"
+          install -d -m 0755 "$package_root"
+          git archive --format=tar "$GITHUB_SHA" | tar -xf - -C "$package_root"
+          install -m 0644 deploy/ci/Dockerfile.offline "$package_root/Dockerfile"
+          install -m 0644 "$runtime_output/frontend-runtime.tar.gz" "$package_root/.deploy-frontend-runtime.tar.gz"
+          tar -C "$package_root" -czf "$RUNNER_TEMP/frontend-source.tar.gz" .
+
+          archive_bytes=$(stat -c '%s' "$RUNNER_TEMP/frontend-source.tar.gz")
+          test "$archive_bytes" -gt 0
+          test "$archive_bytes" -le $((512 * 1024 * 1024))
+          echo "Packaged offline frontend archive: $archive_bytes bytes"
 
       - name: Deploy Iran, then foreign region
         env:

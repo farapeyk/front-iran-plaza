@@ -58,7 +58,7 @@ scriptهای `test` و `typecheck` اضافه شده‌اند: `npm test` و `np
 
 ### تصویر Docker production
 
-`Dockerfile` با Node `24.18.0` و lockfile رسمی pnpm یک build چندمرحله‌ای می‌سازد. تنظیم `output: "standalone"` در `next.config.ts` باعث می‌شود مرحله نهایی فقط سرور لازم Next، فایل‌های static و `public` را داشته باشد و با کاربر غیر root اجرا شود.
+`Dockerfile` توسعه با Node `24.18.0` و lockfile رسمی pnpm یک build چندمرحله‌ای می‌سازد. تنظیم `output: "standalone"` در `next.config.ts` باعث می‌شود مرحله نهایی فقط سرور لازم Next، فایل‌های static و `public` را داشته باشد و با کاربر غیر root اجرا شود. در CI production همین خروجی ابتدا داخل Alpine روی GitHub Runner ساخته می‌شود و `deploy/ci/Dockerfile.offline` بدون نصب dependency یا اجرای build آن را به image نهایی تبدیل می‌کند؛ این مسیر به دسترسی npm از سرور production وابسته نیست.
 
 ```bash
 docker build --build-arg SITE_URL=https://review.example.com -t iran-plaza-web:review .

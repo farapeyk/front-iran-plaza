@@ -995,6 +995,7 @@ tests/image-crop.test.cjs
 tests/mobile-search.test.cjs
 tests/onboarding.test.cjs
 tests/products.test.cjs
+tests/production-deployment.test.cjs
 tests/reviews.test.cjs
 tests/same-origin.test.cjs
 tests/security.test.cjs
