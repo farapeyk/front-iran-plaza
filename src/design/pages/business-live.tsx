@@ -20,7 +20,6 @@ import { WEEKDAYS } from '@/features/business/types/business-profile';
 import { BusinessLocations, BusinessProfileTags } from '@/features/public/components/business-locations';
 import { SocialMediaIcon } from '@/design/components/social-media-icon';
 import { socialLinks } from '@/design/api/socials';
-import { Link } from '@/design/navigation';
 import type { BusinessControllerGetFullBySlug200 } from '@/design/api/generated/models/businessControllerGetFullBySlug200';
 import type { ReviewData } from '@/features/public/types/review';
 import { ReviewRepliesDialog } from '@/features/public/components/review-replies-dialog';
@@ -28,6 +27,7 @@ import { AboutText, BusinessBrandVideo } from '@/features/public/components/busi
 import { VipBadge } from '@/design/components/vip-badge';
 import type { BusinessProfileControllerGetFeatures200Item } from '@/design/api/generated/models/businessProfileControllerGetFeatures200Item';
 import { ReplyCommentSheet, type ReplyComment } from '@/design/components/reply-comment-sheet';
+import { BusinessProfileSummary } from '@/features/public/components/business-profile-summary';
 
 const fileUrl=(id:string)=>'/api/backend/files/'+encodeURIComponent(id);
 function shareBusinessProfile(name:string,showMessage:(message:string)=>void) {
@@ -147,7 +147,6 @@ export function BusinessLivePage({business,reviews,favorited,features}:{business
   const [expanded,setExpanded]=useState<string[]>([]);
   const [galleryIndex,setGalleryIndex]=useState(0);
   const logo=business.logoId?fileUrl(business.logoId):'/design/icons/briefcase.svg';
-  const breadcrumbCategories=business.categories.flatMap(({category})=>category.parent?[category.parent,category]:[category]).filter((category,index,all)=>all.findIndex(item=>item.id===category.id)===index);
   const activeVip=business.planType==='VIP'&&!!business.planExpiryDate&&new Date(business.planExpiryDate)>new Date();
   const gallery=business.gallery.map(image=>({src:fileUrl(image.fileId),isVideo:false}));
   const ratedReviews=reviews.filter(review=>review.rating!=null); const average=ratedReviews.length?ratedReviews.reduce((sum,review)=>sum+(review.rating??0),0)/ratedReviews.length:0;
@@ -166,17 +165,19 @@ export function BusinessLivePage({business,reviews,favorited,features}:{business
   const submit=(comment:string)=>{if(!rating&&!comment.trim()){setMessage('متن نظر یا امتیاز را وارد کنید.');return;}startTransition(async()=>{const result=await submitReviewAction(business.id,{rating:rating||undefined,comment:comment.trim()||undefined});setMessage(result.success?'نظر شما ثبت شد و پس از بررسی نمایش داده می‌شود.':result.message);if(result.success)router.refresh();});};
   const reviewSection=<section className="business-section scroll-mt-20 space-y-6"><h2 className="text-xl font-bold">نظرات کاربران ({reviews.length})</h2><div className="grid gap-4 sm:grid-cols-2">{reviews.map(r=><article key={r.id} className="space-y-3 rounded-[var(--radius-xs)] border bg-[var(--surface)] p-4"><div className="flex items-center gap-3"><UserAvatar size={40}/><h3 className="font-bold">{r.user.fullName??'کاربر'}</h3></div><p className="text-sm">{new Date(r.createdAt).toLocaleDateString('fa-IR',{timeZone:'Asia/Tehran'})} Â· {r.rating==null?'بدون امتیاز':(r.rating+' از ۵')}</p><p>{r.comment}</p><ReviewRepliesDialog replies={r.replies}/><Button variant="outline" size="sm" onClick={()=>setReply({id:r.id,name:r.user.fullName??'کاربر',date:new Date(r.createdAt).toLocaleDateString('fa-IR',{timeZone:'Asia/Tehran'}),text:r.comment??''})}>پاسخ</Button></article>)}</div><Scoring average={average} count={ratedReviews.length} value={rating} onChange={setRating}/><fieldset disabled={pending}><WriteComment onSubmit={submit}/></fieldset>{message&&<p role="status">{message}</p>}</section>;
   return <SiteLayout className="reference-business">
-    <nav aria-label="Ù…Ø³ÛŒØ± ØµÙØ­Ù‡" className="business-container business-breadcrumb flex flex-wrap items-center gap-2">
-      <Link to="/">خانه</Link><span aria-hidden="true">/</span>
-      <Link to="/businesses">کسب‌وکارها</Link>
-      {breadcrumbCategories.map(category=><span key={category.id} className="inline-flex items-center gap-2"><span aria-hidden="true">/</span><Link to={`/businesses?categoryId=${encodeURIComponent(category.id)}`}>{category.name}</Link></span>)}
-      <span aria-hidden="true">/</span><span aria-current="page">{business.name}</span>
-    </nav>
-    <section className="business-container business-header flex flex-col items-center gap-4 text-center lg:flex-row lg:justify-between lg:text-start">
-      <div className="flex flex-col items-center gap-4 lg:flex-row"><div className="relative"><BusinessBrandVideo videoId={business.introVideoId} imageSrc={logo} name={business.name} size="large"/><div className="absolute -left-2 -top-2 flex items-center gap-2">{activeVip&&<VipBadge/>}<Button variant="outline" size="icon" aria-label="Share profile" onClick={()=>shareBusinessProfile(business.name,setMessage)}><Share2 size={18}/></Button></div></div><div className="space-y-2"><h1 className="text-[length:var(--text-h1)] font-black">{business.name}</h1><p>{business.description}</p><p className="text-sm">{business.address}</p></div></div>
-      <div className="flex flex-wrap items-center justify-center gap-3"><FavoriteButton businessId={business.id} initialFavorited={favorited}/><Button variant="secondary" onClick={()=>scrollTo('address')}><MapPin size={18}/>آدرس</Button><Button onClick={()=>setContact(true)}><Phone size={18}/>تماس و واتساپ</Button></div>
-    </section>
-    <div className="business-tabs sticky top-0 z-20 border-b border-[var(--border-default)]"><TabsList className="business-container justify-start">{[{id:'gallery',title:'گالری'},...sections,{id:'comments',title:'نظرات'}].map(s=><Tab key={s.id} active={active===s.id} variant="border" onClick={()=>scrollTo(s.id)}>{s.title}</Tab>)}</TabsList></div>
+    <BusinessProfileSummary
+      business={business}
+      logo={logo}
+      isVip={activeVip}
+      average={average}
+      reviewCount={ratedReviews.length}
+      rating={rating}
+      onRatingChange={setRating}
+      onAddress={()=>scrollTo('address')}
+      onContact={()=>setContact(true)}
+      onShare={()=>shareBusinessProfile(business.name,setMessage)}
+    />
+    <div className="business-tabs sticky top-0 z-20 border-b border-[var(--border-default)]"><div className="business-container flex items-center gap-2"><TabsList className="min-w-0 flex-1 justify-start">{[{id:'gallery',title:'گالری'},...sections,{id:'comments',title:'نظرات'}].map(s=><Tab key={s.id} active={active===s.id} variant="border" onClick={()=>scrollTo(s.id)}>{s.title}</Tab>)}</TabsList><FavoriteButton businessId={business.id} initialFavorited={favorited}/></div></div>
     <section id="gallery" className="business-container business-gallery scroll-mt-20">
       {gallery.length>0&&<button type="button" onClick={()=>setGalleryOpen(true)} className="block w-full" aria-label="باز کردن گالری"><GalleryProfile items={galleryItems} className="w-full max-lg:h-[180px] lg:h-[400px]"/></button>}
       {gallery.length>0&&<div className="gallery-controls"><Button variant="outline" size="sm" onClick={()=>setGalleryOpen(true)}>مشاهده همه گالری</Button><div className="flex gap-3"><Button variant="outline" size="icon" aria-label="عکس قبلی" disabled={gallery.length<2} onClick={()=>rotateGallery(-1)}><Image src="/design/icons/arrow-right.svg" alt="" width={20} height={20}/></Button><Button variant="outline" size="icon" aria-label="عکس بعدی" disabled={gallery.length<2} onClick={()=>rotateGallery(1)}><Image src="/design/icons/arrow-left.svg" alt="" width={20} height={20}/></Button></div></div>}

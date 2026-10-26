@@ -13,20 +13,34 @@ export function BusinessBrandVideo({
   imageSrc,
   name,
   size = "large",
+  layout = "stacked",
 }: {
   videoId: string | null;
   imageSrc: string;
   name: string;
   size?: "large" | "small";
+  layout?: "stacked" | "overlay";
 }) {
   const [open, setOpen] = useState(false);
   const modalRef = useModalFocus(open, () => setOpen(false));
   const imageSize = size === "large" ? "size-[100px] lg:size-[140px]" : "size-[100px]";
 
+  const overlay = layout === "overlay";
+
   return (
-    <div className="flex shrink-0 flex-col items-center gap-2">
+    <div className={overlay ? "relative shrink-0" : "flex shrink-0 flex-col items-center gap-2"}>
       <Image src={imageSrc} width={140} height={140} alt={name} className={`${imageSize} rounded-full border-[6px] border-secondary-25 object-cover`} />
-      {videoId && (
+      {videoId && overlay && (
+        <button
+          type="button"
+          aria-label="پخش ویدیوی معرفی"
+          className="absolute bottom-0 start-2 flex size-8 items-center justify-center rounded-full border-2 border-secondary-25 bg-secondary-200 ps-0.5 transition-opacity hover:opacity-90"
+          onClick={() => setOpen(true)}
+        >
+          <Image alt="" className="h-[13px] w-[11px]" height={13} src="/design/icons/play-fill.svg" width={11} />
+        </button>
+      )}
+      {videoId && !overlay && (
         <button type="button" className="flex items-center gap-2 text-sm font-medium text-primary-700" onClick={() => setOpen(true)}>
           <MediaPlayer size="mobile" aria-label="پخش ویدیوی معرفی" />
           ویدیوی معرفی

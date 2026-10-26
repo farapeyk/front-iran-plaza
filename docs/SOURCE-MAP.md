@@ -966,6 +966,7 @@ src/features/public/components/business-card.tsx
 src/features/public/components/business-location-map.tsx
 src/features/public/components/business-locations.tsx
 src/features/public/components/business-profile-media.tsx
+src/features/public/components/business-profile-summary.tsx
 src/features/public/components/favorite-button.tsx
 src/features/public/components/features-checklist.tsx
 src/features/public/components/promo-banner.tsx

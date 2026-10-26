@@ -1,9 +1,7 @@
 "use client"
-import Image from "next/image";
-
 import { useState } from "react"
+import { Star } from "lucide-react"
 import { cn } from "@/design/lib/utils"
-const starIcon = "/design/icons/star.svg"
 
 type ScoringProps = {
   className?: string
@@ -64,16 +62,12 @@ function Scoring({
               value > 0 && value !== n && "opacity-40"
             )}
           >
-            <Image
-              alt=""
+            <Star
+              aria-hidden="true"
               className={cn(
-                "size-full",
-                value >= n && "[filter:none]",
-                value > 0 && value < n && "opacity-50"
+                "size-full stroke-[var(--yellow-400)] stroke-[1.5]",
+                value >= n && "fill-[var(--yellow-400)]"
               )}
-              height={32}
-              src={starIcon}
-              width={32}
             />
             <span className="absolute inset-0 flex items-center justify-center pt-0.5 text-[10px] font-bold text-[var(--yellow-400)]">
               {n}
@@ -90,7 +84,7 @@ function Scoring({
       >
         <p className="text-[22px] font-bold text-[var(--text-title)]">{title}</p>
         <p className="text-lg text-[var(--text-body)]">
-          {average} ( {count} نفر )
+          {average.toFixed(1)} ( {count} نفر )
         </p>
       </div>
     </div>

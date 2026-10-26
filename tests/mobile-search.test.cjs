@@ -67,6 +67,18 @@ test('business profile separates checked features from tabbed priced services', 
   assert.match(source, /business-service-card/);
 });
 
+test('every public business profile uses the reusable responsive summary panel', () => {
+  const page = fs.readFileSync(path.join(__dirname, '../src/design/pages/business-live.tsx'), 'utf8');
+  const panel = fs.readFileSync(path.join(__dirname, '../src/features/public/components/business-profile-summary.tsx'), 'utf8');
+
+  assert.match(page, /<BusinessProfileSummary/);
+  assert.match(panel, /business-summary-mobile/);
+  assert.match(panel, /business-summary-desktop/);
+  assert.match(panel, /business\.name/);
+  assert.match(panel, /business\.description/);
+  assert.doesNotMatch(panel, /businesses\/123/);
+});
+
 test('desktop and mobile footer use the linked official Enamad trust seal', () => {
   const source = fs.readFileSync(path.join(__dirname, '../src/design/components/site-footer.tsx'), 'utf8');
 

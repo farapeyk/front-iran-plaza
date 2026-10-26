@@ -40,6 +40,13 @@
   width: min(1200px, calc(100% - 48px));
   margin-inline: auto;
 }
+.plaza-design .reference-business .business-summary-mobile { width: min(1200px, calc(100% - 40px)); padding-block: 24px 32px; }
+.plaza-design .reference-business .business-summary-mobile .business-profile-card { background: #f6eddd; }
+.plaza-design .reference-business .business-summary-score { flex-direction: column-reverse; }
+.plaza-design .reference-business .business-summary-score > div:first-child { flex-direction: row-reverse; }
+.plaza-design .reference-business .business-summary-score p { font-size: 14px; }
+.plaza-design .reference-business .business-summary-score p:first-child { font-weight: 700; }
+.plaza-design .reference-business .business-summary-score button { width: 32px; height: 32px; }
 .plaza-design .reference-business .business-breadcrumb { padding-block: 24px; color: var(--text-muted); font-size: 12px; }
 .plaza-design .reference-business .business-header { min-height: 400px; padding-block: 56px; }
 .plaza-design .reference-business .business-header h1 { font-size: 30px; }
