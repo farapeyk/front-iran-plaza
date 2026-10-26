@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { TextStyleKit } from "@tiptap/extension-text-style";
 import type { RichTextNode } from "@/features/content/types";
+import { normalizeRichTextLinkHref } from "@/features/content/lib/rich-text-links";
 
 type RichTextEditorProps = {
   value?: RichTextNode;
@@ -24,6 +25,8 @@ function initialDocument(value?: RichTextNode, fallbackText?: string): RichTextN
 
 export function RichTextEditor({ value, fallbackText, onChange }: RichTextEditorProps) {
   const onChangeRef = useRef(onChange);
+  const [linkDraft, setLinkDraft] = useState<{ from: number; to: number; href: string; selectedText: string } | null>(null);
+  const [linkError, setLinkError] = useState("");
   useEffect(() => { onChangeRef.current = onChange; }, [onChange]);
 
   const editor = useEditor({
@@ -48,21 +51,41 @@ export function RichTextEditor({ value, fallbackText, onChange }: RichTextEditor
 
   if (!editor) return <div className="min-h-44 animate-pulse rounded-md border bg-neutral-50" />;
 
-  const setLink = () => {
-    const previous = editor.getAttributes("link").href as string | undefined;
-    const href = window.prompt("آدرس لینک را با http یا https وارد کنید:", previous || "https://");
-    if (href === null) return;
-    if (!href.trim()) {
-      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+  const openLinkEditor = () => {
+    setLinkError("");
+    if (editor.isActive("link")) editor.chain().extendMarkRange("link").run();
+    const { from, to } = editor.state.selection;
+    if (from === to) {
+      setLinkDraft(null);
+      setLinkError("ابتدا بخشی از متن را انتخاب کنید، سپس دکمه لینک را بزنید.");
       return;
     }
-    try {
-      const url = new URL(href);
-      if (!['http:', 'https:'].includes(url.protocol)) throw new Error("invalid");
-      editor.chain().focus().extendMarkRange("link").setLink({ href: url.toString() }).run();
-    } catch {
-      window.alert("آدرس لینک معتبر نیست.");
+    setLinkDraft({
+      from,
+      to,
+      href: (editor.getAttributes("link").href as string | undefined) ?? "",
+      selectedText: editor.state.doc.textBetween(from, to, " "),
+    });
+  };
+
+  const applyLink = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!linkDraft) return;
+    const href = normalizeRichTextLinkHref(linkDraft.href, window.location.origin);
+    if (!href) {
+      setLinkError("آدرس معتبر وارد کنید؛ لینک داخلی، دامنه یا آدرس کامل http/https پذیرفته می‌شود.");
+      return;
     }
+    editor.chain().focus().setTextSelection({ from: linkDraft.from, to: linkDraft.to }).setLink({ href }).run();
+    setLinkDraft(null);
+    setLinkError("");
+  };
+
+  const removeLink = () => {
+    if (!linkDraft) return;
+    editor.chain().focus().setTextSelection({ from: linkDraft.from, to: linkDraft.to }).unsetLink().run();
+    setLinkDraft(null);
+    setLinkError("");
   };
 
   return (
@@ -85,10 +108,24 @@ export function RichTextEditor({ value, fallbackText, onChange }: RichTextEditor
         <button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()} className={`${controlClass} ${editor.isActive("bulletList") ? "bg-emerald-100" : ""}`}>فهرست</button>
         <button type="button" onClick={() => editor.chain().focus().toggleOrderedList().run()} className={`${controlClass} ${editor.isActive("orderedList") ? "bg-emerald-100" : ""}`}>شماره‌دار</button>
         <button type="button" onClick={() => editor.chain().focus().toggleBlockquote().run()} className={`${controlClass} ${editor.isActive("blockquote") ? "bg-emerald-100" : ""}`}>نقل‌قول</button>
-        <button type="button" onClick={setLink} className={`${controlClass} ${editor.isActive("link") ? "bg-emerald-100" : ""}`}>لینک</button>
+        <button type="button" onMouseDown={event => event.preventDefault()} onClick={openLinkEditor} aria-pressed={editor.isActive("link")} className={`${controlClass} ${editor.isActive("link") ? "bg-emerald-100" : ""}`}>لینک‌کردن متن انتخابی</button>
         <button type="button" onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()} className={controlClass}>واگرد</button>
         <button type="button" onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()} className={controlClass}>ازنو</button>
       </div>
+      {linkDraft ? (
+        <form onSubmit={applyLink} className="space-y-2 border-b border-neutral-200 bg-emerald-50/60 p-3">
+          <label className="block space-y-1">
+            <span className="text-sm font-bold">آدرس لینک برای «{linkDraft.selectedText.slice(0, 80)}{linkDraft.selectedText.length > 80 ? "…" : ""}»</span>
+            <input autoFocus dir="ltr" type="text" inputMode="url" value={linkDraft.href} onChange={event => setLinkDraft(current => current ? { ...current, href: event.target.value } : current)} placeholder="https://example.com یا /articles/" className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-left outline-none focus:border-emerald-700" />
+          </label>
+          <div className="flex flex-wrap gap-2">
+            <button type="submit" className="rounded-md bg-emerald-700 px-4 py-2 text-sm font-bold text-white">ثبت لینک</button>
+            {linkDraft.href ? <button type="button" onClick={removeLink} className="rounded-md border border-red-200 bg-white px-4 py-2 text-sm font-bold text-red-700">حذف لینک</button> : null}
+            <button type="button" onClick={() => { setLinkDraft(null); setLinkError(""); }} className="rounded-md border bg-white px-4 py-2 text-sm font-bold">انصراف</button>
+          </div>
+        </form>
+      ) : null}
+      {linkError ? <p role="alert" className="border-b border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-900">{linkError}</p> : null}
       <EditorContent editor={editor} />
     </div>
   );

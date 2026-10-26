@@ -934,6 +934,7 @@ src/features/content/lib/article-content.ts
 src/features/content/lib/article-seo-audit.ts
 src/features/content/lib/canonical-url.ts
 src/features/content/lib/public-paths.ts
+src/features/content/lib/rich-text-links.ts
 src/features/content/types.ts
 src/features/dashboard/components/dashboard-header.tsx
 src/features/dashboard/components/dashboard-logout-item.tsx
@@ -1033,6 +1034,7 @@ tests/onboarding.test.cjs
 tests/products.test.cjs
 tests/production-deployment.test.cjs
 tests/reviews.test.cjs
+tests/rich-text-links.test.cjs
 tests/same-origin.test.cjs
 tests/security.test.cjs
 tests/sitemap.test.cjs

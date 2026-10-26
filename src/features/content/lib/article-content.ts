@@ -62,6 +62,31 @@ export function displayArticleExcerpt(excerpt: string, blocks: ArticleBlock[]): 
 }
 
 /**
+ * Imported WordPress articles commonly use the complete leading paragraph(s)
+ * as their excerpt. The public page renders that excerpt before the body, so
+ * remove only an exact leading-body match and keep independently written
+ * summaries and partially overlapping introductions untouched.
+ */
+export function withoutDuplicateLeadingExcerpt(excerpt: string, blocks: ArticleBlock[]): ArticleBlock[] {
+  const expected = normalizedText(excerpt);
+  if (!expected) return blocks;
+
+  const introduction: string[] = [];
+  for (let index = 0; index < blocks.length; index += 1) {
+    const block = blocks[index];
+    if (block.type !== "paragraph") break;
+    const text = normalizedText(block.text);
+    if (!text) break;
+    introduction.push(text);
+    const candidate = normalizedText(introduction.join(" "));
+    if (candidate === expected) return blocks.slice(index + 1);
+    if (!expected.startsWith(candidate)) break;
+  }
+
+  return blocks;
+}
+
+/**
  * Keeps long article archives usable on narrow screens without rendering a
  * link for every page. The first, last and nearby pages always stay visible.
  */

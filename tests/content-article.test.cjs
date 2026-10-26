@@ -6,6 +6,7 @@ const {
   ARTICLE_EXCERPT_MAX_LENGTH,
   compactPaginationItems,
   displayArticleExcerpt,
+  withoutDuplicateLeadingExcerpt,
   withoutLegacyArticleWidgets,
 } = load('src/features/content/lib/article-content.ts');
 
@@ -39,6 +40,34 @@ test('a stored read-more snippet is replaced with the complete imported introduc
   );
   assert.equal(displayArticleExcerpt('خلاصه دستی و کامل مقاله', blocks), 'خلاصه دستی و کامل مقاله');
   assert.equal(ARTICLE_EXCERPT_MAX_LENGTH, 5000);
+});
+
+test('an imported introduction rendered as the excerpt is removed once from the leading body', () => {
+  const introduction = 'ناخن‌‌های مرتب و سالم همیشه جلب توجه‌ کرده اند و این متن مقدمه مقاله است.';
+  const blocks = [
+    { id: 'intro', type: 'paragraph', text: introduction },
+    { id: 'heading', type: 'heading', text: 'بهترین آموزشگاه‌ها', level: 2 },
+    { id: 'body', type: 'paragraph', text: 'ادامه مقاله' },
+  ];
+
+  assert.deepEqual(
+    withoutDuplicateLeadingExcerpt(introduction, blocks).map(block => block.id),
+    ['heading', 'body'],
+  );
+  assert.equal(withoutDuplicateLeadingExcerpt('خلاصه مستقل مقاله', blocks), blocks);
+});
+
+test('all consecutive introduction paragraphs are removed when together they exactly match the excerpt', () => {
+  const blocks = [
+    { id: 'intro-1', type: 'paragraph', text: 'پاراگراف اول مقدمه.' },
+    { id: 'intro-2', type: 'paragraph', text: 'پاراگراف دوم مقدمه.' },
+    { id: 'heading', type: 'heading', text: 'ادامه مقاله', level: 2 },
+  ];
+
+  assert.deepEqual(
+    withoutDuplicateLeadingExcerpt('پاراگراف اول مقدمه.\n\nپاراگراف دوم مقدمه.', blocks).map(block => block.id),
+    ['heading'],
+  );
 });
 
 test('article pagination stays compact across long archives', () => {

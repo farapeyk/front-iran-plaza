@@ -8,7 +8,7 @@ import Image from "next/image";
 import { ArticleFeedbackForm } from "@/features/content/components/article-feedback-form";
 import { RichTextRenderer } from "@/features/content/components/rich-text-renderer";
 import { articlePath } from "@/features/content/lib/public-paths";
-import { displayArticleExcerpt, withoutLegacyArticleWidgets } from "@/features/content/lib/article-content";
+import { displayArticleExcerpt, withoutDuplicateLeadingExcerpt, withoutLegacyArticleWidgets } from "@/features/content/lib/article-content";
 import type { ArticleBanner, ArticleBlock, PublicArticle, PublicArticleListItem } from "@/features/content/types";
 import { buildArticleStructuredData } from "@/features/seo/article-seo";
 import { JsonLd } from "@/features/seo/json-ld";
@@ -38,8 +38,9 @@ function ArticleTableView({ block }: { block: ArticleBlock }) {
 }
 
 export function ArticlePublicPage({ article, relatedArticles = [], categoryPath }: { article: PublicArticle; relatedArticles?: PublicArticleListItem[]; categoryPath?: string }) {
-  const bodyBlocks = withoutLegacyArticleWidgets(article.bodyBlocks);
-  const excerpt = displayArticleExcerpt(article.excerpt, bodyBlocks);
+  const cleanedBlocks = withoutLegacyArticleWidgets(article.bodyBlocks);
+  const excerpt = displayArticleExcerpt(article.excerpt, cleanedBlocks);
+  const bodyBlocks = withoutDuplicateLeadingExcerpt(excerpt, cleanedBlocks);
   const businessById = new Map(article.businesses.map(item => [item.business.id, item.business]));
   const tocItems = bodyBlocks
     .filter(block => block.type === "heading" && block.text)
