@@ -39,3 +39,36 @@
 4. Post-deploy browser verification confirmed HTTP 200, responsive summary visibility, rating selection, and contact-dialog mounting; development-mode diagnostics then located and removed the legacy nested-button hydration warning.
 
 final result: passed
+
+---
+
+# Design QA — Rich-text editor toolbar (2026-10-26)
+
+## Comparison setup
+
+- Source visual truth: `C:/Users/Hp/Downloads/Screenshot 2026-10-26 at 13-14-08 ویرایش مقاله.png`, 544 × 195 px at 1× density.
+- Browser-rendered implementation URL: `http://localhost:3011/design-system/components` in Chrome, text mode with sample Persian content.
+- Implementation screenshot path: unavailable; Windows computer-use stopped screenshot capture because it could not verify the active browser URL with sufficient confidence.
+- Viewport and implementation pixel dimensions: unavailable for the same browser-capture blocker; density normalization and combined full-view comparison could not be produced.
+- Focused region comparison: unavailable because the implementation screenshot could not be captured.
+
+## Findings
+
+- The source and rendered implementation were both opened, and the rendered page returned HTTP 200 with the editor mounted in the intended design-system section.
+- Static/runtime implementation provides the reference toolbar structure and RTL controls, plus working text/HTML modes, selection-based links, formatting, alignment, lists, quote/code, image upload and media library, YouTube, tables, fullscreen, clear formatting, undo, and redo.
+- No visual pass is claimed: typography, exact spacing, colors, icon alignment, and responsive wrapping could not be compared from combined screenshot evidence.
+
+## Interaction and runtime checks
+
+- Automated type, lint, unit, contract-client, and production-build checks cover the editor schema and safe media/link handling.
+- Browser interaction checks for text selection, link application, HTML round-trip, upload/library dialogs, fullscreen, and responsive layout were not completed because browser capture/control stopped.
+- The local page compiled and returned HTTP 200. The only observed console output was two pre-existing design-system image aspect-ratio warnings, unrelated to this editor.
+
+## Comparison history
+
+1. The source screenshot was opened at its original 544 × 195 px dimensions.
+2. A temporary local design-system harness rendered the implementation successfully at the local URL.
+3. Screenshot capture was blocked before a combined comparison could be made; no visual fixes are represented as QA-verified.
+4. The user explicitly instructed commit, push, and deployment after this limitation was reported, overriding the otherwise blocking visual-QA gate.
+
+final result: blocked
