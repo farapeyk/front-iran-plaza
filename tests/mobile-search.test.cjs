@@ -83,7 +83,8 @@ test('business maps keep the server and first client render hydration-safe', () 
   const source = fs.readFileSync(path.join(__dirname, '../src/features/public/components/business-location-map.tsx'), 'utf8');
 
   assert.match(source, /useSyncExternalStore/);
-  assert.match(source, /\(\) => true, \(\) => false/);
+  assert.match(source, /queueMicrotask\(onStoreChange\)/);
+  assert.match(source, /getServerHydrationSnapshot = \(\) => false/);
   assert.match(source, /if \(!mounted\) return/);
 });
 
