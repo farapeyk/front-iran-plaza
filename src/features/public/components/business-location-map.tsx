@@ -2,6 +2,9 @@
 
 import dynamic from "next/dynamic";
 import { Cake , Send, Link as LinkIcon } from "lucide-react";
+import { useSyncExternalStore } from "react";
+
+const subscribeToHydration = () => () => {};
 
 const StaticLocationMap = dynamic(() => import("./static-location-map"), {
   ssr: false,
@@ -9,6 +12,10 @@ const StaticLocationMap = dynamic(() => import("./static-location-map"), {
 });
 
 export function BusinessLocationMap({ latitude, longitude }: { latitude: number; longitude: number }) {
+  const mounted = useSyncExternalStore(subscribeToHydration, () => true, () => false);
+
+  if (!mounted) return <div className="h-[220px] animate-pulse rounded-lg bg-neutral-100" />;
+
   return <StaticLocationMap latitude={latitude} longitude={longitude} />;
 }
 

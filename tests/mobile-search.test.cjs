@@ -79,6 +79,14 @@ test('every public business profile uses the reusable responsive summary panel',
   assert.doesNotMatch(panel, /businesses\/123/);
 });
 
+test('business maps keep the server and first client render hydration-safe', () => {
+  const source = fs.readFileSync(path.join(__dirname, '../src/features/public/components/business-location-map.tsx'), 'utf8');
+
+  assert.match(source, /useSyncExternalStore/);
+  assert.match(source, /\(\) => true, \(\) => false/);
+  assert.match(source, /if \(!mounted\) return/);
+});
+
 test('desktop and mobile footer use the linked official Enamad trust seal', () => {
   const source = fs.readFileSync(path.join(__dirname, '../src/design/components/site-footer.tsx'), 'utf8');
 
