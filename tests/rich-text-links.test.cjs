@@ -1,5 +1,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const { load } = require('./helpers.cjs');
 
 const { canonicalizeRichTextDocument, normalizeRichTextLinkHref } = load('src/features/content/lib/rich-text-links.ts');
@@ -51,4 +53,14 @@ test('rich-text document canonicalization drops unsafe links but keeps their tex
     type: 'doc',
     content: [{ type: 'paragraph', content: [{ type: 'text', text: 'متن' }] }],
   });
+});
+
+test('rich-text links render without an underline in the editor and public article', () => {
+  const editor = fs.readFileSync(path.join(__dirname, '../src/features/content/components/rich-text-editor.tsx'), 'utf8');
+  const renderer = fs.readFileSync(path.join(__dirname, '../src/features/content/components/rich-text-renderer.tsx'), 'utf8');
+
+  assert.match(editor, /\[&_a\]:no-underline/u);
+  assert.match(renderer, /text-emerald-800 no-underline/u);
+  assert.doesNotMatch(editor, /\[&_a\]:underline/u);
+  assert.doesNotMatch(renderer, /text-emerald-800 underline/u);
 });

@@ -43,7 +43,7 @@ function renderNode(node: RichTextNode, key: string): ReactNode {
       else if (mark.type === "code") child = <code key={markKey} className="rounded bg-neutral-100 px-1">{child}</code>;
       else if (mark.type === "link") {
         const href = safeHref(mark.attrs?.href);
-        if (href) child = <a key={markKey} href={href} target="_blank" rel="noopener noreferrer" className="font-medium text-emerald-800 underline">{child}</a>;
+        if (href) child = <a key={markKey} href={href} target="_blank" rel="noopener noreferrer" className="font-medium text-emerald-800 no-underline">{child}</a>;
       } else if (mark.type === "textStyle") {
         const style: CSSProperties = {};
         if (typeof mark.attrs?.color === "string" && /^#[0-9a-f]{6}$/i.test(mark.attrs.color)) style.color = mark.attrs.color;
