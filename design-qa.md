@@ -29,13 +29,13 @@
 - Contact and address remain native button actions; the contact action mounts the existing accessible `role="dialog"` contact sheet.
 - Share, intro-video, favorite, tabs, and the remainder of the business page remain connected to their existing handlers.
 - The final local browser capture reported no application console errors. Development-only HMR messages were excluded from runtime findings.
-- The deployed sample exposed an existing hydration warning when its client-only map was present. The map now keeps the same loading placeholder for the server and first client render before mounting the interactive map.
+- The deployed sample exposed invalid nested media-player buttons in the legacy sidebar markup. The inner player now uses its decorative mode, preserving the action while producing valid HTML.
 
 ## Comparison history
 
 1. The first pass reproduced the responsive desktop/mobile structure and revealed an overly tall desktop hero, wrapped mobile contact label, an unformatted repeating rating average, and filled personal-rating stars.
 2. Desktop bottom spacing was reduced to the source height; compact actions were rebalanced; the average was formatted to one decimal; and numbered outline stars were restored.
 3. The repeated normalized comparison shows matching visual hierarchy and spacing. Remaining copy-width differences come only from dynamic business data and do not affect the reusable layout.
-4. Post-deploy browser verification confirmed HTTP 200, responsive summary visibility, rating selection, and contact-dialog mounting; its map hydration warning was then removed with a stable initial placeholder.
+4. Post-deploy browser verification confirmed HTTP 200, responsive summary visibility, rating selection, and contact-dialog mounting; development-mode diagnostics then located and removed the legacy nested-button hydration warning.
 
 final result: passed

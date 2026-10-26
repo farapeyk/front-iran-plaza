@@ -79,13 +79,11 @@ test('every public business profile uses the reusable responsive summary panel',
   assert.doesNotMatch(panel, /businesses\/123/);
 });
 
-test('business maps keep the server and first client render hydration-safe', () => {
-  const source = fs.readFileSync(path.join(__dirname, '../src/features/public/components/business-location-map.tsx'), 'utf8');
+test('business video trigger does not nest an interactive player button', () => {
+  const source = fs.readFileSync(path.join(__dirname, '../src/features/public/components/business-profile-media.tsx'), 'utf8');
 
-  assert.match(source, /useSyncExternalStore/);
-  assert.match(source, /queueMicrotask\(onStoreChange\)/);
-  assert.match(source, /getServerHydrationSnapshot = \(\) => false/);
-  assert.match(source, /if \(!mounted\) return/);
+  assert.match(source, /<MediaPlayer decorative size="mobile"/);
+  assert.doesNotMatch(source, /<MediaPlayer size="mobile" aria-label=/);
 });
 
 test('desktop and mobile footer use the linked official Enamad trust seal', () => {

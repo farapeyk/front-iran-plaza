@@ -42,7 +42,7 @@ export function BusinessBrandVideo({
       )}
       {videoId && !overlay && (
         <button type="button" className="flex items-center gap-2 text-sm font-medium text-primary-700" onClick={() => setOpen(true)}>
-          <MediaPlayer size="mobile" aria-label="پخش ویدیوی معرفی" />
+          <MediaPlayer decorative size="mobile" />
           ویدیوی معرفی
         </button>
       )}
