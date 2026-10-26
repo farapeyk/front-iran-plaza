@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import type { ContentMediaResponse, RichTextNode } from "@/features/content/types";
 import { uploadFileAction } from "@/features/business/actions/upload-file.action";
-import { normalizeRichTextLinkHref } from "@/features/content/lib/rich-text-links";
+import { canonicalizeRichTextDocument, normalizeRichTextLinkHref } from "@/features/content/lib/rich-text-links";
 import { normalizeRichTextImageSrc, normalizeRichTextYoutubeSrc } from "@/features/content/lib/rich-text-media";
 
 type RichTextEditorProps = {
@@ -89,7 +89,8 @@ export function RichTextEditor({ value, fallbackText, onChange }: RichTextEditor
       },
     },
     onUpdate: ({ editor: current }) => {
-      onChangeRef.current(current.getJSON() as RichTextNode, current.getText({ blockSeparator: "\n" }));
+      const richText = canonicalizeRichTextDocument(current.getJSON() as RichTextNode, window.location.origin);
+      onChangeRef.current(richText, current.getText({ blockSeparator: "\n" }));
     },
   });
 
