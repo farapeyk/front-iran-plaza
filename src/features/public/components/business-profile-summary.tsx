@@ -167,7 +167,7 @@ export function BusinessProfileSummary({
                 <div className="w-full space-y-[var(--sm)] text-right">
                   <h1 className="text-[length:var(--text-h1)] font-black leading-[1.4] text-[var(--text-title)]">{business.name}</h1>
                   {business.description && <p className="text-lg leading-relaxed text-[var(--text-body)]">{business.description}</p>}
-                  <div className="flex flex-row-reverse items-start justify-start gap-1 text-lg leading-relaxed text-[var(--text-body)]">
+                  <div className="flex flex-row-reverse items-start justify-end gap-1 text-lg leading-relaxed text-[var(--text-body)]">
                     <span>{address}</span>
                     <Image alt="" className="mt-1.5 size-4 shrink-0" height={16} src={locationIcon} width={16} />
                   </div>

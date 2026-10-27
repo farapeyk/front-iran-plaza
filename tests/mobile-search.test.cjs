@@ -76,6 +76,7 @@ test('every public business profile uses the reusable responsive summary panel',
   assert.match(panel, /business-summary-desktop/);
   assert.match(panel, /business\.name/);
   assert.match(panel, /business\.description/);
+  assert.match(panel, /flex-row-reverse items-start justify-end gap-1 text-lg/);
   assert.doesNotMatch(panel, /businesses\/123/);
 });
 
