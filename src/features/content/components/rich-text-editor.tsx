@@ -3,6 +3,7 @@
 import ImagePreview from "next/image";
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
+import { Node } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import { TextStyleKit } from "@tiptap/extension-text-style";
 import Image from "@tiptap/extension-image";
@@ -18,6 +19,7 @@ import type { ContentMediaResponse, RichTextNode } from "@/features/content/type
 import { uploadFileAction } from "@/features/business/actions/upload-file.action";
 import { canonicalizeRichTextDocument, normalizeRichTextLinkHref } from "@/features/content/lib/rich-text-links";
 import { normalizeRichTextImageSrc, normalizeRichTextYoutubeSrc } from "@/features/content/lib/rich-text-media";
+import { customHtmlDocument, customHtmlFromDocument, MAX_RICH_TEXT_HTML_LENGTH, plainTextFromCustomHtml } from "@/features/content/lib/rich-text-html";
 
 type RichTextEditorProps = {
   value?: RichTextNode;
@@ -32,6 +34,43 @@ const toolbarButtonClass = "inline-flex h-10 min-w-10 items-center justify-cente
 const activeButtonClass = "border-slate-900 bg-slate-900 text-white hover:bg-slate-800";
 const toolbarSelectClass = "h-10 rounded-xl border border-slate-400 bg-white px-2 text-sm font-bold text-slate-800 outline-none focus:border-emerald-700";
 const insertFieldClass = "h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm outline-none focus:border-emerald-700";
+
+const CustomHtml = Node.create({
+  name: "rawHtml",
+  group: "block",
+  atom: true,
+  addAttributes() { return { html: { default: "" } }; },
+  parseHTML() { return [{ tag: "div[data-rich-html]" }]; },
+  renderHTML() { return ["div", { "data-rich-html": "true" }, "HTML/CSS سفارشی"]; },
+  addNodeView() {
+    return ({ node }) => {
+      const dom = document.createElement("div");
+      dom.contentEditable = "false";
+      dom.className = "m-4 overflow-hidden rounded-xl border border-slate-300 bg-white";
+
+      const label = document.createElement("div");
+      label.className = "border-b border-slate-200 bg-slate-50 px-3 py-2 text-sm font-bold text-slate-700";
+      label.textContent = "پیش‌نمایش امن HTML/CSS سفارشی — برای ویرایش، تب HTML را باز کنید";
+
+      const preview = document.createElement("iframe");
+      preview.title = "پیش‌نمایش HTML/CSS سفارشی";
+      preview.setAttribute("sandbox", "");
+      preview.setAttribute("referrerpolicy", "no-referrer");
+      preview.className = "block h-80 w-full border-0 bg-white";
+      preview.srcdoc = String(node.attrs.html || "");
+      dom.append(label, preview);
+
+      return {
+        dom,
+        update(updatedNode) {
+          if (updatedNode.type.name !== "rawHtml") return false;
+          preview.srcdoc = String(updatedNode.attrs.html || "");
+          return true;
+        },
+      };
+    };
+  },
+});
 
 function initialDocument(value?: RichTextNode, fallbackText?: string): RichTextNode {
   if (value?.type === "doc") return value;
@@ -80,6 +119,7 @@ export function RichTextEditor({ value, fallbackText, onChange }: RichTextEditor
       Image.configure({ inline: false, allowBase64: false, resize: { enabled: false } }),
       TableKit.configure({ table: { resizable: false } }),
       YoutubeExtension.configure({ controls: true, nocookie: true, modestBranding: true }),
+      CustomHtml,
     ],
     content: initialDocument(value, fallbackText),
     editorProps: {
@@ -90,7 +130,8 @@ export function RichTextEditor({ value, fallbackText, onChange }: RichTextEditor
     },
     onUpdate: ({ editor: current }) => {
       const richText = canonicalizeRichTextDocument(current.getJSON() as RichTextNode, window.location.origin);
-      onChangeRef.current(richText, current.getText({ blockSeparator: "\n" }));
+      const customHtml = customHtmlFromDocument(richText);
+      onChangeRef.current(richText, customHtml ? plainTextFromCustomHtml(customHtml) : current.getText({ blockSeparator: "\n" }));
     },
   });
 
@@ -106,9 +147,24 @@ export function RichTextEditor({ value, fallbackText, onChange }: RichTextEditor
 
   const switchMode = (nextMode: "text" | "html") => {
     closePanels();
-    if (nextMode === "html") { setHtmlDraft(editor.getHTML()); setMode("html"); return; }
+    if (nextMode === "html") {
+      const currentDocument = editor.getJSON() as RichTextNode;
+      setHtmlDraft(customHtmlFromDocument(currentDocument) ?? editor.getHTML());
+      setMode("html");
+      return;
+    }
     try {
-      editor.commands.setContent(htmlDraft, { emitUpdate: true, errorOnInvalidContent: false });
+      const trimmedHtml = htmlDraft.trim();
+      const plainText = plainTextFromCustomHtml(trimmedHtml);
+      if (!trimmedHtml || !plainText) {
+        setToolError("کد HTML باید حداقل یک متن قابل‌نمایش داشته باشد.");
+        return;
+      }
+      if (trimmedHtml.length > MAX_RICH_TEXT_HTML_LENGTH) {
+        setToolError("حجم کد HTML/CSS بیشتر از حد مجاز ۵۰ هزار نویسه است.");
+        return;
+      }
+      editor.commands.setContent(customHtmlDocument(trimmedHtml), { emitUpdate: true, errorOnInvalidContent: true });
       setMode("text");
       setToolError("");
     } catch { setToolError("ساختار HTML قابل تبدیل به محتوای غنی نیست."); }
@@ -294,7 +350,8 @@ export function RichTextEditor({ value, fallbackText, onChange }: RichTextEditor
       </div> : null}
       {mode === "html" ? <div className="space-y-2 p-3">
         <textarea dir="ltr" spellCheck={false} value={htmlDraft} onChange={event => setHtmlDraft(event.target.value)} className={`${isCompact ? "min-h-56" : "min-h-[32rem]"} w-full resize-y rounded-xl border border-slate-300 bg-slate-950 p-4 font-mono text-sm leading-7 text-slate-100 outline-none focus:border-emerald-600`} aria-label="کد HTML محتوا" />
-        <button type="button" onClick={() => switchMode("text")} className="rounded-xl bg-emerald-700 px-4 py-2 text-sm font-bold text-white">اعمال HTML و بازگشت به متن</button>
+        <p className="text-xs leading-6 text-slate-600">می‌توانید HTML و CSS را داخل تگ <code dir="ltr">&lt;style&gt;</code> یا ویژگی <code dir="ltr">style=&quot;...&quot;</code> وارد کنید. هنگام ذخیره، CSS به‌صورت inline اعمال و کدهای اجرایی ناامن حذف می‌شوند.</p>
+        <button type="button" onClick={() => switchMode("text")} className="rounded-xl bg-emerald-700 px-4 py-2 text-sm font-bold text-white">اعمال HTML/CSS و بازگشت به متن</button>
       </div> : <div className={isCompact ? "min-h-56" : "min-h-[32rem]"}><EditorContent editor={editor} /></div>}
     </div>
   );

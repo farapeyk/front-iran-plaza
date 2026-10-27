@@ -55,6 +55,25 @@ test('rich-text document canonicalization drops unsafe links but keeps their tex
   });
 });
 
+test('rich-text document canonicalization preserves a bounded custom HTML block for backend sanitization', () => {
+  const html = '<style>.card{color:#166534}</style><div class="card">محتوای سفارشی</div>';
+  assert.deepEqual(canonicalizeRichTextDocument({
+    type: 'doc', content: [{ type: 'rawHtml', attrs: { html, ignored: 'value' } }],
+  }, origin), {
+    type: 'doc', content: [{ type: 'rawHtml', attrs: { html } }],
+  });
+});
+
+test('custom HTML is rendered only from the backend-sanitized rich-text node', () => {
+  const editor = fs.readFileSync(path.join(__dirname, '../src/features/content/components/rich-text-editor.tsx'), 'utf8');
+  const renderer = fs.readFileSync(path.join(__dirname, '../src/features/content/components/rich-text-renderer.tsx'), 'utf8');
+
+  assert.match(editor, /sandbox/u);
+  assert.match(editor, /customHtmlDocument\(trimmedHtml\)/u);
+  assert.match(renderer, /node\.type === "rawHtml"/u);
+  assert.match(renderer, /dangerouslySetInnerHTML/u);
+});
+
 test('rich-text links render without an underline in the editor and public article', () => {
   const editor = fs.readFileSync(path.join(__dirname, '../src/features/content/components/rich-text-editor.tsx'), 'utf8');
   const renderer = fs.readFileSync(path.join(__dirname, '../src/features/content/components/rich-text-renderer.tsx'), 'utf8');

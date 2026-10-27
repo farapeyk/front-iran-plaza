@@ -17,7 +17,7 @@ export function normalizeRichTextLinkHref(value: string, origin: string): string
 const supportedNodeTypes = new Set([
   "doc", "paragraph", "heading", "bulletList", "orderedList", "listItem",
   "blockquote", "codeBlock", "hardBreak", "horizontalRule", "image", "youtube",
-  "table", "tableRow", "tableHeader", "tableCell", "text",
+  "table", "tableRow", "tableHeader", "tableCell", "rawHtml", "text",
 ]);
 
 const supportedMarkTypes = new Set(["bold", "italic", "underline", "strike", "code", "link", "textStyle"]);
@@ -56,6 +56,13 @@ function canonicalNode(value: RichTextNode, origin: string, isRoot = false): Ric
     if (typeof value.text !== "string") return null;
     const marks = canonicalMarks(value.marks, origin);
     return { type: "text", text: value.text, ...(marks.length ? { marks } : {}) };
+  }
+
+  if (value.type === "rawHtml") {
+    const html = plainObject(value.attrs).html;
+    return typeof html === "string" && html.trim() && html.length <= 50_000
+      ? { type: "rawHtml", attrs: { html } }
+      : null;
   }
 
   const node: RichTextNode = { type: value.type };

@@ -56,6 +56,12 @@ function renderNode(node: RichTextNode, key: string): ReactNode {
   }
   const children = (node.content || []).map((child, index) => renderNode(child, `${key}-${index}`));
   if (node.type === "doc") return children;
+  if (node.type === "rawHtml") {
+    const html = typeof node.attrs?.html === "string" ? node.attrs.html : "";
+    if (!html) return null;
+    // rawHtml is normalized and sanitized by the backend before persistence.
+    return <div key={key} className="rich-custom-html max-w-full overflow-x-auto" dangerouslySetInnerHTML={{ __html: html }} />;
+  }
   if (node.type === "paragraph") return <p key={key} style={{ textAlign: safeTextAlign(node.attrs?.textAlign) }}>{children.length ? children : <br />}</p>;
   if (node.type === "heading") {
     const level = node.attrs?.level === 3 ? 3 : node.attrs?.level === 4 ? 4 : 2;
