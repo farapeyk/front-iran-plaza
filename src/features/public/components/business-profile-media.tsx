@@ -34,7 +34,7 @@ export function BusinessBrandVideo({
         <button
           type="button"
           aria-label="پخش ویدیوی معرفی"
-          className="absolute bottom-0 start-2 flex size-8 items-center justify-center rounded-full border-2 border-secondary-25 bg-secondary-200 ps-0.5 transition-opacity hover:opacity-90"
+          className="absolute bottom-0 left-1/2 flex size-8 -translate-x-1/2 items-center justify-center rounded-full border-2 border-secondary-25 bg-secondary-200 ps-0.5 transition-opacity hover:opacity-90"
           onClick={() => setOpen(true)}
         >
           <Image alt="" className="h-[13px] w-[11px]" height={13} src="/design/icons/play-fill.svg" width={11} />

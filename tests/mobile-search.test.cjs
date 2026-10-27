@@ -84,6 +84,19 @@ test('business video trigger does not nest an interactive player button', () => 
 
   assert.match(source, /<MediaPlayer decorative size="mobile"/);
   assert.doesNotMatch(source, /<MediaPlayer size="mobile" aria-label=/);
+  assert.match(source, /bottom-0 left-1\/2/);
+  assert.doesNotMatch(source, /bottom-0 start-2/);
+});
+
+test('business navigation and offerings preserve the requested compact behavior', () => {
+  const source = fs.readFileSync(path.join(__dirname, '../src/design/pages/business-live.tsx'), 'utf8');
+
+  assert.match(source, /sticky top-\[72px\].*lg:top-20/);
+  assert.match(source, /visibleProducts\.slice\(0,3\)/);
+  assert.match(source, /aria-expanded=\{showAllProducts\}/);
+  assert.ok(source.includes("showAllProducts?'نمایش کمتر':'مشاهده بیشتر'"));
+  assert.doesNotMatch(source, /aria-label="Share profile"/);
+  assert.doesNotMatch(source, /Â·|â€“/);
 });
 
 test('desktop and mobile footer use the linked official Enamad trust seal', () => {
