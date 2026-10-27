@@ -96,6 +96,7 @@ test('business navigation and offerings preserve the requested compact behavior'
   assert.match(source, /aria-expanded=\{showAllProducts\}/);
   assert.ok(source.includes("showAllProducts?'نمایش کمتر':'مشاهده بیشتر'"));
   assert.doesNotMatch(source, /aria-label="Share profile"/);
+  assert.match(source, /mb-5 flex items-center justify-end gap-3/);
   assert.doesNotMatch(source, /Â·|â€“/);
 });
 
