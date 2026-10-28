@@ -933,6 +933,7 @@ src/features/content/components/rich-text-renderer.tsx
 src/features/content/lib/article-content.ts
 src/features/content/lib/article-seo-audit.ts
 src/features/content/lib/canonical-url.ts
+src/features/content/lib/editorial-tags.ts
 src/features/content/lib/public-paths.ts
 src/features/content/lib/rich-text-html.ts
 src/features/content/lib/rich-text-links.ts
@@ -1028,6 +1029,7 @@ tests/content-filters.test.cjs
 tests/contract.test.cjs
 tests/design-api.test.cjs
 tests/docs.test.cjs
+tests/editorial-tags.test.cjs
 tests/glob-security.test.cjs
 tests/helpers.cjs
 tests/http.test.cjs
