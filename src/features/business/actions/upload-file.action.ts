@@ -3,6 +3,7 @@
 import { getActionAccessToken } from "@/lib/auth/action-access-token";
 import { validateUpload } from "@/lib/validate-upload";
 import { extractErrorMessage } from "@/lib/api/error-message";
+import { getBackendUrl } from "@/lib/api/backend-url";
 
 export type UploadFileResult = { success: true; fileId: string } | { success: false; message: string };
 
@@ -17,7 +18,7 @@ export async function uploadFileAction(formData: FormData): Promise<UploadFileRe
   }
 
   try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/files/upload`, {
+    const res = await fetch(getBackendUrl('/api/files/upload', 'POST'), {
       method: "POST",
       headers: { Authorization: `Bearer ${accessToken}` },
       body: formData,

@@ -1,6 +1,7 @@
 "use server";
 
 import { requestOtpSchema } from "@/features/auth/schemas/otp.schema";
+import { getBackendUrl } from "@/lib/api/backend-url";
 
 export type RequestOtpResult =
   | { success: true; cooldownSeconds: number; debugCode?: string }
@@ -19,7 +20,7 @@ export async function requestOtpAction(input: unknown): Promise<RequestOtpResult
   }
 
   try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/auth/request-otp`, {
+    const res = await fetch(getBackendUrl('/api/auth/request-otp', 'POST'), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ phone: parsed.data.phone }),

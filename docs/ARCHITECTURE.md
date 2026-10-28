@@ -48,17 +48,19 @@
 flowchart TD
   Browser[مرورگر] --> Pages[صفحات App Router]
   Pages --> Server[Server Components و Server Actions]
-  Server --> Backend[بک‌اند با BACKEND_INTERNAL_URL]
+  Server --> Backend[بک‌اند خواندن با BACKEND_INTERNAL_URL]
+  Server --> Primary[بک‌اند اصلی نوشتن با BACKEND_WRITE_URL]
   Browser --> Proxy[Route Handler در api/backend]
   Proxy --> Backend
+  Proxy --> Primary
   Browser --> Refresh[api/auth/silent-refresh]
-  Refresh --> Backend
+  Refresh --> Primary
   Server --> Cookies[کوکی‌های HttpOnly]
   Proxy --> Cookies
   Refresh --> Cookies
 ```
 
-Server Components برای دریافت داده و ساخت صفحه استفاده می‌شوند. اجزای دارای `use client` فرم، تعامل، نقشه و state مرورگر را مدیریت می‌کنند. Server Actions با `use server` توکن را از کوکی خوانده و مستقیماً به بک‌اند درخواست می‌زنند. درخواست‌های مستقیم مرورگر مانند پیشرفت onboarding از پراکسی هم‌مبدأ استفاده می‌کنند. جزئیات refresh برای این دو مسیر یکسان نیست؛ [API و احراز هویت](API-AUTH.md) را ببینید.
+Server Components برای دریافت داده و ساخت صفحه استفاده می‌شوند. اجزای دارای `use client` فرم، تعامل، نقشه و state مرورگر را مدیریت می‌کنند. Server Actions با `use server` توکن را از کوکی خوانده و مستقیماً به بک‌اند درخواست می‌زنند. درخواست‌های مستقیم مرورگر مانند پیشرفت onboarding از پراکسی هم‌مبدأ استفاده می‌کنند. helper مرکزی URL، متدهای امن را به بک‌اند محلی و mutationها را در صورت وجود به `BACKEND_WRITE_URL` می‌فرستد؛ در استقرار خارج این مقصد primary ایران روی VPN خصوصی است و خود replica همچنان فقط‌خواندنی می‌ماند. جزئیات refresh برای این دو مسیر یکسان نیست؛ [API و احراز هویت](API-AUTH.md) را ببینید.
 
 اغلب fetchها `cache: "no-store"` دارند. پس از mutation، بسیاری از actionها از `revalidatePath` و اجزای کلاینت از `router.refresh()` استفاده می‌کنند. دریافت‌های صفحات از `pageFetch`/`backendGet` با timeout استفاده می‌کنند؛ خطای سرویس به error boundary ریشه می‌رسد و ۴۰۴ واقعی جداست. داده اختیاری اقساط می‌تواند با ۲۰۴/۴۰۴ خالی باشد. دریافت کاربر در خانه همچنان در نبود نشست/خطای سرویس به حالت ناشناس برمی‌گردد.
 

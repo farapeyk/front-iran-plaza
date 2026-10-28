@@ -4,6 +4,8 @@ const http = require('node:http');
 const { once } = require('node:events');
 const { NextRequest } = require('next/server');
 const { load } = require('./helpers.cjs');
+const backendUrls = load('src/lib/api/backend-url.ts');
+const clientAddress = load('src/lib/api/client-address.ts');
 
 test('BFF refreshes after rejection without replaying mutations, hides cookies and rejects cross-origin requests', async () => {
   const originalUrl=process.env.BACKEND_INTERNAL_URL;
@@ -20,8 +22,8 @@ test('BFF refreshes after rejection without replaying mutations, hides cookies a
   server.listen(0,'127.0.0.1');await once(server,'listening');
   process.env.BACKEND_INTERNAL_URL='http://127.0.0.1:'+server.address().port;
   const cookies={ getAccessTokenCookie:async()=>token,getRefreshTokenCookie:async()=>'old-refresh',clearAuthCookies:async()=>{},setAuthCookies:async data=>{token=data.accessToken;stored++;} };
-  const {refreshSession}=load('src/lib/auth/refresh-session.ts',{'./cookies':cookies,'./verify-access-token':{verifyAccessToken:async value=>value==='valid'?{sub:'user_1',userType:'CUSTOMER'}:null}});
-  const route=load('src/app/api/backend/[...path]/route.ts',{'@/lib/auth/cookies':cookies,'@/lib/auth/refresh-session':{refreshSession},'@/lib/auth/same-origin':load('src/lib/auth/same-origin.ts')});
+  const {refreshSession}=load('src/lib/auth/refresh-session.ts',{'./cookies':cookies,'./verify-access-token':{verifyAccessToken:async value=>value==='valid'?{sub:'user_1',userType:'CUSTOMER'}:null},'@/lib/api/backend-url':backendUrls});
+  const route=load('src/app/api/backend/[...path]/route.ts',{'@/lib/auth/cookies':cookies,'@/lib/auth/refresh-session':{refreshSession},'@/lib/auth/same-origin':load('src/lib/auth/same-origin.ts'),'@/lib/api/backend-url':backendUrls,'@/lib/api/client-address':clientAddress});
   try {
     const response=await route.POST(new NextRequest('http://frontend.invalid/api/backend/probe?q=1',{method:'POST',headers:{origin:'http://frontend.invalid',cookie:'private=secret',authorization:'Bearer forged','Content-Type':'application/json'},body:'{"step":1}'}),{params:Promise.resolve({path:['probe']})});
     assert.equal(response.status,401);assert.equal(stored,1);
@@ -31,30 +33,34 @@ test('BFF refreshes after rejection without replaying mutations, hides cookies a
     const rejected=await route.POST(new NextRequest('http://frontend.invalid/api/backend/probe',{method:'POST',headers:{origin:'http://evil.invalid'}}),{params:Promise.resolve({path:['probe']})});
     assert.equal(rejected.status,403);assert.equal(calls.length,2);
     token='expired';
-    const read=await route.GET(new NextRequest('http://frontend.invalid/api/backend/probe'),{params:Promise.resolve({path:['probe']})});
+    const read=await route.GET(new NextRequest('http://frontend.invalid/api/backend/probe',{headers:{'x-forwarded-for':'5.202.138.212, 185.239.1.100','x-iranplaza-client-ip':'203.0.113.99'}}),{params:Promise.resolve({path:['probe']})});
     assert.equal(read.status,200);assert.deepEqual(await read.json(),{ok:true});
     assert.equal(calls.filter(call=>call.url==='/api/probe'&&call.method==='GET').length,2);
+    const forwardedReads=calls.filter(call=>call.url==='/api/probe'&&call.method==='GET');
+    assert.equal(forwardedReads[0].headers['x-iranplaza-client-ip'],'5.202.138.212');
+    assert.equal(forwardedReads[1].headers['x-iranplaza-client-ip'],'5.202.138.212');
     assert.equal(stored,2);assert.equal(read.headers.get('set-cookie'),null);
     const invalid=await route.GET(new NextRequest('http://frontend.invalid/api/backend/probe'),{params:Promise.resolve({path:['..','private']})});assert.equal(invalid.status,400);
   } finally {server.closeAllConnections();await new Promise(resolve=>server.close(resolve));if(originalUrl===undefined)delete process.env.BACKEND_INTERNAL_URL;else process.env.BACKEND_INTERNAL_URL=originalUrl;}
 });
 
 test('refresh preserves cookies on temporary failures and malformed tokens, clears only authentication rejection', async () => {
-  const original=global.fetch;let cleared=0,stored=0;
+  const original=global.fetch,previous=process.env.BACKEND_INTERNAL_URL;let cleared=0,stored=0;
   const cookies={getRefreshTokenCookie:async()=>'refresh',clearAuthCookies:async()=>cleared++,setAuthCookies:async()=>stored++};
-  const {refreshSession}=load('src/lib/auth/refresh-session.ts',{'./cookies':cookies,'./verify-access-token':{verifyAccessToken:async()=>null}});
+  process.env.BACKEND_INTERNAL_URL='http://backend.invalid';
+  const {refreshSession}=load('src/lib/auth/refresh-session.ts',{'./cookies':cookies,'./verify-access-token':{verifyAccessToken:async()=>null},'@/lib/api/backend-url':backendUrls});
   try {
     global.fetch=async()=>new Response('{}',{status:503});assert.deepEqual(await refreshSession(),{success:false,status:503});assert.equal(cleared,0);
     global.fetch=async()=>Response.json({accessToken:'bad',refreshToken:'refresh'});assert.deepEqual(await refreshSession(),{success:false,status:503});assert.equal(stored,0);
     global.fetch=async()=>new Response('{}',{status:401});assert.deepEqual(await refreshSession(),{success:false,status:401});assert.equal(cleared,1);
-  } finally {global.fetch=original;}
+  } finally {global.fetch=original;if(previous===undefined)delete process.env.BACKEND_INTERNAL_URL;else process.env.BACKEND_INTERNAL_URL=previous;}
 });
 
 test('invalid action payload fails before any network request', async () => {
   const previous=process.env.BACKEND_INTERNAL_URL,fetchOriginal=global.fetch;let calls=0;
   process.env.BACKEND_INTERNAL_URL='http://backend.invalid';
   const validation=load('src/lib/api/mutation-validation.ts');
-  const {actionFetch}=load('src/lib/api/action-fetch.ts',{'./mutation-validation':validation});
+  const {actionFetch}=load('src/lib/api/action-fetch.ts',{'./mutation-validation':validation,'./backend-url':backendUrls});
   try {
     global.fetch=async()=>{calls++;return Response.json({});};
     const response=await actionFetch('http://backend.invalid/api/businesses/id/products',{method:'POST',body:JSON.stringify({name:'test',price:-1})});
@@ -66,7 +72,7 @@ test('valid CMS create mutations pass validation and reach the network layer', a
   const previous=process.env.BACKEND_INTERNAL_URL,fetchOriginal=global.fetch;const calls=[];
   process.env.BACKEND_INTERNAL_URL='http://backend.invalid';
   const validation=load('src/lib/api/mutation-validation.ts');
-  const {actionFetch}=load('src/lib/api/action-fetch.ts',{'./mutation-validation':validation});
+  const {actionFetch}=load('src/lib/api/action-fetch.ts',{'./mutation-validation':validation,'./backend-url':backendUrls});
   try {
     global.fetch=async(url,options)=>{calls.push({url,options});return Response.json({id:'created_1'},{status:201});};
     const article=await actionFetch('http://backend.invalid/api/content/articles',{

@@ -3,7 +3,11 @@ const assert = require('node:assert/strict');
 const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
 const { load } = require('./helpers.cjs');
-const { BackendError } = load('src/lib/api/backend-get.ts');
+const clientAddress = load('src/lib/api/client-address.ts');
+const { BackendError } = load('src/lib/api/backend-get.ts', {
+  'next/headers': { headers: async () => new Headers() },
+  './client-address': clientAddress,
+});
 const id = 'cmsfz4qtl00027msz3yr5z4nl';
 const primary = { id, name: 'کسب‌وکار آزمایشی', phone: '09120000000', status: 'PENDING', planType: 'FREE' };
 

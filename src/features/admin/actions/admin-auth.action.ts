@@ -6,6 +6,7 @@ import { z } from "zod";
 import { setAuthCookies, clearAuthCookies } from "@/lib/auth/cookies";
 import { isAdminUser } from "@/lib/auth/roles";
 import type { VerifyOtpResponse } from "@/types/auth";
+import { getBackendUrl } from "@/lib/api/backend-url";
 
 const loginPasswordSchema = z.object({
   phone: z.string().min(1, "شماره موبایل الزامی است"),
@@ -25,7 +26,7 @@ export async function adminLoginPasswordAction(input: unknown): Promise<AdminLog
   let data: VerifyOtpResponse;
 
   try {
-    const res = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/auth/login-password`, {
+    const res = await fetch(getBackendUrl('/api/auth/login-password', 'POST'), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(parsed.data),

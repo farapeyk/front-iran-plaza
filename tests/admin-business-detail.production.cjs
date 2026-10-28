@@ -167,12 +167,20 @@ async function main() {
     const headers = { cookie: 'access_token=' + token };
     const bannerManager=await fetch(origin+'/content/banners',{headers,redirect:'manual'});
     const bannerManagerHtml=await bannerManager.text();
-    assert.equal(bannerManager.status,200);
+    assert.equal(
+      bannerManager.status,
+      200,
+      `content banner manager returned ${bannerManager.status}; backend requests: ${requestedPaths.join(', ')}`,
+    );
     assert.ok(bannerManagerHtml.includes('بنرهای مقاله'));
     assert.ok(bannerManagerHtml.includes('بنر جدید'));
     const articleEditor=await fetch(origin+'/content/articles/'+article.id,{headers,redirect:'manual'});
     const articleEditorHtml=await articleEditor.text();
-    assert.equal(articleEditor.status,200);
+    assert.equal(
+      articleEditor.status,
+      200,
+      `content article editor returned ${articleEditor.status}; backend requests: ${requestedPaths.join(', ')}`,
+    );
     assert.ok(articleEditorHtml.includes('نمایش بنرهای مقاله'));
     assert.ok(articleEditorHtml.includes('جدول'));
     console.log('PASS: production editorial routes render the banner manager and extended article editor.');

@@ -87,6 +87,7 @@ test('OTP and password login send both admin roles straight to admin, including 
     '@/lib/auth/cookies': { setAuthCookies: async () => { writes++; }, clearAuthCookies: async () => {} },
     'next/navigation': { redirect: destination => { throw new Error('REDIRECT:' + destination); } },
     '@/features/auth/schemas/otp.schema': load('src/features/auth/schemas/otp.schema.ts'),
+    '@/lib/api/backend-url': { getBackendUrl: path => 'http://backend.invalid' + path },
   };
   const { verifyOtpAction } = load('src/features/auth/actions/verify-otp.action.ts', mocks);
   const { adminLoginPasswordAction } = load('src/features/admin/actions/admin-auth.action.ts', mocks);

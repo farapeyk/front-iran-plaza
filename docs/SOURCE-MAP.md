@@ -262,6 +262,7 @@ src/design/api/generated/models/businessControllerGetFull200FeaturesItem.ts
 src/design/api/generated/models/businessControllerGetFull200GalleryItem.ts
 src/design/api/generated/models/businessControllerGetFull200InstallmentPlan.ts
 src/design/api/generated/models/businessControllerGetFull200PlanFeatures.ts
+src/design/api/generated/models/businessControllerGetFull200PlanType.ts
 src/design/api/generated/models/businessControllerGetFull200ProductCategoriesItem.ts
 src/design/api/generated/models/businessControllerGetFull200ProductsItem.ts
 src/design/api/generated/models/businessControllerGetFull200ServicesItem.ts
@@ -989,6 +990,8 @@ src/features/seo/sitemap-data.ts
 src/features/seo/sitemap-xml.ts
 src/lib/api/action-fetch.ts
 src/lib/api/backend-get.ts
+src/lib/api/backend-url.ts
+src/lib/api/client-address.ts
 src/lib/api/client.ts
 src/lib/api/error-message.ts
 src/lib/api/mutation-validation.ts
@@ -1025,6 +1028,7 @@ tests/browser/design-transfer.spec.ts
 tests/browser/reference-layout.spec.ts
 tests/business-slug.test.cjs
 tests/category-icons.test.cjs
+tests/client-address.test.cjs
 tests/content-article.test.cjs
 tests/content-filters.test.cjs
 tests/contract.test.cjs

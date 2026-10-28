@@ -1,4 +1,5 @@
 import { clearAuthCookies, getRefreshTokenCookie, setAuthCookies } from './cookies';
+import { getBackendUrl } from '@/lib/api/backend-url';
 import { verifyAccessToken } from './verify-access-token';
 
 export type RefreshResult = { success: true; accessToken: string } | { success: false; status: 401 | 503 };
@@ -8,7 +9,7 @@ export async function refreshSession(): Promise<RefreshResult> {
   const refreshToken = await getRefreshTokenCookie();
   if (!refreshToken) return { success: false, status: 401 };
   try {
-    const response = await fetch(`${process.env.BACKEND_INTERNAL_URL}/api/auth/refresh`, {
+    const response = await fetch(getBackendUrl('/api/auth/refresh', 'POST'), {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }), cache: 'no-store',
     });

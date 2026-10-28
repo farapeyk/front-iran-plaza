@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAccessTokenCookie } from '@/lib/auth/cookies';
 import { refreshSession } from '@/lib/auth/refresh-session';
 import { isSameOrigin } from '@/lib/auth/same-origin';
+import { getBackendBaseUrl } from '@/lib/api/backend-url';
+import { clientAddressFromHeaders, INTERNAL_CLIENT_IP_HEADER } from '@/lib/api/client-address';
 
 const HOP_HEADERS = ['connection', 'keep-alive', 'proxy-authenticate', 'proxy-authorization', 'te', 'trailer', 'transfer-encoding', 'upgrade'];
 async function proxy(request: NextRequest, path: string[]) {
@@ -10,13 +12,15 @@ async function proxy(request: NextRequest, path: string[]) {
   if (!process.env.BACKEND_INTERNAL_URL) return NextResponse.json({ message: 'سرویس در دسترس نیست.' }, { status: 503 });
   if (path.some(segment => !segment || segment === '.' || segment === '..' || /[/\\]/.test(segment))) return NextResponse.json({ message: 'مسیر معتبر نیست.' }, { status: 400 });
   try {
-    const targetUrl = process.env.BACKEND_INTERNAL_URL.replace(/\/$/, '') + '/api/' + path.map(encodeURIComponent).join('/') + request.nextUrl.search;
+    const targetUrl = getBackendBaseUrl(request.method) + '/api/' + path.map(encodeURIComponent).join('/') + request.nextUrl.search;
     const body = mutation ? await request.arrayBuffer() : undefined;
     if (body && body.byteLength > 25 * 1024 * 1024) return NextResponse.json({ message: 'حجم درخواست بیش از حد مجاز است.' }, { status: 413 });
     const forward = (token?: string) => {
       const headers = new Headers(request.headers);
-      for (const header of [...HOP_HEADERS, 'host', 'cookie', 'authorization', 'content-length']) headers.delete(header);
+      const clientAddress = clientAddressFromHeaders(headers);
+      for (const header of [...HOP_HEADERS, 'host', 'cookie', 'authorization', 'content-length', INTERNAL_CLIENT_IP_HEADER]) headers.delete(header);
       headers.set('accept-encoding', 'identity');
+      if (clientAddress) headers.set(INTERNAL_CLIENT_IP_HEADER, clientAddress);
       if (token) headers.set('Authorization', 'Bearer ' + token);
       return fetch(targetUrl, { method: request.method, headers, body, cache: 'no-store', redirect: 'manual' });
     };

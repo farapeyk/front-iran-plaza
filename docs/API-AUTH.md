@@ -4,8 +4,8 @@
 
 ## مسیرهای ارتباط
 
-۱. Server Component و Server Action مستقیماً به `BACKEND_INTERNAL_URL` درخواست می‌زنند و در صورت نیاز access token را در `Authorization: Bearer ...` قرار می‌دهند.
-۲. مرورگر از `/api/backend/...` استفاده می‌کند؛ handler پایه بک‌اند و `/api/` را اضافه می‌کند، query و body را منتقل و `host` و `cookie` را حذف می‌کند.
+۱. Server Componentها خواندن را از `BACKEND_INTERNAL_URL` انجام می‌دهند. Server Actionها و helperهای mutation در صورت تنظیم، `BACKEND_WRITE_URL` را انتخاب می‌کنند و access token را در `Authorization: Bearer ...` قرار می‌دهند.
+۲. مرورگر از `/api/backend/...` استفاده می‌کند؛ handler پایه بک‌اند مناسب متد را انتخاب، `/api/` را اضافه، query و body را منتقل و `host` و `cookie` را حذف می‌کند. در منطقهٔ خارج، GET/HEAD به replica محلی و POST/PUT/PATCH/DELETE به primary ایران روی VPN خصوصی می‌روند.
 ۳. silent-refresh زیر `/api/auth` برای navigation و handshake کلاینت است؛ refresh cookie جدید Path برابر `/` دارد و نسخه قدیمی هنگام refresh مهاجرت می‌کند.
 
 قرارداد بازبینی‌شده در `contracts/openapi.json` نگهداری می‌شود و Orval کلاینت‌های browser/server و modelها را در `src/design/api/generated/` تولید می‌کند. فرمان‌های `api:generate` و `api:check` به‌ترتیب بازتولید و کنترل reproducibility را انجام می‌دهند. Server Action ساخت مدیر ارشد برای حفظ لایهٔ اعتبارسنجی mutation از `authedFetch` استفاده می‌کند؛ کلاینت تولیدشده همچنان قرارداد typed همین endpoint را برای مصرف‌کنندگان دیگر فراهم می‌کند.
@@ -25,7 +25,7 @@ refreshSession مسیر مشترک Route Handler و Server Action است. رد �
 
 پراکسی Cookie، Authorization ورودی و headerهای hop را حذف می‌کند، Authorization نشست را اضافه و Set-Cookie بک‌اند را حذف می‌کند. درخواست تغییردهنده با Origin خارجی رد می‌شود. خطای شبکه ۵۰۲، تنظیم سرویس ناموجود ۵۰۳ و body بیش از ۲۵MB برابر ۴۱۳ است. پاسخ‌ها private/no-store هستند.
 
-Server Actionهای JSON از actionFetch و schemaهای mutation-validation استفاده می‌کنند. ورودی و شناسه نامعتبر پیش از HTTP رد می‌شوند؛ این کنترل جای مجوز مالکیت و Tenant بک‌اند را نمی‌گیرد. فایل از مسیر مستقل upload با اعتبارسنجی اندازه، MIME و امضای ابتدایی عبور می‌کند.
+Server Actionهای JSON از actionFetch و schemaهای mutation-validation استفاده می‌کنند. ورودی و شناسه نامعتبر پیش از HTTP رد می‌شوند؛ این کنترل جای مجوز مالکیت و Tenant بک‌اند را نمی‌گیرد. فایل از مسیر مستقل upload با اعتبارسنجی اندازه، MIME و امضای ابتدایی عبور می‌کند و مانند login، OTP، refresh و logout برای نوشتن از endpoint اصلی استفاده می‌کند. `BACKEND_WRITE_URL` متغیر server-only است و نباید با پیشوند `NEXT_PUBLIC_` یا با credential داخل URL تعریف شود.
 
 ## endpointهای مصرف‌شده
 
