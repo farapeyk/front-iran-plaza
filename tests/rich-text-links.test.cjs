@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { load } = require('./helpers.cjs');
 
-const { canonicalizeRichTextDocument, normalizeRichTextLinkHref } = load('src/features/content/lib/rich-text-links.ts');
+const { canonicalizeRichTextDocument, normalizeRichTextLinkHref, normalizeTelephoneHref } = load('src/features/content/lib/rich-text-links.ts');
 const { hasCustomHtmlChanged } = load('src/features/content/lib/rich-text-html.ts');
 const origin = 'https://iran-plaza.ir';
 
@@ -20,6 +20,46 @@ test('rich-text links reject unsafe or malformed protocols', () => {
   assert.equal(normalizeRichTextLinkHref('javascript:alert(1)', origin), null);
   assert.equal(normalizeRichTextLinkHref('data:text/html,test', origin), null);
   assert.equal(normalizeRichTextLinkHref('', origin), null);
+});
+
+test('rich-text phone links normalize Persian and English telephone numbers', () => {
+  assert.equal(normalizeTelephoneHref('۰۹۱۲ ۱۲۳ ۴۵۶۷'), 'tel:09121234567');
+  assert.equal(normalizeTelephoneHref('tel:+98 (912) 123-4567'), 'tel:+989121234567');
+  assert.equal(normalizeRichTextLinkHref('09121234567', origin), 'tel:09121234567');
+  assert.equal(normalizeRichTextLinkHref('tel:021-12345678', origin), 'tel:02112345678');
+  assert.equal(normalizeTelephoneHref('tel:javascript:alert(1)'), null);
+  assert.equal(normalizeTelephoneHref('1234'), null);
+});
+
+test('telephone protocols remain forbidden for rich-text media sources', () => {
+  assert.deepEqual(canonicalizeRichTextDocument({
+    type: 'doc',
+    content: [
+      { type: 'image', attrs: { src: 'tel:09121234567', alt: 'invalid' } },
+      { type: 'youtube', attrs: { src: 'tel:09121234567' } },
+    ],
+  }, origin), { type: 'doc', content: [] });
+});
+
+test('telephone links render as direct call anchors without a new browsing context', () => {
+  const React = require('react');
+  const { renderToStaticMarkup } = require('react-dom/server');
+  const { RichTextRenderer } = load('src/features/content/components/rich-text-renderer.tsx', {
+    '@/features/content/lib/rich-text-links': { normalizeTelephoneHref },
+    '@/features/content/lib/rich-text-media': load('src/features/content/lib/rich-text-media.ts'),
+  });
+  const html = renderToStaticMarkup(React.createElement(RichTextRenderer, {
+    document: {
+      type: 'doc',
+      content: [{
+        type: 'paragraph',
+        content: [{ type: 'text', text: 'تماس', marks: [{ type: 'link', attrs: { href: 'tel:09121234567' } }] }],
+      }],
+    },
+  }));
+
+  assert.match(html, /href="tel:09121234567"/u);
+  assert.doesNotMatch(html, /target="_blank"/u);
 });
 
 test('rich-text documents strip TipTap defaults while preserving selected links', () => {
@@ -93,4 +133,6 @@ test('rich-text links render without an underline in the editor and public artic
   assert.match(renderer, /text-emerald-800 no-underline/u);
   assert.doesNotMatch(editor, /\[&_a\]:underline/u);
   assert.doesNotMatch(renderer, /text-emerald-800 underline/u);
+  assert.match(editor, /لینک تماس برای متن انتخابی/u);
+  assert.match(editor, /openLinkEditor\(true\)/u);
 });

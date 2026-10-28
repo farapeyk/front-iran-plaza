@@ -13,11 +13,11 @@ import YoutubeExtension from "@tiptap/extension-youtube";
 import {
   AlignCenter, AlignLeft, AlignRight, Bold, Braces, Code2, Eraser, FileCode2, FileText,
   ImagePlus, Images, Italic, Link2, List, ListOrdered, Maximize2, Minimize2, Minus, Quote,
-  Redo2, Strikethrough, Table2, Underline, Undo2, Upload, Video,
+  Phone, Redo2, Strikethrough, Table2, Underline, Undo2, Upload, Video,
 } from "lucide-react";
 import type { ContentMediaResponse, RichTextNode } from "@/features/content/types";
 import { uploadFileAction } from "@/features/business/actions/upload-file.action";
-import { canonicalizeRichTextDocument, normalizeRichTextLinkHref } from "@/features/content/lib/rich-text-links";
+import { canonicalizeRichTextDocument, normalizeRichTextLinkHref, normalizeTelephoneHref } from "@/features/content/lib/rich-text-links";
 import { normalizeRichTextImageSrc, normalizeRichTextYoutubeSrc } from "@/features/content/lib/rich-text-media";
 import { customHtmlDocument, customHtmlFromDocument, hasCustomHtmlChanged, MAX_RICH_TEXT_HTML_LENGTH, plainTextFromCustomHtml } from "@/features/content/lib/rich-text-html";
 
@@ -184,19 +184,22 @@ export function RichTextEditor({ value, fallbackText, onChange }: RichTextEditor
     else await shellRef.current?.requestFullscreen();
   };
 
-  const openLinkEditor = () => {
+  const openLinkEditor = (telephone = false) => {
     setInsertPanel(null); setToolError("");
     if (editor.isActive("link")) editor.chain().extendMarkRange("link").run();
     const { from, to } = editor.state.selection;
     if (from === to) { setLinkDraft(null); setToolError("ابتدا بخشی از متن را انتخاب کنید، سپس دکمه لینک را بزنید."); return; }
-    setLinkDraft({ from, to, href: (editor.getAttributes("link").href as string | undefined) ?? "", selectedText: editor.state.doc.textBetween(from, to, " ") });
+    const selectedText = editor.state.doc.textBetween(from, to, " ");
+    const currentHref = (editor.getAttributes("link").href as string | undefined) ?? "";
+    const href = telephone ? normalizeTelephoneHref(currentHref || selectedText) ?? "tel:" : currentHref;
+    setLinkDraft({ from, to, href, selectedText });
   };
 
   const applyLink = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!linkDraft) return;
     const href = normalizeRichTextLinkHref(linkDraft.href, window.location.origin);
-    if (!href) { setToolError("آدرس معتبر وارد کنید؛ لینک داخلی، دامنه یا نشانی کامل http/https پذیرفته می‌شود."); return; }
+    if (!href) { setToolError("آدرس یا شماره معتبر وارد کنید؛ لینک داخلی، http/https، شماره تماس یا tel: پذیرفته می‌شود."); return; }
     editor.chain().focus().setTextSelection({ from: linkDraft.from, to: linkDraft.to }).setLink({ href }).run();
     closePanels();
   };
@@ -303,7 +306,8 @@ export function RichTextEditor({ value, fallbackText, onChange }: RichTextEditor
             <ToolbarButton label="فهرست شماره‌دار" active={editor.isActive("orderedList")} onClick={() => editor.chain().focus().toggleOrderedList().run()}><ListOrdered className="size-4" /></ToolbarButton>
             <ToolbarButton label="نقل‌قول" active={editor.isActive("blockquote")} onClick={() => editor.chain().focus().toggleBlockquote().run()}><Quote className="size-4" /></ToolbarButton>
             <ToolbarButton label="بلوک کد" active={editor.isActive("codeBlock")} onClick={() => editor.chain().focus().toggleCodeBlock().run()}><Braces className="size-4" /></ToolbarButton>
-            <ToolbarButton label="لینک‌کردن متن انتخابی" active={editor.isActive("link")} onClick={openLinkEditor}><Link2 className="size-4" /></ToolbarButton>
+            <ToolbarButton label="لینک‌کردن متن انتخابی" active={editor.isActive("link") && !String(editor.getAttributes("link").href || "").startsWith("tel:")} onClick={() => openLinkEditor()}><Link2 className="size-4" /></ToolbarButton>
+            <ToolbarButton label="لینک تماس برای متن انتخابی" active={String(editor.getAttributes("link").href || "").startsWith("tel:")} onClick={() => openLinkEditor(true)}><Phone className="size-4" /></ToolbarButton>
             <ToolbarButton label="درج تصویر" active={insertPanel === "image"} onClick={() => openInsertPanel("image")}><ImagePlus className="size-4" /></ToolbarButton>
             <ToolbarButton label="آپلود تصویر" disabled={uploading} onClick={() => uploadInputRef.current?.click()}><Upload className="size-4" /></ToolbarButton>
             <ToolbarButton label="کتابخانه رسانه" active={libraryOpen} onClick={() => void openLibrary()}><Images className="size-4" /></ToolbarButton>
@@ -323,7 +327,8 @@ export function RichTextEditor({ value, fallbackText, onChange }: RichTextEditor
 
       {linkDraft ? <form onSubmit={applyLink} className="space-y-2 border-b border-emerald-200 bg-emerald-50/70 p-3">
         <label className="block space-y-1"><span className="text-sm font-bold">آدرس لینک برای «{linkDraft.selectedText.slice(0, 80)}{linkDraft.selectedText.length > 80 ? "…" : ""}»</span>
-          <input autoFocus dir="ltr" type="text" inputMode="url" value={linkDraft.href} onChange={event => setLinkDraft(current => current ? { ...current, href: event.target.value } : current)} placeholder="https://example.com یا /articles/" className={insertFieldClass} /></label>
+          <input autoFocus dir="ltr" type="text" inputMode={linkDraft.href.startsWith("tel:") ? "tel" : "url"} value={linkDraft.href} onChange={event => setLinkDraft(current => current ? { ...current, href: event.target.value } : current)} placeholder="https://example.com، /articles/ یا 09121234567" className={insertFieldClass} /></label>
+        <p className="text-xs text-emerald-900">برای تماس می‌توانید شماره را مستقیم وارد کنید؛ شماره‌های فارسی و انگلیسی خودکار به لینک tel تبدیل می‌شوند.</p>
         <div className="flex flex-wrap gap-2"><button type="submit" className="rounded-xl bg-emerald-700 px-4 py-2 text-sm font-bold text-white">ثبت لینک</button>
           {linkDraft.href ? <button type="button" onClick={removeLink} className="rounded-xl border border-red-200 bg-white px-4 py-2 text-sm font-bold text-red-700">حذف لینک</button> : null}
           <button type="button" onClick={closePanels} className="rounded-xl border bg-white px-4 py-2 text-sm font-bold">انصراف</button></div>

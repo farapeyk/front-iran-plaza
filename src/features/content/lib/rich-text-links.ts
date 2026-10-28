@@ -1,17 +1,37 @@
 import type { RichTextNode } from "@/features/content/types";
 
-export function normalizeRichTextLinkHref(value: string, origin: string): string | null {
-  const trimmed = value.replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069]/gu, "").trim();
-  if (!trimmed) return null;
+const bidiControls = /[\u200e\u200f\u202a-\u202e\u2066-\u2069]/gu;
 
+function asciiDigits(value: string): string {
+  return value
+    .replace(/[۰-۹]/gu, digit => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)))
+    .replace(/[٠-٩]/gu, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)));
+}
+
+export function normalizeTelephoneHref(value: string): string | null {
+  const withoutProtocol = asciiDigits(value.replace(bidiControls, "").trim()).replace(/^tel\s*:/iu, "").trim();
+  if (!withoutProtocol || !/^[+\d\s()-]+$/u.test(withoutProtocol)) return null;
+  const compact = withoutProtocol.replace(/[\s()-]/gu, "");
+  if (!/^\+?\d{5,15}$/u.test(compact)) return null;
+  return `tel:${compact}`;
+}
+
+function normalizeWebLinkHref(value: string, origin: string): string | null {
   try {
-    const candidate = trimmed.startsWith("/") || trimmed.startsWith("#")
-      ? new URL(trimmed, origin)
-      : new URL(/^[a-z][a-z\d+.-]*:/iu.test(trimmed) ? trimmed : `https://${trimmed}`);
+    const candidate = value.startsWith("/") || value.startsWith("#")
+      ? new URL(value, origin)
+      : new URL(/^[a-z][a-z\d+.-]*:/iu.test(value) ? value : `https://${value}`);
     return candidate.protocol === "http:" || candidate.protocol === "https:" ? candidate.toString() : null;
   } catch {
     return null;
   }
+}
+
+export function normalizeRichTextLinkHref(value: string, origin: string): string | null {
+  const trimmed = value.replace(bidiControls, "").trim();
+  if (!trimmed) return null;
+  if (/^tel\s*:/iu.test(trimmed) || /^[+\d\s()-]+$/u.test(asciiDigits(trimmed))) return normalizeTelephoneHref(trimmed);
+  return normalizeWebLinkHref(trimmed, origin);
 }
 
 const supportedNodeTypes = new Set([
@@ -77,7 +97,7 @@ function canonicalNode(value: RichTextNode, origin: string, isRoot = false): Ric
     const start = typeof attrs.start === "number" && Number.isInteger(attrs.start) && attrs.start > 0 ? attrs.start : 1;
     node.attrs = { start };
   } else if (value.type === "image") {
-    const src = normalizeRichTextLinkHref(String(attrs.src ?? ""), origin);
+    const src = normalizeWebLinkHref(String(attrs.src ?? ""), origin);
     if (!src) return null;
     node.attrs = {
       src,
@@ -85,7 +105,7 @@ function canonicalNode(value: RichTextNode, origin: string, isRoot = false): Ric
       ...(typeof attrs.title === "string" ? { title: attrs.title.slice(0, 160) } : {}),
     };
   } else if (value.type === "youtube") {
-    const src = normalizeRichTextLinkHref(String(attrs.src ?? ""), origin);
+    const src = normalizeWebLinkHref(String(attrs.src ?? ""), origin);
     if (!src) return null;
     node.attrs = {
       src,

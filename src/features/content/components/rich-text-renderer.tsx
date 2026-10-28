@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import type { RichTextNode } from "@/features/content/types";
+import { normalizeTelephoneHref } from "@/features/content/lib/rich-text-links";
 import { getRichTextYoutubeEmbedSrc } from "@/features/content/lib/rich-text-media";
 
 const fonts = new Set(["IRANSansX", "sans-serif", "serif", "monospace"]);
@@ -7,6 +8,7 @@ const sizes = new Set(["14px", "16px", "18px", "20px", "24px", "30px"]);
 
 function safeHref(value: unknown): string | null {
   if (typeof value !== "string") return null;
+  if (/^tel\s*:/iu.test(value)) return normalizeTelephoneHref(value);
   if (/^\/(?!\/)/u.test(value)) return value;
   try {
     const url = new URL(value);
@@ -43,7 +45,10 @@ function renderNode(node: RichTextNode, key: string): ReactNode {
       else if (mark.type === "code") child = <code key={markKey} className="rounded bg-neutral-100 px-1">{child}</code>;
       else if (mark.type === "link") {
         const href = safeHref(mark.attrs?.href);
-        if (href) child = <a key={markKey} href={href} target="_blank" rel="noopener noreferrer" className="font-medium text-emerald-800 no-underline">{child}</a>;
+        if (href) {
+          const telephone = href.startsWith("tel:");
+          child = <a key={markKey} href={href} target={telephone ? undefined : "_blank"} rel={telephone ? undefined : "noopener noreferrer"} className="font-medium text-emerald-800 no-underline">{child}</a>;
+        }
       } else if (mark.type === "textStyle") {
         const style: CSSProperties = {};
         if (typeof mark.attrs?.color === "string" && /^#[0-9a-f]{6}$/i.test(mark.attrs.color)) style.color = mark.attrs.color;
