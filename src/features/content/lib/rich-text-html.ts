@@ -13,6 +13,14 @@ export function customHtmlDocument(html: string): RichTextNode {
   return { type: "doc", content: [{ type: "rawHtml", attrs: { html } }] };
 }
 
+function comparableHtml(html: string): string {
+  return html.replace(/\r\n?/gu, "\n").trim();
+}
+
+export function hasCustomHtmlChanged(draft: string, snapshot: string): boolean {
+  return comparableHtml(draft) !== comparableHtml(snapshot);
+}
+
 export function plainTextFromCustomHtml(html: string): string {
   if (typeof DOMParser === "undefined") return "";
   const parsed = new DOMParser().parseFromString(html, "text/html");

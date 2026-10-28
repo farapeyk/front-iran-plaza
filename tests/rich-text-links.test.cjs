@@ -5,6 +5,7 @@ const path = require('node:path');
 const { load } = require('./helpers.cjs');
 
 const { canonicalizeRichTextDocument, normalizeRichTextLinkHref } = load('src/features/content/lib/rich-text-links.ts');
+const { hasCustomHtmlChanged } = load('src/features/content/lib/rich-text-html.ts');
 const origin = 'https://iran-plaza.ir';
 
 test('rich-text links accept absolute, domain-only and internal addresses', () => {
@@ -72,6 +73,16 @@ test('custom HTML is rendered only from the backend-sanitized rich-text node', (
   assert.match(editor, /customHtmlDocument\(trimmedHtml\)/u);
   assert.match(renderer, /node\.type === "rawHtml"/u);
   assert.match(renderer, /dangerouslySetInnerHTML/u);
+});
+
+test('switching rich-text modes does not rewrite unchanged content', () => {
+  assert.equal(hasCustomHtmlChanged('<p>متن قبلی</p>', '<p>متن قبلی</p>'), false);
+  assert.equal(hasCustomHtmlChanged('\r\n<p>متن قبلی</p>\r\n', '<p>متن قبلی</p>'), false);
+  assert.equal(hasCustomHtmlChanged('<p>متن قبلی</p><div>HTML تازه</div>', '<p>متن قبلی</p>'), true);
+
+  const editor = fs.readFileSync(path.join(__dirname, '../src/features/content/components/rich-text-editor.tsx'), 'utf8');
+  assert.match(editor, /if \(nextMode === mode\) return/u);
+  assert.match(editor, /if \(!hasCustomHtmlChanged\(htmlDraft, htmlSnapshotRef\.current\)\)/u);
 });
 
 test('rich-text links render without an underline in the editor and public article', () => {

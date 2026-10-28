@@ -19,7 +19,7 @@ import type { ContentMediaResponse, RichTextNode } from "@/features/content/type
 import { uploadFileAction } from "@/features/business/actions/upload-file.action";
 import { canonicalizeRichTextDocument, normalizeRichTextLinkHref } from "@/features/content/lib/rich-text-links";
 import { normalizeRichTextImageSrc, normalizeRichTextYoutubeSrc } from "@/features/content/lib/rich-text-media";
-import { customHtmlDocument, customHtmlFromDocument, MAX_RICH_TEXT_HTML_LENGTH, plainTextFromCustomHtml } from "@/features/content/lib/rich-text-html";
+import { customHtmlDocument, customHtmlFromDocument, hasCustomHtmlChanged, MAX_RICH_TEXT_HTML_LENGTH, plainTextFromCustomHtml } from "@/features/content/lib/rich-text-html";
 
 type RichTextEditorProps = {
   value?: RichTextNode;
@@ -93,6 +93,7 @@ export function RichTextEditor({ value, fallbackText, onChange }: RichTextEditor
   const shellRef = useRef<HTMLDivElement>(null);
   const uploadInputRef = useRef<HTMLInputElement>(null);
   const onChangeRef = useRef(onChange);
+  const htmlSnapshotRef = useRef("");
   const [mode, setMode] = useState<"text" | "html">("text");
   const [isCompact, setIsCompact] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -146,14 +147,22 @@ export function RichTextEditor({ value, fallbackText, onChange }: RichTextEditor
   const closePanels = () => { setLinkDraft(null); setInsertPanel(null); setToolError(""); };
 
   const switchMode = (nextMode: "text" | "html") => {
+    if (nextMode === mode) return;
     closePanels();
     if (nextMode === "html") {
       const currentDocument = editor.getJSON() as RichTextNode;
-      setHtmlDraft(customHtmlFromDocument(currentDocument) ?? editor.getHTML());
+      const source = customHtmlFromDocument(currentDocument) ?? editor.getHTML();
+      htmlSnapshotRef.current = source;
+      setHtmlDraft(source);
       setMode("html");
       return;
     }
     try {
+      if (!hasCustomHtmlChanged(htmlDraft, htmlSnapshotRef.current)) {
+        setMode("text");
+        setToolError("");
+        return;
+      }
       const trimmedHtml = htmlDraft.trim();
       const plainText = plainTextFromCustomHtml(trimmedHtml);
       if (!trimmedHtml || !plainText) {
