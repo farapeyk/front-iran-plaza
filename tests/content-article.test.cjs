@@ -1,5 +1,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const { load } = require('./helpers.cjs');
 
 const {
@@ -9,6 +11,8 @@ const {
   withoutDuplicateLeadingExcerpt,
   withoutLegacyArticleWidgets,
 } = load('src/features/content/lib/article-content.ts');
+const { canEditPublicArticle, editorArticleToPreview } = load('src/features/content/lib/article-preview.ts');
+const { articlePreviewPath } = load('src/features/content/lib/public-paths.ts');
 
 test('legacy WordPress TOC and rating blocks are hidden while article content remains', () => {
   const blocks = [
@@ -81,4 +85,37 @@ test('article pagination clamps invalid page boundaries', () => {
   assert.deepEqual(compactPaginationItems(0, 20), compactPaginationItems(1, 20));
   assert.deepEqual(compactPaginationItems(99, 20), compactPaginationItems(20, 20));
   assert.deepEqual(compactPaginationItems(Number.NaN, Number.NaN), [1]);
+});
+
+test('saved editorial articles can be rendered as private public-layout previews', () => {
+  const article = {
+    id: 'article-1', slug: 'preview-me', status: 'DRAFT', publishedAt: null,
+    updatedAt: '2026-10-28T10:00:00.000Z', author: { id: 'author-1', fullName: 'نویسنده' },
+  };
+  const preview = editorArticleToPreview(article);
+  assert.equal(preview.status, 'PUBLISHED');
+  assert.equal(preview.publishedAt, article.updatedAt);
+  assert.deepEqual(preview.feedback, []);
+  assert.deepEqual(preview.banners, []);
+  assert.equal(articlePreviewPath(article.slug, article.id), '/preview-me/?preview=article-1');
+});
+
+test('public article edit access matches editorial ownership and publish permission', () => {
+  assert.equal(canEditPublicArticle(null, 'author-1'), false);
+  assert.equal(canEditPublicArticle({ id: 'author-1', canWrite: true, canPublish: false }, 'author-1'), true);
+  assert.equal(canEditPublicArticle({ id: 'author-2', canWrite: true, canPublish: false }, 'author-1'), false);
+  assert.equal(canEditPublicArticle({ id: 'manager-1', canWrite: true, canPublish: true }, 'author-1'), true);
+});
+
+test('article preview and edit controls are wired to authenticated editorial data', () => {
+  const root = path.join(__dirname, '..');
+  const publicRoute = fs.readFileSync(path.join(root, 'src/app/(public)/[slug]/page.tsx'), 'utf8');
+  const publicPage = fs.readFileSync(path.join(root, 'src/features/content/components/article-public-page.tsx'), 'utf8');
+  const editor = fs.readFileSync(path.join(root, 'src/features/content/components/article-editor-form.tsx'), 'utf8');
+
+  assert.match(publicRoute, /getEditorArticle\(previewId, token\)/u);
+  assert.match(publicRoute, /backendGet<ContentIdentity>\("\/api\/content\/me", token\)/u);
+  assert.match(publicPage, /!preview \? <ArticleFeedbackForm/u);
+  assert.match(publicPage, /ویرایش این مقاله/u);
+  assert.match(editor, /پیش‌نمایش قالب اصلی/u);
 });

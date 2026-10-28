@@ -5,6 +5,7 @@ import { BusinessListCard } from "@/design/components/business-list-card";
 import { RegistrationBanner } from "@/design/components/registration-banner";
 import { ArticleCard } from "@/design/components/article-card";
 import Image from "next/image";
+import Link from "next/link";
 import { ArticleFeedbackForm } from "@/features/content/components/article-feedback-form";
 import { RichTextRenderer } from "@/features/content/components/rich-text-renderer";
 import { articlePath } from "@/features/content/lib/public-paths";
@@ -37,7 +38,7 @@ function ArticleTableView({ block }: { block: ArticleBlock }) {
   return <div className="overflow-x-auto rounded-[var(--radius-xs)] border"><table className="min-w-full border-collapse text-sm"><thead><tr>{table.headers.map((header, index) => <th key={index} scope="col" className="border-b border-s bg-neutral-50 px-4 py-3 text-start font-bold first:border-s-0">{header}</th>)}{table.showContactColumn ? <th scope="col" className="border-b border-s bg-neutral-50 px-4 py-3 text-center">تماس</th> : null}</tr></thead><tbody>{table.rows.map((row, rowIndex) => <tr key={rowIndex} className="even:bg-neutral-50/60">{row.cells.map((cell, index) => <td key={index} className="border-s border-t px-4 py-3 first:border-s-0">{cell}</td>)}{table.showContactColumn ? <td className="border-s border-t px-4 py-3 text-center">{row.phone ? <a href={`tel:${row.phone.replace(/[^+\d]/g, "")}`} className="inline-flex rounded-full border border-emerald-700 px-3 py-1 font-medium text-emerald-800">{table.contactLabel || "تماس"}</a> : <span aria-label="شماره تماس ثبت نشده">—</span>}</td> : null}</tr>)}</tbody></table></div>;
 }
 
-export function ArticlePublicPage({ article, relatedArticles = [], categoryPath }: { article: PublicArticle; relatedArticles?: PublicArticleListItem[]; categoryPath?: string }) {
+export function ArticlePublicPage({ article, relatedArticles = [], categoryPath, preview = false, editHref }: { article: PublicArticle; relatedArticles?: PublicArticleListItem[]; categoryPath?: string; preview?: boolean; editHref?: string }) {
   const cleanedBlocks = withoutLegacyArticleWidgets(article.bodyBlocks);
   const excerpt = displayArticleExcerpt(article.excerpt, cleanedBlocks);
   const bodyBlocks = withoutDuplicateLeadingExcerpt(excerpt, cleanedBlocks);
@@ -53,14 +54,15 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath 
 
   return (
     <SiteLayout>
-      <JsonLd data={buildArticleStructuredData(article, categoryPath)} />
+      {!preview ? <JsonLd data={buildArticleStructuredData(article, categoryPath)} /> : null}
       <main className="mx-auto w-full max-w-[1440px] px-[var(--page-gutter)] py-[var(--5xl)] lg:px-[var(--8xl)] lg:pb-[var(--9xl)]">
+        {preview || editHref ? <div className={`mx-auto mb-5 flex max-w-[1120px] flex-wrap items-center justify-between gap-3 rounded-[var(--radius-xs)] border px-4 py-3 ${preview ? "border-amber-300 bg-amber-50 text-amber-950" : "border-emerald-200 bg-emerald-50 text-emerald-950"}`}><span className="text-sm font-bold">{preview ? "حالت پیش‌نمایش؛ این نسخه برای بازدیدکنندگان عمومی قابل مشاهده نیست." : "شما دسترسی تحریریه دارید."}</span>{editHref ? <Link href={editHref} className="rounded-lg bg-emerald-950 px-4 py-2 text-sm font-bold text-white">ویرایش این مقاله</Link> : null}</div> : null}
         <Breadcrumb items={[{ label: "خانه", to: "/" }, { label: article.category?.name || "مقالات", to: categoryPath || "/articles/" }, { label: article.title }]} />
         <header className="mx-auto mt-[var(--5xl)] max-w-[1000px] space-y-4 text-start">
           <h1 className="text-[length:var(--text-h1)] font-black leading-tight text-[var(--text-title)]">{article.title}</h1>
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-[var(--text-body)]">
             <span>نویسنده: {article.author.fullName || "تیم ایران پلازا"}</span>
-            <time dateTime={article.publishedAt as string}>{published}</time>
+            <time dateTime={article.publishedAt as string}>{preview ? `آخرین ذخیره: ${published}` : published}</time>
             <span>زمان مطالعه: {article.readingTimeMin.toLocaleString("fa-IR")} دقیقه</span>
             {article.rating !== null ? <span>امتیاز {article.rating.toLocaleString("fa-IR", { maximumFractionDigits: 1 })} از ۵ ({article.ratingCount.toLocaleString("fa-IR")} رأی)</span> : null}
           </div>
@@ -107,8 +109,8 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath 
               </section>
             ) : null}
 
-            <ArticleFeedbackForm slug={article.slug} averageRating={article.rating} ratingCount={article.ratingCount} />
-            {article.feedback.length ? (
+            {!preview ? <ArticleFeedbackForm slug={article.slug} averageRating={article.rating} ratingCount={article.ratingCount} /> : null}
+            {!preview && article.feedback.length ? (
               <section className="space-y-4">
                 <h2 className="text-2xl font-black">نظرات کاربران</h2>
                 {article.feedback.map(item => <article key={item.id} className="rounded-[var(--radius-xs)] border-b p-4"><div className="flex justify-between gap-4"><strong>{item.user.fullName || "کاربر ایران پلازا"}</strong>{item.rating !== null ? <span>{item.rating.toLocaleString("fa-IR")} از ۵</span> : null}</div>{item.comment ? <p className="mt-2 leading-loose text-[var(--text-body)]">{item.comment}</p> : null}</article>)}

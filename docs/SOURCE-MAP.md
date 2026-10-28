@@ -931,6 +931,7 @@ src/features/content/components/feedback-queue.tsx
 src/features/content/components/rich-text-editor.tsx
 src/features/content/components/rich-text-renderer.tsx
 src/features/content/lib/article-content.ts
+src/features/content/lib/article-preview.ts
 src/features/content/lib/article-seo-audit.ts
 src/features/content/lib/canonical-url.ts
 src/features/content/lib/editorial-tags.ts

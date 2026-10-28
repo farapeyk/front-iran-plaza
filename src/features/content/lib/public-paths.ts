@@ -35,6 +35,10 @@ export function articlePath(slug: string): string {
   return `/${slug}/`;
 }
 
+export function articlePreviewPath(slug: string, id: string): string {
+  return `${articlePath(slug)}?preview=${encodeURIComponent(id)}`;
+}
+
 export function categorySegments(category: ContentCategory, categories: ContentCategory[]): string[] | null {
   const byId = new Map(categories.map(item => [item.id, item]));
   const visited = new Set<string>();
