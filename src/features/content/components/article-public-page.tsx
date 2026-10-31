@@ -92,7 +92,7 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath,
                     {block.listTitle ? <h2 className="text-2xl font-black text-[var(--text-title)]">{block.listTitle}</h2> : null}
                     {businesses.map(business => {
                       const vip = business.planType === "VIP" && Boolean(business.planExpiryDate && new Date(business.planExpiryDate) > new Date());
-                      const card = { id: business.id, name: business.name, description: business.description || "", location: [business.city, business.neighborhood, business.address].filter(Boolean).join("، "), image: business.logoId ? fileUrl(business.logoId) : "/design/icons/briefcase.svg", vip, status: vip ? "vip" as const : "free" as const, href: `/businesses/${business.slug}`, phone: business.phone };
+                      const card = { id: business.id, name: business.name, description: business.description || "", location: [business.city, business.neighborhood, business.address].filter(Boolean).join("، "), image: business.logoId ? fileUrl(business.logoId) : "/design/icons/briefcase.svg", vip, isCip: business.isCip, status: vip ? "vip" as const : "free" as const, href: `/businesses/${business.slug}`, phone: business.phone };
                       return <div key={business.id}><BusinessListCard business={card} layout="desktop" className="hidden max-w-none lg:flex" /><BusinessListCard business={card} layout="mobile" className="max-w-none lg:hidden" /></div>;
                     })}
                   </section>

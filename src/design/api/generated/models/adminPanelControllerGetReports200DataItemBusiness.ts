@@ -28,6 +28,7 @@ export type AdminPanelControllerGetReports200DataItemBusiness = {
   id: string;
   /** @nullable */
   introVideoId: string | null;
+  isCip: boolean;
   /** @nullable */
   latitude: number | null;
   /** @nullable */

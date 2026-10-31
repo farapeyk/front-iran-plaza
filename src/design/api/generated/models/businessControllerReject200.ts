@@ -28,6 +28,7 @@ export type BusinessControllerReject200 = {
   id: string;
   /** @nullable */
   introVideoId: string | null;
+  isCip: boolean;
   /** @nullable */
   latitude: number | null;
   /** @nullable */

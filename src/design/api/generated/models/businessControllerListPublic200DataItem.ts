@@ -14,6 +14,7 @@ export type BusinessControllerListPublic200DataItem = {
   /** @nullable */
   description: string | null;
   id: string;
+  isCip: boolean;
   /** @nullable */
   logoId: string | null;
   name: string;

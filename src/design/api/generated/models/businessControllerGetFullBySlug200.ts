@@ -34,6 +34,7 @@ export type BusinessControllerGetFullBySlug200 = {
   installmentPlan: BusinessControllerGetFullBySlug200InstallmentPlan;
   /** @nullable */
   introVideoId: string | null;
+  isCip: boolean;
   /** @nullable */
   latitude: number | null;
   /** @nullable */

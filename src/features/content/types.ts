@@ -75,6 +75,7 @@ export type ContentBusiness = {
   logoId: string | null;
   planType: "FREE" | "VIP";
   planExpiryDate?: string | null;
+  isCip: boolean;
 };
 
 export type ArticleBusinessLink = {

@@ -5,6 +5,7 @@ import { Link } from "@/design/navigation"
 import { cn } from "@/design/lib/utils"
 import { buttonVariants } from "@/design/components/ui/button-variants"
 import { VipBadge } from "@/design/components/vip-badge"
+import { CipBadge } from "@/design/components/cip-badge"
 import type { BusinessCardData } from "@/design/components/business-card"
 const locationIcon = "/design/icons/location.svg"
 const callIcon = "/design/icons/call.svg"
@@ -15,6 +16,7 @@ type BusinessListCardProps = {
     phone?: string
     /** Free = no VIP badge / only تماس; VIP = badge + مشاهده پروفایل */
     status?: "vip" | "free"
+    isCip?: boolean
     hasInstallment?: boolean
   }
   className?: string
@@ -35,7 +37,7 @@ function BusinessListCard({
 
   if (layout === "listing") {
     return <article data-slot="table-of-business" data-layout="listing" className={cn("listing-card", className)}>
-      {isVip && <VipBadge className="listing-vip" />}
+      {(isVip || business.isCip) && <div className="listing-vip flex items-center gap-1">{isVip && <VipBadge />}{business.isCip && <CipBadge />}</div>}
       <div className="listing-card-heading">
         <Link to={href} aria-label={business.name} className="listing-logo"><Image src={business.image} alt="" width={100} height={100}/></Link>
         <div className="min-w-0"><h2><Link to={href}>{business.name}</Link></h2><p>{business.description}</p></div>
@@ -85,7 +87,7 @@ function BusinessListCard({
           <h3 className="min-w-0 flex-1 truncate text-start text-lg font-bold text-[var(--text-title)]">
             {business.name}
           </h3>
-          <VipBadge />
+          <div className="flex items-center gap-1"><VipBadge />{business.isCip && <CipBadge />}</div>
         </div>
         <div className="flex min-w-0 flex-1 items-center justify-center gap-[var(--sm)] border-x border-[var(--opacity-dark-24)] px-[var(--lg)]">
           <Image alt="" className="size-4 shrink-0" height={16} src={locationIcon} width={16} />
@@ -111,6 +113,7 @@ function BusinessListCard({
       >
         <div className="flex min-w-0 flex-1 items-center justify-start gap-[var(--sm)] border border-[var(--opacity-dark-8)] py-[var(--lg)] pe-[var(--sm)] ps-[var(--lg)]">
           <h3 className="text-base font-bold text-[var(--text-title)]">{business.name}</h3>
+          {business.isCip && <CipBadge />}
         </div>
         <div className="flex min-w-0 flex-1 items-center justify-start border-y border-[var(--opacity-dark-8)] p-[var(--lg)]">
           <p className="text-start text-sm leading-relaxed text-[var(--text-body)]">
@@ -144,7 +147,7 @@ function BusinessListCard({
             <h3 className="min-w-0 flex-1 truncate text-start text-lg font-bold text-[var(--text-title)]">
               {business.name}
             </h3>
-            <VipBadge />
+            <div className="flex items-center gap-1"><VipBadge />{business.isCip && <CipBadge />}</div>
           </div>
         </div>
 
@@ -181,6 +184,7 @@ function BusinessListCard({
         <h3 className="w-full text-start text-base font-bold text-[var(--text-title)]">
           {business.name}
         </h3>
+        {business.isCip && <CipBadge />}
       </div>
       <div className="flex min-w-0 flex-1 items-start justify-center border-y border-[var(--opacity-dark-8)] px-[var(--sm)] py-[var(--lg)]">
         <p className="text-start text-sm leading-relaxed text-[var(--text-body)]">{address}</p>

@@ -136,6 +136,11 @@ src/design/api/generated/models/adminBusinessControllerGrantPlan401.ts
 src/design/api/generated/models/adminBusinessControllerGrantPlan403.ts
 src/design/api/generated/models/adminBusinessControllerGrantPlan404.ts
 src/design/api/generated/models/adminBusinessControllerGrantPlan429.ts
+src/design/api/generated/models/adminBusinessControllerUpdateCipStatus400.ts
+src/design/api/generated/models/adminBusinessControllerUpdateCipStatus401.ts
+src/design/api/generated/models/adminBusinessControllerUpdateCipStatus403.ts
+src/design/api/generated/models/adminBusinessControllerUpdateCipStatus404.ts
+src/design/api/generated/models/adminBusinessControllerUpdateCipStatus429.ts
 src/design/api/generated/models/adminMessageControllerSendMessage201.ts
 src/design/api/generated/models/adminMessageControllerSendMessage201Channel.ts
 src/design/api/generated/models/adminMessageControllerSendMessage201Metadata.ts
@@ -639,6 +644,7 @@ src/design/api/generated/models/updateBusinessDto.ts
 src/design/api/generated/models/updateBusinessFeatureDto.ts
 src/design/api/generated/models/updateCategoryDto.ts
 src/design/api/generated/models/updateCategoryDtoParentId.ts
+src/design/api/generated/models/updateCipStatusDto.ts
 src/design/api/generated/models/updateCouponDto.ts
 src/design/api/generated/models/updateInstallmentPlanDto.ts
 src/design/api/generated/models/updatePlanDto.ts
@@ -721,6 +727,7 @@ src/design/components/category-card.tsx
 src/design/components/category-filter.tsx
 src/design/components/category-item.tsx
 src/design/components/choose-city-button.tsx
+src/design/components/cip-badge.tsx
 src/design/components/city-filter.tsx
 src/design/components/comment.tsx
 src/design/components/confirm-delete-sheet.tsx
@@ -834,6 +841,7 @@ src/design/styles.css
 src/design/tokens.css
 src/features/admin/actions/admin-auth.action.ts
 src/features/admin/actions/categories.action.ts
+src/features/admin/actions/cip.action.ts
 src/features/admin/actions/manual-business.action.ts
 src/features/admin/actions/moderation.action.ts
 src/features/admin/actions/plan.action.ts
@@ -847,6 +855,7 @@ src/features/admin/components/business-approval-actions.tsx
 src/features/admin/components/business-city-form.tsx
 src/features/admin/components/business-profile-overview.tsx
 src/features/admin/components/category-manager.tsx
+src/features/admin/components/cip-status-control.tsx
 src/features/admin/components/create-super-admin-form.tsx
 src/features/admin/components/document-review-card.tsx
 src/features/admin/components/manual-business-form.tsx
@@ -1028,6 +1037,7 @@ tests/browser/design-transfer.spec.ts
 tests/browser/reference-layout.spec.ts
 tests/business-slug.test.cjs
 tests/category-icons.test.cjs
+tests/cip.test.cjs
 tests/client-address.test.cjs
 tests/content-article.test.cjs
 tests/content-filters.test.cjs

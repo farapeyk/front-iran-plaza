@@ -9,6 +9,7 @@ import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import { BusinessApprovalActions } from "@/features/admin/components/business-approval-actions";
 import { PlanChangeControl } from "@/features/admin/components/plan-change-control";
 import { DocumentReviewCard } from "@/features/admin/components/document-review-card";
+import { CipStatusControl } from "@/features/admin/components/cip-status-control";
 
 export default async function BusinessDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -40,6 +41,8 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
         plansUnavailable={unavailable.includes("plans")}
         plans={plans} 
       />
+
+      <CipStatusControl businessId={business.id} initialIsCip={business.isCip ?? false} />
 
       <Link href={`/admin/businesses/${business.id}/edit`} className="inline-flex rounded-md bg-emerald-950 px-5 py-3 text-sm text-white">ویرایش و تکمیل تمام اطلاعات کسب‌وکار</Link>
 

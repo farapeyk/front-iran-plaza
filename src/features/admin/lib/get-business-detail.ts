@@ -7,7 +7,7 @@ import type { BranchLocation, BusinessFeature, InstallmentPlanData, ProductCateg
 export type AdminBusinessDetail = Pick<BusinessProfile, 'id' | 'name' | 'phone' | 'status'> & Partial<BusinessProfile> & {
   address?: string | null; city?: string; neighborhood?: string | null; website?: string | null;
   latitude?: number | null; longitude?: number | null; aboutAudioId?: string | null;
-  planType?: string; planExpiryDate?: string | null; createdAt?: string;
+  planType?: string; planExpiryDate?: string | null; isCip?: boolean; createdAt?: string;
   documents?: BusinessDocumentData[];
   gallery?: GalleryImageData[]; features?: BusinessFeature[]; branches?: BranchLocation[];
   services?: ServiceItem[]; productCategories?: ProductCategoryItem[]; products?: ProductItem[];

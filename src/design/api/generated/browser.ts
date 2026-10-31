@@ -171,6 +171,7 @@ import type {
   UpdateBusinessDto,
   UpdateBusinessFeatureDto,
   UpdateCategoryDto,
+  UpdateCipStatusDto,
   UpdateCouponDto,
   UpdateInstallmentPlanDto,
   UpdatePlanDto,
@@ -3787,6 +3788,45 @@ export const adminBusinessControllerDowngradeToFree = async (id: string, options
     method: 'PATCH'
 
 
+  }
+);}
+
+
+
+export const getAdminBusinessControllerUpdateCipStatusUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/businesses/${encodeURIComponent(String(id))}/cip`
+}
+
+/**
+ * @summary [ادمین] فعال یا غیرفعال‌کردن نشان مستقل CIP کسب‌وکار
+ */
+export const adminBusinessControllerUpdateCipStatus = async (id: string,
+    updateCipStatusDto: UpdateCipStatusDto, options?: Parameters<typeof browserFetch>[1]): Promise<unknown> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return browserFetch<unknown>(getAdminBusinessControllerUpdateCipStatusUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateCipStatusDto)
   }
 );}
 

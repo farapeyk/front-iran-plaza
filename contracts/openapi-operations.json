@@ -575,6 +575,11 @@
     "operationId": "AdminBusinessController_createManual"
   },
   {
+    "route": "/api/admin/businesses/{id}/cip",
+    "method": "patch",
+    "operationId": "AdminBusinessController_updateCipStatus"
+  },
+  {
     "route": "/api/admin/businesses/{id}/plan",
     "method": "patch",
     "operationId": "AdminBusinessController_grantPlan"

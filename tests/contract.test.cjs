@@ -34,6 +34,14 @@ test('frontend contract keeps the reviewed backend names and operations, with co
   assert.equal(profile.properties.id.type, 'string');
   assert.equal(profile.properties.name.type, 'string');
   assert.equal(profile.properties.products.type, 'array');
+  assert.equal(profile.properties.isCip.type, 'boolean');
+  assert.ok(profile.required.includes('isCip'));
+  const cipDto = schema.components.schemas.UpdateCipStatusDto;
+  assert.equal(cipDto.properties.isCip.type, 'boolean');
+  assert.ok(cipDto.required.includes('isCip'));
+  const cipOperation = schema.paths['/api/admin/businesses/{id}/cip'].patch;
+  assert.equal(cipOperation.requestBody.content['application/json'].schema.$ref, '#/components/schemas/UpdateCipStatusDto');
+  for (const status of ['400', '401', '403', '404', '429']) assert.ok(cipOperation.responses[status]);
   const upload = schema.paths['/api/files/upload'].post.requestBody.content['multipart/form-data'].schema;
   assert.equal(upload.properties.file.format, 'binary');
   const articleBlock = schema.components.schemas.ArticleBlockDto;

@@ -5,6 +5,7 @@ import type { BusinessControllerGetFullBySlug200 } from "@/design/api/generated/
 import { Breadcrumb } from "@/design/components/breadcrumb";
 import { Scoring } from "@/design/components/scoring";
 import { VipBadge } from "@/design/components/vip-badge";
+import { CipBadge } from "@/design/components/cip-badge";
 import { Button } from "@/design/components/ui/button";
 import { BusinessBrandVideo } from "@/features/public/components/business-profile-media";
 
@@ -19,6 +20,7 @@ type BusinessProfileSummaryProps = {
   business: BusinessControllerGetFullBySlug200;
   logo: string;
   isVip: boolean;
+  isCip: boolean;
   average: number;
   reviewCount: number;
   rating: number;
@@ -83,6 +85,7 @@ export function BusinessProfileSummary({
   business,
   logo,
   isVip,
+  isCip,
   average,
   reviewCount,
   rating,
@@ -102,7 +105,7 @@ export function BusinessProfileSummary({
         <article className="business-profile-card rounded-[var(--radius-xs)] border border-[var(--border-subtle)] bg-secondary-50 p-6">
           <div className="flex flex-row-reverse items-start justify-between gap-4">
             <div className="flex flex-row-reverse items-center gap-6 py-1">
-              {isVip && <VipBadge />}
+              {(isVip || isCip) && <div className="flex items-center gap-1">{isVip && <VipBadge />}{isCip && <CipBadge />}</div>}
               <button type="button" aria-label="اشتراک‌گذاری" className="size-6" onClick={onShare}>
                 <Image alt="" className="size-full" height={24} src={shareIcon} width={24} />
               </button>
@@ -142,7 +145,7 @@ export function BusinessProfileSummary({
       <div className="business-summary-desktop hidden lg:block">
         <div className="mx-auto flex max-w-[1440px] flex-row-reverse items-center justify-between gap-4 px-[var(--page-gutter-lg)] py-6">
           <div className="flex flex-row-reverse items-center gap-4">
-            {isVip && <VipBadge />}
+            {(isVip || isCip) && <div className="flex items-center gap-1">{isVip && <VipBadge />}{isCip && <CipBadge />}</div>}
             <button type="button" aria-label="اشتراک‌گذاری" className="flex size-12 items-center justify-center rounded-full" onClick={onShare}>
               <Image alt="" className="size-6" height={24} src={shareIcon} width={24} />
             </button>

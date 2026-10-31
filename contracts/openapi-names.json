@@ -59,6 +59,7 @@
     "UpdateBusinessDto",
     "UpdateBusinessFeatureDto",
     "UpdateCategoryDto",
+    "UpdateCipStatusDto",
     "UpdateCouponDto",
     "UpdateInstallmentPlanDto",
     "UpdatePlanDto",
