@@ -13,6 +13,7 @@ test('production workflow creates the standalone bundle inside Alpine on the run
   assert.match(workflow, /pnpm install --frozen-lockfile/);
   assert.match(workflow, /cp -a \.next\/standalone\/\. \/runtime\//);
   assert.match(workflow, /frontend-runtime\.tar\.gz/);
+  assert.match(workflow, /NEXT_PUBLIC_CLARITY_PROJECT_ID: ytzg76hino/);
 });
 
 test('deployment package is derived from the reviewed SHA and size limited', () => {
