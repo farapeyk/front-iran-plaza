@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
+import { buildSiteVerification, readSiteIntegrations } from "@/features/analytics/site-integrations";
 import { siteOrigin } from "@/features/seo/article-seo";
 import { JsonLd } from "@/features/seo/json-ld";
 import { buildSiteStructuredData } from "@/features/seo/site-structured-data";
 import "./globals.css";
+
+const siteIntegrations = readSiteIntegrations();
 
 const title = "Iran Plaza | ایران پلازا";
 const description = "مرجع معرفی و انتخاب بهترین کسب‌وکارهای ایران";
@@ -24,6 +27,7 @@ export const metadata: Metadata = {
     description,
   },
   twitter: { card: "summary", title, description },
+  verification: buildSiteVerification(siteIntegrations),
 };
 
 export default function RootLayout({

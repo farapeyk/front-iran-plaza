@@ -20,6 +20,11 @@ jobs:
     name: Verify and deploy frontend
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    env:
+      NEXT_PUBLIC_GA4_MEASUREMENT_ID: ${{ vars.GA4_MEASUREMENT_ID }}
+      NEXT_PUBLIC_CLARITY_PROJECT_ID: ${{ vars.CLARITY_PROJECT_ID }}
+      NEXT_PUBLIC_YANDEX_SITE_VERIFICATION: ${{ vars.YANDEX_SITE_VERIFICATION }}
+      NEXT_PUBLIC_BAIDU_SITE_VERIFICATION: ${{ vars.BAIDU_SITE_VERIFICATION }}
 
     steps:
       - name: Check out the exact revision
@@ -59,6 +64,10 @@ jobs:
           docker run --rm \
             --env BACKEND_INTERNAL_URL=http://127.0.0.1:1 \
             --env SITE_URL=https://iran-plaza.ir \
+            --env NEXT_PUBLIC_GA4_MEASUREMENT_ID \
+            --env NEXT_PUBLIC_CLARITY_PROJECT_ID \
+            --env NEXT_PUBLIC_YANDEX_SITE_VERIFICATION \
+            --env NEXT_PUBLIC_BAIDU_SITE_VERIFICATION \
             --env JWT_ACCESS_SECRET=github-actions-build-only-secret-32-bytes \
             --env NEXT_TELEMETRY_DISABLED=1 \
             --volume "$alpine_source:/source:ro" \

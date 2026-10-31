@@ -870,6 +870,9 @@ src/features/admin/lib/get-business-detail.ts
 src/features/admin/lib/get-business-page.ts
 src/features/admin/types/plan.ts
 src/features/admin/types/user.ts
+src/features/analytics/configured-site-analytics.tsx
+src/features/analytics/site-analytics.tsx
+src/features/analytics/site-integrations.ts
 src/features/auth/actions/logout.action.ts
 src/features/auth/actions/request-otp.action.ts
 src/features/auth/actions/verify-otp.action.ts
@@ -1058,6 +1061,7 @@ tests/rich-text-links.test.cjs
 tests/rich-text-media.test.cjs
 tests/same-origin.test.cjs
 tests/security.test.cjs
+tests/site-integrations.test.cjs
 tests/sitemap.test.cjs
 tests/super-admin.test.cjs
 tests/user-deletion.test.cjs
