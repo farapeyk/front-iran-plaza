@@ -69,6 +69,10 @@ test('mutation schemas reject forged identifiers, invalid content and unknown fi
   for (const args of rejected) assert.ok(validateMutation(...args), JSON.stringify(args));
   assert.equal(validateMutation('/api/businesses/id/services','POST',{ name: 'test', durationMin: 20 }), null);
   assert.equal(validateMutation('/api/admin/businesses/id/plan','PATCH',{ planId: 'plan_1' }), null);
+  assert.equal(validateMutation('/api/admin/businesses/id/cip','PATCH',{ isCip: true }), null);
+  assert.equal(validateMutation('/api/admin/businesses/id/cip','PATCH',{ isCip: false }), null);
+  assert.ok(validateMutation('/api/admin/businesses/id/cip','PATCH',{ isCip: 'true' }));
+  assert.ok(validateMutation('/api/admin/businesses/id/cip','PATCH',{ isCip: true, planId: 'plan_1' }));
   assert.equal(validateMutation('/api/users/me','PATCH',{ fullName: 'Example Name' }), null);
   assert.equal(validateMutation('/api/notifications/id/read','PATCH',undefined), null);
   assert.equal(validateMutation('/api/businesses/id/documents','POST',{ type:'BUSINESS_LICENSE_PHOTO', fileId:'file_1', issueDate:'2024-03-20T00:00:00.000Z' }), null);

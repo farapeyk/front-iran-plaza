@@ -131,6 +131,7 @@ const schemas: Record<string, z.ZodType> = {
   'POST admin/categories': z.object({ name: text.max(150), parentId: id.optional(), icon: lucideIconName.optional() }).strict(),
   'PATCH admin/categories/id': z.object({ name: text.max(150).optional(), parentId: id.nullable().optional(), icon: lucideIconName.optional(), isActive: z.boolean().optional(), sortOrder: z.number().int().optional() }).strict(),
   'PATCH admin/reviews/id': z.object({ status: z.enum(['PENDING','APPROVED','REJECTED']) }).strict(),
+  'PATCH admin/businesses/id/cip': z.object({ isCip: z.boolean() }).strict(),
   'PATCH admin/businesses/id/plan': z.object({ planId: id }).strict(),
   'POST admin/businesses': z.object({ ownerPhone: z.string().regex(/^09\d{9}$/), ownerFullName: z.string().max(200).optional(), ownerNationalCode: z.string().regex(/^\d{10}$/).optional(), name: text.min(2).max(150), phone: z.string().regex(/^(?:0|\+98|0098)[1-9]\d{9}$/), city: text.max(150), categoryIds: z.array(id).min(1).max(5), description: z.string().max(100).optional(), address: z.string().max(1000).optional(), businessType: z.enum(['SOLE_PROPRIETOR','COMPANY','BRANCH']).optional(), registrationType: z.enum(['IN_PERSON','TELEPHONE']) }).strict(),
   'POST admin/users/super-admin': createSuperAdmin,
