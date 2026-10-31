@@ -8,6 +8,7 @@ const {
   renderUrlSet,
   siteOrigin,
 } = load('src/features/seo/sitemap-xml.ts');
+const sitemapPolicy = load('src/features/seo/sitemap-policy.ts');
 
 test('sitemap index uses canonical absolute URLs and escapes XML values', () => {
   assert.equal(siteOrigin('https://iran-plaza.ir/nested?ignored=1'), 'https://iran-plaza.ir');
@@ -45,10 +46,52 @@ test('robots points crawlers to the sitemap index and allows sitemap images', ()
     assert.equal(result.sitemap, 'https://iran-plaza.ir/sitemap_index.xml');
     assert.deepEqual(result.rules.allow, ['/', '/api/backend/files/']);
     assert.ok(result.rules.disallow.includes('/api/'));
+    assert.ok(result.rules.disallow.includes('/content/'));
+    assert.equal(result.rules.disallow.includes('/content'), false);
   } finally {
     if (previous === undefined) delete process.env.SITE_URL;
     else process.env.SITE_URL = previous;
   }
+});
+
+test('sitemap policy excludes only the reported non-indexable legacy URLs', () => {
+  assert.equal(sitemapPolicy.isIndexableSitemapArticle('tests'), false);
+  assert.equal(sitemapPolicy.isIndexableSitemapArticle('بهترین-دفاتر-مهاجرتی-در-شیراز-بهترین'), false);
+  assert.equal(sitemapPolicy.isIndexableSitemapCategory('دستهبندی-نشده'), false);
+  assert.equal(sitemapPolicy.isIndexableSitemapArticle('content-production-training-in-shiraz'), true);
+  assert.equal(sitemapPolicy.isIndexableSitemapCategory('technicalandvocationalschool'), true);
+});
+
+test('post and category sitemaps apply the indexability policy to generated XML', async () => {
+  const postRoute = load('src/app/post-sitemap.xml/route.ts', {
+    '@/features/content/lib/public-paths': { articlePath: slug => `/${slug}/` },
+    '@/features/seo/sitemap-data': {
+      loadPublishedArticles: async () => [
+        { slug: 'tests', updatedAt: '2026-10-31T00:00:00Z', coverImageId: null },
+        { slug: 'content-production-training-in-shiraz', updatedAt: '2026-10-31T00:00:00Z', coverImageId: null },
+      ],
+    },
+    '@/features/seo/sitemap-policy': sitemapPolicy,
+    '@/features/seo/sitemap-xml': { ...load('src/features/seo/sitemap-xml.ts'), siteOrigin: () => 'https://iran-plaza.ir' },
+  });
+  const postXml = await (await postRoute.GET()).text();
+  assert.doesNotMatch(postXml, /\/tests\//);
+  assert.match(postXml, /\/content-production-training-in-shiraz\//);
+
+  const categoryRoute = load('src/app/category-sitemap.xml/route.ts', {
+    '@/features/content/lib/public-paths': { categoryPath: category => `/category/${category.slug}/` },
+    '@/features/seo/sitemap-data': {
+      loadArticleCategories: async () => [
+        { id: '1', slug: 'دستهبندی-نشده' },
+        { id: '2', slug: 'technicalandvocationalschool' },
+      ],
+    },
+    '@/features/seo/sitemap-policy': sitemapPolicy,
+    '@/features/seo/sitemap-xml': { ...load('src/features/seo/sitemap-xml.ts'), siteOrigin: () => 'https://iran-plaza.ir' },
+  });
+  const categoryXml = await (await categoryRoute.GET()).text();
+  assert.doesNotMatch(categoryXml, new RegExp(encodeURIComponent('دستهبندی-نشده'), 'i'));
+  assert.match(categoryXml, /\/category\/technicalandvocationalschool\//);
 });
 
 test('dynamic sitemap data follows API pagination', async () => {

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import type { ContentCategory, PublicArticleListResponse } from '@/features/content/types';
 import { articlePath, categoryPath } from '@/features/content/lib/public-paths';
+import { isIndexableSitemapArticle, isIndexableSitemapCategory } from '@/features/seo/sitemap-policy';
 
 /** Public entry points and published CMS content only; drafts never enter the sitemap. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -12,7 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const categoriesResponse = await fetch(`${backend}/api/articles/categories`, { cache: 'no-store', signal: AbortSignal.timeout(15000) });
     if (categoriesResponse.ok) {
       const categories = await categoriesResponse.json() as ContentCategory[];
-      entries.push(...categories.flatMap(category => {
+      entries.push(...categories.filter(category => isIndexableSitemapCategory(category.slug)).flatMap(category => {
         const path = categoryPath(category, categories);
         return path ? [{ url: new URL(path, process.env.SITE_URL).href }] : [];
       }));
@@ -28,7 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       if (!response.ok) break;
       const result = await response.json() as PublicArticleListResponse;
       total = result.total;
-      entries.push(...result.data.map(article => ({ url: new URL(articlePath(article.slug), process.env.SITE_URL).href, lastModified: new Date(article.updatedAt) })));
+      entries.push(...result.data.filter(article => isIndexableSitemapArticle(article.slug)).map(article => ({ url: new URL(articlePath(article.slug), process.env.SITE_URL).href, lastModified: new Date(article.updatedAt) })));
       page += 1;
     } while ((page - 1) * 50 < total && page <= 20);
   } catch {

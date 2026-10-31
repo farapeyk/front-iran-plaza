@@ -999,6 +999,7 @@ src/features/seo/article-seo.ts
 src/features/seo/json-ld.tsx
 src/features/seo/site-structured-data.ts
 src/features/seo/sitemap-data.ts
+src/features/seo/sitemap-policy.ts
 src/features/seo/sitemap-xml.ts
 src/lib/api/action-fetch.ts
 src/lib/api/backend-get.ts
