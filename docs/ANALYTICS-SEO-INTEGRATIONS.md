@@ -28,7 +28,7 @@ NEXT_PUBLIC_BAIDU_SITE_VERIFICATION=codeva-xxxxxxxxxx
 4. سایت را در Baidu Search Resource Platform اضافه کنید، روش HTML tag را انتخاب کنید و مقدار `content` را وارد کنید.
 5. برنامه را دوباره build و deploy کنید؛ سپس دکمه Verify هر دو ابزار وبمستر را بزنید.
 
-در GitHub Actions شناسه production کلریتی `ytzg76hino` در workflow تثبیت شده است. مقادیر GA4، Yandex و Baidu از Repository Variables با نام‌های `GA4_MEASUREMENT_ID`، `YANDEX_SITE_VERIFICATION` و `BAIDU_SITE_VERIFICATION` خوانده و به envهای بالا نگاشت می‌شوند. در build مستقیم Docker نام کامل envهای فهرست‌شده در بالا را با `--build-arg` ارسال کنید.
+در GitHub Actions شناسه‌های production گوگل آنالیتیکس `G-KBY6RHW6MQ` و کلریتی `ytzg76hino` در workflow تثبیت شده‌اند. مقادیر Yandex و Baidu از Repository Variables با نام‌های `YANDEX_SITE_VERIFICATION` و `BAIDU_SITE_VERIFICATION` خوانده و به envهای بالا نگاشت می‌شوند. در build مستقیم Docker نام کامل envهای فهرست‌شده در بالا را با `--build-arg` ارسال کنید.
 
 ```bash
 docker build \
