@@ -97,12 +97,26 @@ const createSuperAdmin = z.object({
 }).strict();
 const hour = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/).nullable();
 const weekday = z.enum(['SATURDAY', 'SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY']);
+const timeInMinutes = (value: string) => Number(value.slice(0, 2)) * 60 + Number(value.slice(3, 5));
 const workingHour = z.object({
   id: id.optional(), businessId: id.optional(), weekday, isTwoShift: z.boolean(),
   openTime1: hour, closeTime1: hour, openTime2: hour, closeTime2: hour,
-}).strict().refine(h => (!h.openTime1 && !h.closeTime1 && !h.isTwoShift && !h.openTime2 && !h.closeTime2) ||
-  (!!h.openTime1 && !!h.closeTime1 && h.openTime1 < h.closeTime1 &&
-    (!h.isTwoShift ? !h.openTime2 && !h.closeTime2 : !!h.openTime2 && !!h.closeTime2 && h.closeTime1 <= h.openTime2 && h.openTime2 < h.closeTime2)), 'ساعات کاری معتبر نیست.');
+}).strict().refine(h => {
+  const isClosed = !h.openTime1 && !h.closeTime1 && !h.openTime2 && !h.closeTime2;
+  if (isClosed) return !h.isTwoShift;
+  if (!h.openTime1 || !h.closeTime1 || h.openTime1 === h.closeTime1) return false;
+  if (!h.isTwoShift) return !h.openTime2 && !h.closeTime2;
+  if (!h.openTime2 || !h.closeTime2 || h.openTime2 === h.closeTime2) return false;
+
+  const firstStart = timeInMinutes(h.openTime1);
+  let firstEnd = timeInMinutes(h.closeTime1);
+  let secondStart = timeInMinutes(h.openTime2);
+  let secondEnd = timeInMinutes(h.closeTime2);
+  if (firstEnd <= firstStart) firstEnd += 24 * 60;
+  if (secondStart <= firstStart) secondStart += 24 * 60;
+  while (secondEnd <= secondStart) secondEnd += 24 * 60;
+  return firstEnd <= secondStart && secondEnd <= firstStart + 24 * 60;
+}, 'ساعات کاری معتبر نیست.');
 
 export const profilePatchSchema = z.object({
   name: text.max(150).optional(), description: z.string().max(100).optional(), aboutText: optionalText,

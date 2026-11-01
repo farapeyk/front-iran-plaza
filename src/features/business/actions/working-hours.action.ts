@@ -5,6 +5,7 @@ import { actionFetch } from '@/lib/api/action-fetch';
 import { revalidatePath } from "next/cache";
 import { getActionAccessToken } from '@/lib/auth/action-access-token';
 import { extractErrorMessage } from "@/lib/api/error-message";
+import { toWorkingHoursPayload } from "@/features/business/lib/working-hours";
 import type { WorkingHoursEntry } from "@/features/business/types/business-profile";
 
 export type WorkingHoursResult = { success: true } | { success: false; message: string };
@@ -25,7 +26,7 @@ export async function updateWorkingHoursAction(
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-      body: JSON.stringify({ hours: entries }),
+      body: JSON.stringify({ hours: toWorkingHoursPayload(entries) }),
       cache: "no-store",
     });
 

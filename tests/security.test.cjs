@@ -199,9 +199,35 @@ test('working hours reject duplicates, reversed shifts and incomplete times', ()
   const day = { weekday: 'SATURDAY', isTwoShift: false, openTime1: '09:00', closeTime1: '17:00', openTime2: null, closeTime2: null };
   const check = hours => validateMutation('/api/businesses/id/working-hours','PATCH',{hours});
   assert.equal(check([day]), null);
+  assert.equal(check([{...day,openTime1:'18:00',closeTime1:'02:00'}]), null);
   assert.ok(check([day,day]));
-  assert.ok(check([{...day,closeTime1:'08:00'}]));
+  assert.ok(check([{...day,closeTime1:'09:00'}]));
   assert.ok(check([{...day,closeTime1:null}]));
+  assert.ok(check([{...day,isTwoShift:true,openTime2:'16:00',closeTime2:'20:00'}]));
+});
+
+test('working-hours payload strips API metadata, normalizes times and copies Saturday except Friday', () => {
+  const { copySaturdayHoursToWeekdays, toWorkingHoursPayload } = load('src/features/business/lib/working-hours.ts');
+  const weekdays = ['SATURDAY','SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY'];
+  const map = Object.fromEntries(weekdays.map(weekday => [weekday, {
+    id: `row-${weekday}`, businessId: 'business-1', weekday, isTwoShift: false,
+    openTime1: weekday === 'SATURDAY' ? '09:00:00' : null,
+    closeTime1: weekday === 'SATURDAY' ? '17:30:00' : null,
+    openTime2: null, closeTime2: null,
+  }]));
+
+  const copied = copySaturdayHoursToWeekdays(map);
+  for (const weekday of weekdays.slice(0, -1)) {
+    assert.deepEqual(copied[weekday], {
+      weekday, isTwoShift: false, openTime1: '09:00', closeTime1: '17:30', openTime2: null, closeTime2: null,
+    });
+  }
+  assert.deepEqual(copied.FRIDAY, {
+    weekday: 'FRIDAY', isTwoShift: false, openTime1: null, closeTime1: null, openTime2: null, closeTime2: null,
+  });
+  assert.deepEqual(toWorkingHoursPayload([map.SATURDAY]), [copied.SATURDAY]);
+  assert.equal('id' in copied.SATURDAY, false);
+  assert.equal('businessId' in copied.SATURDAY, false);
 });
 
 test('Jalali conversion handles leap Esfand and round trips in the supported year range', () => {

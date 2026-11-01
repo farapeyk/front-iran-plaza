@@ -924,6 +924,7 @@ src/features/business/lib/get-registration-documents.ts
 src/features/business/lib/onboarding-steps.ts
 src/features/business/lib/product-categories.ts
 src/features/business/lib/registration.ts
+src/features/business/lib/working-hours.ts
 src/features/business/schemas/business-info.schema.ts
 src/features/business/schemas/identity.schema.ts
 src/features/business/types/business-extras.ts
