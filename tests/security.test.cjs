@@ -99,6 +99,8 @@ test('content CMS mutations are allowlisted and validated before reaching the ba
   assert.equal(validateMutation('/api/content/articles', 'POST', article), null);
   assert.equal(validateMutation('/api/content/articles', 'POST', { ...article, excerpt: 'x'.repeat(5000) }), null);
   assert.ok(validateMutation('/api/content/articles', 'POST', { ...article, excerpt: 'x'.repeat(5001) }));
+  assert.equal(validateMutation('/api/content/articles', 'POST', { ...article, seoTitle: 'x'.repeat(160) }), null);
+  assert.ok(validateMutation('/api/content/articles', 'POST', { ...article, seoTitle: 'x'.repeat(161) }));
   assert.equal(validateMutation('/api/content/articles', 'POST', { ...article, slug: 'مقاله-خوب' }), null);
   assert.equal(validateMutation('/api/content/articles', 'POST', {
     ...article,

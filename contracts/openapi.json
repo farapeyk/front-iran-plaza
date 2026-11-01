@@ -27630,7 +27630,8 @@
             }
           },
           "seoTitle": {
-            "type": "string"
+            "type": "string",
+            "maxLength": 160
           },
           "seoDescription": {
             "type": "string"
@@ -27739,7 +27740,8 @@
             }
           },
           "seoTitle": {
-            "type": "string"
+            "type": "string",
+            "maxLength": 160
           },
           "seoDescription": {
             "type": "string"

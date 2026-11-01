@@ -116,10 +116,12 @@ test('Article schema mode omits ItemList while preserving BlogPosting', () => {
 
 test('content editor exposes FAQ visibility and ItemList title controls', () => {
   const source = fs.readFileSync(path.join(__dirname, '../src/features/content/components/article-editor-form.tsx'), 'utf8');
+  const insightsSource = fs.readFileSync(path.join(__dirname, '../src/features/content/components/article-editor-insights.tsx'), 'utf8');
   assert.match(source, /isActive: item\.isActive !== false/);
   assert.match(source, /checked=\{faq\.isActive !== false\}/);
   assert.match(source, /block\.listTitle/);
   assert.match(source, /اسکیمای ItemList/);
+  assert.match(insightsSource, /seoTitle[\s\S]*maxLength=\{160\}/);
 });
 
 test('frontend mutation boundary accepts only typed FAQ and list SEO controls', () => {

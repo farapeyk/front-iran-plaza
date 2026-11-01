@@ -59,7 +59,7 @@ const createArticle = z.object({
   coverImageId: id.optional(),
   coverImageAlt: z.string().trim().max(160).optional(),
   faqs: z.array(articleFaq).max(30).optional(),
-  seoTitle: z.string().trim().max(70).optional(),
+  seoTitle: z.string().trim().max(160).optional(),
   seoDescription: z.string().trim().max(170).optional(),
   canonicalUrl: z.url().max(500).optional(),
   robotsIndex: z.boolean().optional(),

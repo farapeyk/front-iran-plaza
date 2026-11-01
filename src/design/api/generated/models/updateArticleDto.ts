@@ -45,6 +45,7 @@ export interface UpdateArticleDto {
   coverImageId?: string;
   coverImageAlt?: string;
   faqs?: ArticleFaqDto[];
+  /** @maxLength 160 */
   seoTitle?: string;
   seoDescription?: string;
   canonicalUrl?: string;
