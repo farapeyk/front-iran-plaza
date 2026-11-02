@@ -21,6 +21,13 @@ test('CIP renders independently of VIP on profiles and editorial business lists'
   assert.match(profile, /isCip\s*&&\s*<CipBadge/);
 });
 
+test('editorial business lists link free businesses to their public profiles', () => {
+  const card = read('src/design/components/business-list-card.tsx');
+  const article = read('src/features/content/components/article-public-page.tsx');
+  assert.equal((article.match(/showFreeProfileLink/g) || []).length, 2);
+  assert.equal((card.match(/showFreeProfileLink\s*&&\s*profileBtn/g) || []).length, 2);
+});
+
 test('admin CIP control sends an explicit boolean to the dedicated endpoint', () => {
   const action = read('src/features/admin/actions/cip.action.ts');
   const control = read('src/features/admin/components/cip-status-control.tsx');

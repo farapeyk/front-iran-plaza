@@ -21,6 +21,7 @@ type BusinessListCardProps = {
   }
   className?: string
   layout?: "mobile" | "desktop" | "listing"
+  showFreeProfileLink?: boolean
 }
 
 /** Figma Table of Business — Mobile/Desktop × VIP/Free */
@@ -28,6 +29,7 @@ function BusinessListCard({
   business,
   className,
   layout = "mobile",
+  showFreeProfileLink = false,
 }: BusinessListCardProps) {
   const isDesktop = layout === "desktop"
   const isVip = (business.status ?? (business.vip === false ? "free" : "vip")) === "vip"
@@ -64,7 +66,14 @@ function BusinessListCard({
   )
 
   const profileBtn = (
-    <Link to={href} className={cn(buttonVariants({ size: "sm" }), "gap-2")}>
+    <Link
+      to={href}
+      className={cn(
+        buttonVariants({ size: "sm" }),
+        "gap-2",
+        !isVip && !isDesktop && showFreeProfileLink && "w-full px-2 text-xs"
+      )}
+    >
       مشاهده پروفایل
     </Link>
   )
@@ -120,7 +129,8 @@ function BusinessListCard({
             {address}
           </p>
         </div>
-        <div className="flex shrink-0 items-center border border-[var(--opacity-dark-8)] px-[var(--lg)]">
+        <div className="flex shrink-0 items-center gap-2 border border-[var(--opacity-dark-8)] px-[var(--lg)]">
+          {showFreeProfileLink && profileBtn}
           {contactBtn}
         </div>
       </article>
@@ -189,7 +199,8 @@ function BusinessListCard({
       <div className="flex min-w-0 flex-1 items-start justify-center border-y border-[var(--opacity-dark-8)] px-[var(--sm)] py-[var(--lg)]">
         <p className="text-start text-sm leading-relaxed text-[var(--text-body)]">{address}</p>
       </div>
-      <div className="flex w-[100px] shrink-0 flex-col items-start gap-[var(--sm)] border border-[var(--opacity-dark-8)] py-[var(--lg)] pe-[var(--sm)] ps-0">
+      <div className={cn("flex shrink-0 flex-col items-start gap-[var(--sm)] border border-[var(--opacity-dark-8)] py-[var(--lg)] pe-[var(--sm)] ps-0", showFreeProfileLink ? "w-[150px]" : "w-[100px]")}>
+        {showFreeProfileLink && profileBtn}
         {contactBtn}
       </div>
     </article>
