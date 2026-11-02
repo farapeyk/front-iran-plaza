@@ -4,6 +4,19 @@ export const ARTICLE_EXCERPT_MAX_LENGTH = 5_000;
 
 export type CompactPaginationItem = number | "ellipsis-start" | "ellipsis-end";
 
+export function moveArticleBlockToPosition(blocks: ArticleBlock[], sourceIndex: number, requestedPosition: number): ArticleBlock[] {
+  if (!Number.isInteger(sourceIndex) || sourceIndex < 0 || sourceIndex >= blocks.length) return blocks;
+  if (!Number.isInteger(requestedPosition) || requestedPosition < 1 || requestedPosition > blocks.length) return blocks;
+
+  const targetIndex = requestedPosition - 1;
+  if (targetIndex === sourceIndex) return blocks;
+
+  const next = [...blocks];
+  const [block] = next.splice(sourceIndex, 1);
+  next.splice(targetIndex, 0, block);
+  return next;
+}
+
 const LEGACY_TOC_HEADING = /^(?:در\s+این\s+مطلب\s+می\s*خوانیم|آنچه\s+در\s+این\s+مقاله\s+می\s*خوانید)\s*:?\s*$/u;
 const LEGACY_RATING = /^[0-9۰-۹](?:[.,][0-9۰-۹])?\s*\/\s*[5۵]\s*-?\s*\([0-9۰-۹]+\s*امتیاز\)$/u;
 const READ_MORE_SUFFIX = /\s*(?:(?:…|\.{3})\s*)?ادامه\s*مطلب\s*$/u;

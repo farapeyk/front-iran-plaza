@@ -8,11 +8,33 @@ const {
   ARTICLE_EXCERPT_MAX_LENGTH,
   compactPaginationItems,
   displayArticleExcerpt,
+  moveArticleBlockToPosition,
   withoutDuplicateLeadingExcerpt,
   withoutLegacyArticleWidgets,
 } = load('src/features/content/lib/article-content.ts');
 const { canEditPublicArticle, editorArticleToPreview } = load('src/features/content/lib/article-preview.ts');
 const { articlePreviewPath } = load('src/features/content/lib/public-paths.ts');
+
+test('article blocks can move directly to a numbered display position', () => {
+  const blocks = [
+    { id: 'one', type: 'paragraph' },
+    { id: 'two', type: 'heading' },
+    { id: 'three', type: 'image' },
+    { id: 'four', type: 'quote' },
+  ];
+
+  assert.deepEqual(moveArticleBlockToPosition(blocks, 3, 2).map(block => block.id), ['one', 'four', 'two', 'three']);
+  assert.deepEqual(moveArticleBlockToPosition(blocks, 0, 4).map(block => block.id), ['two', 'three', 'four', 'one']);
+  assert.equal(moveArticleBlockToPosition(blocks, 1, 0), blocks);
+  assert.equal(moveArticleBlockToPosition(blocks, 1, 5), blocks);
+});
+
+test('article editor exposes a numbered position input beside block controls', () => {
+  const editor = fs.readFileSync(path.join(__dirname, '../src/features/content/components/article-editor-form.tsx'), 'utf8');
+  assert.match(editor, /function BlockOrderInput/u);
+  assert.match(editor, /aria-label=\{`جایگاه نمایش \$\{label\}`\}/u);
+  assert.match(editor, /<BlockOrderInput[^>]+onMove=\{position => moveBlockToPosition\(index, position\)\}/u);
+});
 
 test('legacy WordPress TOC and rating blocks are hidden while article content remains', () => {
   const blocks = [
