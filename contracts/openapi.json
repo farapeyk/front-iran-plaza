@@ -3954,90 +3954,273 @@
         "parameters": [
           {
             "name": "skip",
-            "required": true,
+            "required": false,
             "in": "query",
             "schema": {
-              "type": "string"
+              "minimum": 0,
+              "default": 0,
+              "type": "number"
             }
           },
           {
             "name": "take",
-            "required": true,
+            "required": false,
             "in": "query",
             "schema": {
-              "type": "string"
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
             }
           },
           {
             "name": "status",
-            "required": true,
+            "required": false,
             "in": "query",
             "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "APPROVED",
+                "REJECTED",
+                "SUSPENDED"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "جست‌وجو در نام یا شماره تماس کسب‌وکار",
+            "schema": {
+              "maxLength": 120,
               "type": "string"
+            }
+          },
+          {
+            "name": "registrationType",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "USER_SELF",
+                "ADMIN_MANUAL",
+                "IN_PERSON",
+                "TELEPHONE"
+              ]
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "",
+          "400": {
+            "description": "Request failed (400)",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "createdAt": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
-                          "id": {
-                            "type": "string"
-                          },
-                          "name": {
-                            "type": "string"
-                          },
-                          "phone": {
-                            "type": "string"
-                          },
-                          "status": {
-                            "type": "string",
-                            "enum": [
-                              "PENDING",
-                              "APPROVED",
-                              "REJECTED",
-                              "SUSPENDED"
-                            ]
-                          }
-                        },
-                        "required": [
-                          "createdAt",
-                          "id",
-                          "name",
-                          "phone",
-                          "status"
-                        ]
-                      }
-                    },
-                    "skip": {
-                      "type": "number"
-                    },
-                    "take": {
-                      "type": "number"
-                    },
-                    "total": {
-                      "type": "number"
-                    }
-                  },
                   "required": [
-                    "data",
-                    "skip",
-                    "take",
-                    "total"
-                  ]
+                    "success",
+                    "statusCode",
+                    "errorCode",
+                    "message",
+                    "path",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "example": 400
+                    },
+                    "errorCode": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request failed (401)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "statusCode",
+                    "errorCode",
+                    "message",
+                    "path",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "errorCode": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request failed (403)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "statusCode",
+                    "errorCode",
+                    "message",
+                    "path",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "example": 403
+                    },
+                    "errorCode": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request failed (429)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "statusCode",
+                    "errorCode",
+                    "message",
+                    "path",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "example": 429
+                    },
+                    "errorCode": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
                 }
               }
             }

@@ -99,12 +99,12 @@ export function WorkingHoursForm({ businessId, initialEntries }: { businessId: s
             ) : (
               <div className="grid grid-cols-2 gap-2">
                 <label className="space-y-1 text-xs text-neutral-600">
-                  شروع شیفت اول
-                  <input aria-label={`${label}، شروع شیفت اول`} type="time" value={day.openTime1 ?? ""} onChange={(e) => updateDay(value, { openTime1: e.target.value || null })} className={timeInputClass()} disabled={isPending} />
-                </label>
-                <label className="space-y-1 text-xs text-neutral-600">
                   پایان شیفت اول
                   <input aria-label={`${label}، پایان شیفت اول`} type="time" value={day.closeTime1 ?? ""} onChange={(e) => updateDay(value, { closeTime1: e.target.value || null })} className={timeInputClass()} disabled={isPending} />
+                </label>
+                <label className="space-y-1 text-xs text-neutral-600">
+                  شروع شیفت اول
+                  <input aria-label={`${label}، شروع شیفت اول`} type="time" value={day.openTime1 ?? ""} onChange={(e) => updateDay(value, { openTime1: e.target.value || null })} className={timeInputClass()} disabled={isPending} />
                 </label>
               </div>
             )}
@@ -112,12 +112,12 @@ export function WorkingHoursForm({ businessId, initialEntries }: { businessId: s
             {!isClosed && day.isTwoShift && (
               <div className="grid grid-cols-2 gap-2 mt-2">
                 <label className="space-y-1 text-xs text-neutral-600">
-                  شروع شیفت دوم
-                  <input aria-label={`${label}، شروع شیفت دوم`} type="time" value={day.openTime2 ?? ""} onChange={(e) => updateDay(value, { openTime2: e.target.value || null })} className={timeInputClass()} disabled={isPending} />
-                </label>
-                <label className="space-y-1 text-xs text-neutral-600">
                   پایان شیفت دوم
                   <input aria-label={`${label}، پایان شیفت دوم`} type="time" value={day.closeTime2 ?? ""} onChange={(e) => updateDay(value, { closeTime2: e.target.value || null })} className={timeInputClass()} disabled={isPending} />
+                </label>
+                <label className="space-y-1 text-xs text-neutral-600">
+                  شروع شیفت دوم
+                  <input aria-label={`${label}، شروع شیفت دوم`} type="time" value={day.openTime2 ?? ""} onChange={(e) => updateDay(value, { openTime2: e.target.value || null })} className={timeInputClass()} disabled={isPending} />
                 </label>
               </div>
             )}

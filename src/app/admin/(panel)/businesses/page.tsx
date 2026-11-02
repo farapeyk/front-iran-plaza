@@ -1,5 +1,6 @@
 import { Pagination } from '@/components/pagination';
-import { getBusinessPage, pageNumber } from '@/features/admin/lib/get-business-page';
+import { businessRegistrationType, businessSearch, businessStatus, getBusinessPage, pageNumber } from '@/features/admin/lib/get-business-page';
+import { BusinessListFilters } from '@/features/admin/components/business-list-filters';
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import Link from "next/link";
 import { Building2, ChevronLeft } from "lucide-react";
@@ -21,10 +22,14 @@ const STATUS_MAP: Record<string, { label: string; className: string }> = {
   SUSPENDED: { label: "معلق", className: "bg-neutral-100 text-neutral-600" },
 };
 
-export default async function AllBusinessesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
-  const page = pageNumber((await searchParams).page);
+export default async function AllBusinessesPage({ searchParams }: { searchParams: Promise<{ page?: string; search?: string | string[]; status?: string | string[]; registrationType?: string | string[] }> }) {
+  const params = await searchParams;
+  const page = pageNumber(params.page);
+  const search = businessSearch(params.search);
+  const status = businessStatus(params.status);
+  const registrationType = businessRegistrationType(params.registrationType);
   const accessToken = await getAccessTokenCookie();
-  const result = accessToken ? await getBusinessPage<BusinessListItem>(accessToken, page) : { data: [], total: 0, take: 20, page };
+  const result = accessToken ? await getBusinessPage<BusinessListItem>(accessToken, page, { search, status, registrationType }) : { data: [], total: 0, take: 20, page };
   const businesses = result.data;
 
   return (
@@ -36,6 +41,8 @@ export default async function AllBusinessesPage({ searchParams }: { searchParams
         </div>
         <Link href="/admin/businesses/new" className="rounded-md bg-emerald-950 px-4 py-2 text-sm text-white">ثبت دستی کسب‌وکار</Link>
       </div>
+
+      <BusinessListFilters action="/admin/businesses" search={search} status={status} registrationType={registrationType} showStatus />
 
       {businesses.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-lg border border-neutral-200">
@@ -71,7 +78,7 @@ export default async function AllBusinessesPage({ searchParams }: { searchParams
           })}
         </div>
       )}
-      <Pagination base="/admin/businesses" page={page} total={result.total} take={result.take} />
+      <Pagination base="/admin/businesses" page={page} total={result.total} take={result.take} query={{ search, status, registrationType }} />
     </div>
   );
 }

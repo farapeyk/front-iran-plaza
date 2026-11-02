@@ -44,7 +44,6 @@ import type {
   AuthControllerSetPassword200,
   BusinessControllerAdvanceOnboarding201,
   BusinessControllerApprove200,
-  BusinessControllerGetAllBusinesses200,
   BusinessControllerGetAllBusinessesParams,
   BusinessControllerGetById200,
   BusinessControllerGetFull200,
@@ -907,7 +906,7 @@ export const businessControllerGetMine = async ( options?: Parameters<typeof bro
 
 
 
-export const getBusinessControllerGetAllBusinessesUrl = (params: BusinessControllerGetAllBusinessesParams,) => {
+export const getBusinessControllerGetAllBusinessesUrl = (params?: BusinessControllerGetAllBusinessesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -925,9 +924,9 @@ export const getBusinessControllerGetAllBusinessesUrl = (params: BusinessControl
 /**
  * @summary [ناظر] لیست تمام کسب‌وکارها با فیلتر و Pagination
  */
-export const businessControllerGetAllBusinesses = async (params: BusinessControllerGetAllBusinessesParams, options?: Parameters<typeof browserFetch>[1]): Promise<BusinessControllerGetAllBusinesses200> => {
+export const businessControllerGetAllBusinesses = async (params?: BusinessControllerGetAllBusinessesParams, options?: Parameters<typeof browserFetch>[1]): Promise<unknown> => {
 
-  return browserFetch<BusinessControllerGetAllBusinesses200>(getBusinessControllerGetAllBusinessesUrl(params),
+  return browserFetch<unknown>(getBusinessControllerGetAllBusinessesUrl(params),
   {
     ...options,
     method: 'GET'

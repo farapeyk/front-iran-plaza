@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { authedFetch } from "@/features/business/actions/authed-fetch";
 
-export async function updateReviewStatusAction(reviewId: string, status: "APPROVED" | "REJECTED") {
+export async function updateReviewStatusAction(reviewId: string, status: "PENDING" | "APPROVED" | "REJECTED") {
   const result = await authedFetch(`/api/admin/reviews/${reviewId}`, "PATCH", { status });
   if (result.success) revalidatePath("/admin/reviews");
   return result;

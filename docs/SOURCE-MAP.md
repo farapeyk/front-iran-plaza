@@ -250,7 +250,13 @@ src/design/api/generated/models/businessControllerCreate429.ts
 src/design/api/generated/models/businessControllerGetAllBusinesses200.ts
 src/design/api/generated/models/businessControllerGetAllBusinesses200DataItem.ts
 src/design/api/generated/models/businessControllerGetAllBusinesses200DataItemStatus.ts
+src/design/api/generated/models/businessControllerGetAllBusinesses400.ts
+src/design/api/generated/models/businessControllerGetAllBusinesses401.ts
+src/design/api/generated/models/businessControllerGetAllBusinesses403.ts
+src/design/api/generated/models/businessControllerGetAllBusinesses429.ts
 src/design/api/generated/models/businessControllerGetAllBusinessesParams.ts
+src/design/api/generated/models/businessControllerGetAllBusinessesRegistrationType.ts
+src/design/api/generated/models/businessControllerGetAllBusinessesStatus.ts
 src/design/api/generated/models/businessControllerGetById200.ts
 src/design/api/generated/models/businessControllerGetById200BusinessType.ts
 src/design/api/generated/models/businessControllerGetById200CategoriesItem.ts
@@ -853,6 +859,7 @@ src/features/admin/components/admin-login-form.tsx
 src/features/admin/components/admin-sidebar.tsx
 src/features/admin/components/business-approval-actions.tsx
 src/features/admin/components/business-city-form.tsx
+src/features/admin/components/business-list-filters.tsx
 src/features/admin/components/business-profile-overview.tsx
 src/features/admin/components/category-manager.tsx
 src/features/admin/components/cip-status-control.tsx

@@ -18,11 +18,11 @@ export interface AdminReviewItem {
 export function ReviewRow({ review }: { review: AdminReviewItem }) {
   const [isPending, startTransition] = useTransition();
 
-  function handleStatus(status: "APPROVED" | "REJECTED") {
+  function handleStatus(status: "PENDING" | "APPROVED" | "REJECTED") {
     startTransition(async () => {
       const result = await updateReviewStatusAction(review.id, status);
       if (!result.success) toast.error(result.message);
-      else toast.success(status === "APPROVED" ? "نظر تایید شد" : "نظر رد شد");
+      else toast.success(status === "APPROVED" ? "نظر تایید شد" : status === "REJECTED" ? "نظر رد شد" : "نظر به بخش در انتظار بازگشت");
     });
   }
 
@@ -60,6 +60,11 @@ export function ReviewRow({ review }: { review: AdminReviewItem }) {
                 رد
               </button>
             </>
+          )}
+          {review.status === "REJECTED" && (
+            <button onClick={() => handleStatus("PENDING")} disabled={isPending} className="text-sm px-3 py-1.5 rounded-md border border-amber-300 text-amber-700 hover:bg-amber-50 disabled:opacity-50">
+              بازگشت به در انتظار
+            </button>
           )}
           <button onClick={handleDelete} disabled={isPending} className="text-sm px-3 py-1.5 rounded-md border border-neutral-300 text-neutral-600 hover:bg-neutral-50 disabled:opacity-50">
             حذف

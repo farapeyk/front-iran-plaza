@@ -8,7 +8,7 @@ export default async function SuspendedBusinessesPage({ searchParams }: { search
   const token = await getAccessTokenCookie();
   if (!token) redirect('/admin/login');
   const page = pageNumber((await searchParams).page);
-  const result = await getBusinessPage<{ id: string; name: string }>(token, page, 'SUSPENDED');
+  const result = await getBusinessPage<{ id: string; name: string }>(token, page, { status: 'SUSPENDED' });
   return <div dir="rtl" className="space-y-5"><h1 className="text-lg font-bold">کسب‌وکارهای معلق</h1>
     <p className="text-sm">این کسب‌وکارها در سایت نمایش داده نمی‌شوند. برای بررسی یا رفع تعلیق، جزئیات را باز کنید.</p>
     {result.data.length === 0 && <p>کسب‌وکار معلقی وجود ندارد.</p>}

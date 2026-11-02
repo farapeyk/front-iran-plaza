@@ -1,5 +1,6 @@
 import { Pagination } from '@/components/pagination';
-import { getBusinessPage, pageNumber } from '@/features/admin/lib/get-business-page';
+import { businessRegistrationType, businessSearch, getBusinessPage, pageNumber } from '@/features/admin/lib/get-business-page';
+import { BusinessListFilters } from '@/features/admin/components/business-list-filters';
 // src/app/admin/(panel)/businesses/pending/page.tsx
 import Link from "next/link"; // ✅ اضافه شد
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
@@ -13,10 +14,13 @@ interface PendingBusiness {
   createdAt: string;
 }
 
-export default async function PendingBusinessesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
-  const page = pageNumber((await searchParams).page);
+export default async function PendingBusinessesPage({ searchParams }: { searchParams: Promise<{ page?: string; search?: string | string[]; registrationType?: string | string[] }> }) {
+  const params = await searchParams;
+  const page = pageNumber(params.page);
+  const search = businessSearch(params.search);
+  const registrationType = businessRegistrationType(params.registrationType);
   const accessToken = await getAccessTokenCookie();
-  const result = accessToken ? await getBusinessPage<PendingBusiness>(accessToken, page, 'PENDING') : { data: [], total: 0, take: 20, page };
+  const result = accessToken ? await getBusinessPage<PendingBusiness>(accessToken, page, { status: 'PENDING', search, registrationType }) : { data: [], total: 0, take: 20, page };
   const businesses = result.data;
 
   return (
@@ -32,6 +36,8 @@ export default async function PendingBusinessesPage({ searchParams }: { searchPa
         </Link>
       </div>
 
+      <BusinessListFilters action="/admin/businesses/pending" search={search} registrationType={registrationType} />
+
       {businesses.length === 0 ? (
         <p className="text-sm text-neutral-500">موردی برای بررسی وجود ندارد.</p>
       ) : (
@@ -41,7 +47,7 @@ export default async function PendingBusinessesPage({ searchParams }: { searchPa
           ))}
         </div>
       )}
-      <Pagination base="/admin/businesses/pending" page={page} total={result.total} take={result.take} />
+      <Pagination base="/admin/businesses/pending" page={page} total={result.total} take={result.take} query={{ search, registrationType }} />
     </div>
   );
 }

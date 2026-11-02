@@ -5,9 +5,24 @@
  * Iran Plaza backend API
  * OpenAPI spec version: 0.1
  */
+import type { BusinessControllerGetAllBusinessesRegistrationType } from './businessControllerGetAllBusinessesRegistrationType';
+import type { BusinessControllerGetAllBusinessesStatus } from './businessControllerGetAllBusinessesStatus';
 
 export type BusinessControllerGetAllBusinessesParams = {
-skip: string;
-take: string;
-status: string;
+/**
+ * @minimum 0
+ */
+skip?: number;
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+take?: number;
+status?: BusinessControllerGetAllBusinessesStatus;
+/**
+ * جست‌وجو در نام یا شماره تماس کسب‌وکار
+ * @maxLength 120
+ */
+search?: string;
+registrationType?: BusinessControllerGetAllBusinessesRegistrationType;
 };

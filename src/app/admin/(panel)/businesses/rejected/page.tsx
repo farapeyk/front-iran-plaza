@@ -16,7 +16,7 @@ interface BusinessListItem {
 export default async function RejectedBusinessesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const page = pageNumber((await searchParams).page);
   const accessToken = await getAccessTokenCookie();
-  const result = accessToken ? await getBusinessPage<BusinessListItem>(accessToken, page, 'REJECTED') : { data: [], total: 0, take: 20, page };
+  const result = accessToken ? await getBusinessPage<BusinessListItem>(accessToken, page, { status: 'REJECTED' }) : { data: [], total: 0, take: 20, page };
   const businesses = result.data;
 
   return (
