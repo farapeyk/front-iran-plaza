@@ -12,10 +12,6 @@ export default async function ContentBannersPage() {
     backendGet<ArticleBanner[]>("/api/content/banners", token as string),
     backendGet<ArticleListResponse>("/api/content/articles?limit=50&page=1", token as string),
   ]);
-  const pages = await Promise.all(Array.from({ length: Math.max(0, Math.ceil(firstPage.total / 50) - 1) }, (_, index) =>
-    backendGet<ArticleListResponse>(`/api/content/articles?limit=50&page=${index + 2}`, token as string),
-  ));
-  const articles = [...firstPage.data, ...pages.flatMap(page => page.data)]
-    .map(({ id, title, status }) => ({ id, title, status }));
+  const articles = firstPage.data.map(({ id, title, status }) => ({ id, title, status }));
   return <div className="space-y-6"><header><h1 className="text-2xl font-black">بنرهای مقاله</h1><p className="mt-1 text-sm text-neutral-500">بنرهای بالای تصویر اصلی و سایدبار مقاله‌ها را مدیریت کنید.</p></header><ArticleBannerManager banners={banners} articles={articles} /></div>;
 }

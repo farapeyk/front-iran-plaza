@@ -4,7 +4,15 @@ import { revalidatePath } from "next/cache";
 import { authedFetch } from "@/features/business/actions/authed-fetch";
 import { normalizeCanonicalUrl } from "@/features/content/lib/canonical-url";
 import { articlePath } from "@/features/content/lib/public-paths";
-import type { ArticleBanner, ArticleBlock, ArticleFaq, ArticleSchemaType, EditorArticle } from "@/features/content/types";
+import type { ArticleBanner, ArticleBlock, ArticleFaq, ArticleListResponse, ArticleSchemaType, ContentIdentity, EditorArticle } from "@/features/content/types";
+
+export async function searchBannerArticlesAction(search: string) {
+  const identity = await authedFetch<ContentIdentity>("/api/content/me", "GET");
+  if (!identity.success) return identity;
+  if (!identity.data.canPublish) return { success: false as const, message: "دسترسی لازم برای مدیریت بنرها را ندارید." };
+  const query = new URLSearchParams({ limit: "50", page: "1", search: search.trim().slice(0, 120) });
+  return authedFetch<ArticleListResponse>(`/api/content/articles?${query.toString()}`, "GET");
+}
 
 export type ArticleInput = {
   title: string;

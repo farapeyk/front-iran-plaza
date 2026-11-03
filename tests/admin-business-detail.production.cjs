@@ -1,6 +1,7 @@
 // Run after npm run build. Uses an isolated HTTP fixture, never the configured backend.
 const assert = require('node:assert/strict');
 const http = require('node:http');
+const fs = require('node:fs');
 const net = require('node:net');
 const path = require('node:path');
 const { spawn } = require('node:child_process');
@@ -9,6 +10,9 @@ const { randomBytes } = require('node:crypto');
 const { SignJWT } = require('jose');
 
 async function main() {
+  const bannerManagerSource = fs.readFileSync(path.resolve(__dirname, '../src/features/content/components/article-banner-manager.tsx'), 'utf8');
+  assert.ok(bannerManagerSource.includes('جستجوی مقاله بر اساس عنوان'));
+  assert.ok(bannerManagerSource.includes('searchBannerArticlesAction(articleSearch)'));
   const id = 'cmsfz4qtl00027msz3yr5z4nl';
   const mainPath = '/api/businesses/' + id;
   const publicSlug='نمایشگاه-ماشین-e823cb';
