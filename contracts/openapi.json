@@ -20725,6 +20725,140 @@
         ]
       }
     },
+    "/api/content/articles/export.csv": {
+      "get": {
+        "operationId": "ContentController_exportCsv",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "فایل UTF-8 CSV با عنوان مقاله و همه دسته‌بندی‌های آن",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request failed (401)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "statusCode",
+                    "errorCode",
+                    "message",
+                    "path",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "errorCode": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request failed (403)\n\nRequires permission: CONTENT:WRITE",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "statusCode",
+                    "errorCode",
+                    "message",
+                    "path",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "example": 403
+                    },
+                    "errorCode": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "دانلود عنوان و دسته‌بندی همه مقاله‌های قابل دسترسی در قالب CSV",
+        "tags": [
+          "Content CMS"
+        ]
+      }
+    },
     "/api/content/media": {
       "get": {
         "operationId": "ContentController_media",

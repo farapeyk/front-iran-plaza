@@ -640,6 +640,11 @@
     "operationId": "ContentController_create"
   },
   {
+    "route": "/api/content/articles/export.csv",
+    "method": "get",
+    "operationId": "ContentController_exportCsv"
+  },
+  {
     "route": "/api/content/articles/{id}",
     "method": "get",
     "operationId": "ContentController_get"

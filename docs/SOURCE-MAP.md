@@ -436,6 +436,8 @@ src/design/api/generated/models/contentControllerCreateCategory409.ts
 src/design/api/generated/models/contentControllerDeleteBanner401.ts
 src/design/api/generated/models/contentControllerDeleteBanner403.ts
 src/design/api/generated/models/contentControllerDeleteBanner404.ts
+src/design/api/generated/models/contentControllerExportCsv401.ts
+src/design/api/generated/models/contentControllerExportCsv403.ts
 src/design/api/generated/models/contentControllerFeedback401.ts
 src/design/api/generated/models/contentControllerFeedback403.ts
 src/design/api/generated/models/contentControllerFeedbackParams.ts

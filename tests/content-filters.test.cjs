@@ -25,7 +25,12 @@ function linksIn(node, found = []) {
     node.forEach(child => linksIn(child, found));
   } else if (node?.props) {
     if (typeof node.props.href === 'string') {
-      found.push({ href: node.props.href, label: textContent(node.props.children), current: node.props['aria-current'] });
+      found.push({
+        href: node.props.href,
+        label: textContent(node.props.children),
+        current: node.props['aria-current'],
+        ...(node.props.download ? { download: node.props.download } : {}),
+      });
     }
     linksIn(node.props.children, found);
   }
@@ -44,6 +49,9 @@ test('content workspace exposes distinct draft/published filters and keeps the a
   const links = linksIn(tree);
 
   assert.equal(requests[0], '/api/content/articles?page=2&limit=20&sort=newest&status=DRAFT&search=%D9%86%D9%85%D9%88%D9%86%D9%87');
+  assert.ok(links.some(link => link.label === 'دانلود CSV'
+    && link.href === '/api/backend/content/articles/export.csv'
+    && link.download === 'iranplaza-articles.csv'));
   assert.deepEqual(
     links.filter(link => ['همه', 'پیش‌نویس', 'منتشرشده'].includes(link.label)),
     [

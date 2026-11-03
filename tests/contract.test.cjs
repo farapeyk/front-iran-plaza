@@ -44,6 +44,13 @@ test('frontend contract keeps the reviewed backend names and operations, with co
   for (const status of ['400', '401', '403', '404', '429']) assert.ok(cipOperation.responses[status]);
   const upload = schema.paths['/api/files/upload'].post.requestBody.content['multipart/form-data'].schema;
   assert.equal(upload.properties.file.format, 'binary');
+
+  const articleCsv = schema.paths['/api/content/articles/export.csv'].get;
+  assert.equal(articleCsv.operationId, 'ContentController_exportCsv');
+  assert.equal(articleCsv.responses['200'].content['text/csv'].schema.format, 'binary');
+  for (const status of ['401', '403']) {
+    assert.ok(articleCsv.responses[status].content['application/json'].schema.required.includes('errorCode'));
+  }
   const articleBlock = schema.components.schemas.ArticleBlockDto;
   assert.ok(articleBlock.properties.type.enum.includes('business-list'));
   assert.equal(articleBlock.properties.businessIds.type, 'array');

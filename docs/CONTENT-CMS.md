@@ -13,6 +13,7 @@
 | `/category/[...segments]/` | دسته‌بندی با زنجیره کامل والدها، مانند `/category/schools-educational-centers/sewingandclothingdesignschool/` | عمومی و indexable |
 | `/articles/[slug]/` | مسیر سازگاری نسخه توسعه که با ۳۰۸ به URL ریشه‌ای منتقل می‌شود | عمومی و `noindex` |
 | `/content` | میزکار و فهرست مقاله‌های مجاز | `CONTENT:WRITE` |
+| `/api/backend/content/articles/export.csv` | دانلود CSV عنوان و همه دسته‌بندی‌های مقاله‌های قابل‌دسترسی از دکمهٔ «دانلود CSV» میزکار؛ فایل از پروکسی احراز‌شده و بدون cache دریافت می‌شود | `CONTENT:WRITE` |
 | `/content/articles/new` | ساخت پیش‌نویس | `CONTENT:WRITE` |
 | `/content/articles/[id]` | ویرایش، ارسال و گردش انتشار | مالک یا مدیر محتوا |
 | `/content/categories` | مدیریت دسته‌های مقاله | `CONTENT:PUBLISH` |

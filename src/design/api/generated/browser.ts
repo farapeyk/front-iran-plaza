@@ -4097,6 +4097,30 @@ return browserFetch<unknown>(getContentControllerCreateUrl(),
 
 
 
+export const getContentControllerExportCsvUrl = () => {
+
+
+
+
+  return `/api/content/articles/export.csv`
+}
+
+/**
+ * @summary دانلود عنوان و دسته‌بندی همه مقاله‌های قابل دسترسی در قالب CSV
+ */
+export const contentControllerExportCsv = async ( options?: Parameters<typeof browserFetch>[1]): Promise<Blob> => {
+
+  return browserFetch<Blob>(getContentControllerExportCsvUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
 export const getContentControllerMediaUrl = (params?: ContentControllerMediaParams,) => {
   const normalizedParams = new URLSearchParams();
 

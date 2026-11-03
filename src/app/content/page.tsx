@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpenText, FolderTree, ImageIcon, Plus, Search } from "lucide-react";
+import { BookOpenText, Download, FolderTree, ImageIcon, Plus, Search } from "lucide-react";
 import { backendGet } from "@/lib/api/backend-get";
 import { getAccessTokenCookie } from "@/lib/auth/cookies";
 import type { ArticleListResponse, ArticleStatus, ContentCategory } from "@/features/content/types";
@@ -48,6 +48,7 @@ export default async function ContentHome({ searchParams }: { searchParams: Prom
       <div className="flex flex-wrap items-start justify-between gap-5">
         <div><h1 className="text-2xl font-black text-slate-950">مدیریت محتوا</h1><p className="mt-2 text-sm leading-6 text-slate-500">مقاله‌ها را جست‌وجو، فیلتر، ویرایش و در چرخهٔ تحریریه منتشر کنید.</p></div>
         <div className="flex flex-wrap gap-2">
+          <a href="/api/backend/content/articles/export.csv" download="iranplaza-articles.csv" className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold"><Download className="size-4" />دانلود CSV</a>
           <Link href="/content/categories" className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold"><FolderTree className="size-4" />دسته‌ها و برچسب‌ها</Link>
           <Link href="/content/media" className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold"><ImageIcon className="size-4" />کتابخانه رسانه</Link>
           <Link href="/content/articles/new" className="inline-flex items-center gap-2 rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-bold text-white shadow-sm"><Plus className="size-4" />مقاله جدید</Link>

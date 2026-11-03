@@ -17,6 +17,11 @@ test('BFF refreshes after rejection without replaying mutations, hides cookies a
     if(req.url==='/api/auth/refresh')return res.end(JSON.stringify({accessToken:'valid',refreshToken:'rotated'}));
     if(req.headers.authorization!=='Bearer valid'){res.statusCode=401;return res.end('{}');}
     res.setHeader('Set-Cookie','upstream=not-forwarded');
+    if(req.url==='/api/content/articles/export.csv'){
+      res.setHeader('Content-Type','text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition','attachment; filename="iranplaza-articles.csv"');
+      return res.end(Buffer.from('\uFEFF"عنوان مقاله","دسته‌بندی‌ها"\r\n','utf8'));
+    }
     res.end(JSON.stringify({ok:true}));
   });
   server.listen(0,'127.0.0.1');await once(server,'listening');
@@ -40,6 +45,10 @@ test('BFF refreshes after rejection without replaying mutations, hides cookies a
     assert.equal(forwardedReads[0].headers['x-iranplaza-client-ip'],'5.202.138.212');
     assert.equal(forwardedReads[1].headers['x-iranplaza-client-ip'],'5.202.138.212');
     assert.equal(stored,2);assert.equal(read.headers.get('set-cookie'),null);
+    const csv=await route.GET(new NextRequest('http://frontend.invalid/api/backend/content/articles/export.csv'),{params:Promise.resolve({path:['content','articles','export.csv']})});
+    assert.equal(csv.status,200);assert.equal(csv.headers.get('content-disposition'),'attachment; filename="iranplaza-articles.csv"');
+    assert.match(csv.headers.get('content-type'),/^text\/csv;\s*charset=utf-8$/i);
+    const csvBody=Buffer.from(await csv.arrayBuffer());assert.equal(csvBody.subarray(0,3).toString('hex'),'efbbbf');
     const invalid=await route.GET(new NextRequest('http://frontend.invalid/api/backend/probe'),{params:Promise.resolve({path:['..','private']})});assert.equal(invalid.status,400);
   } finally {server.closeAllConnections();await new Promise(resolve=>server.close(resolve));if(originalUrl===undefined)delete process.env.BACKEND_INTERNAL_URL;else process.env.BACKEND_INTERNAL_URL=originalUrl;}
 });

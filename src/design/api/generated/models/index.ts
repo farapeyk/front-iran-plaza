@@ -328,6 +328,8 @@ export * from './contentControllerCreateCategory409';
 export * from './contentControllerDeleteBanner401';
 export * from './contentControllerDeleteBanner403';
 export * from './contentControllerDeleteBanner404';
+export * from './contentControllerExportCsv401';
+export * from './contentControllerExportCsv403';
 export * from './contentControllerFeedback401';
 export * from './contentControllerFeedback403';
 export * from './contentControllerFeedbackParams';
