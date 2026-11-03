@@ -29,7 +29,7 @@ function TextBlock({ block }: { block: ArticleBlock }) {
 }
 
 function ArticleBannerView({ banner, compact = false }: { banner: ArticleBanner; compact?: boolean }) {
-  return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="relative block overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50"><Image width={compact ? 560 : 1200} height={compact ? 420 : 240} sizes={compact ? "280px" : "(min-width: 1024px) 760px, 100vw"} src={fileUrl(banner.imageId)} alt={banner.altText} className={`h-auto w-full object-contain ${compact ? "max-h-72" : "max-h-60"}`} /></a>;
+  return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="relative block overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50"><Image unoptimized width={compact ? 560 : 1200} height={compact ? 420 : 240} sizes={compact ? "280px" : "(min-width: 1024px) 760px, 100vw"} src={fileUrl(banner.imageId)} alt={banner.altText} className={`h-auto w-full object-contain ${compact ? "max-h-72" : "max-h-60"}`} /></a>;
 }
 
 function ArticleTableView({ block }: { block: ArticleBlock }) {

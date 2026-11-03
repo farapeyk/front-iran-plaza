@@ -43,6 +43,8 @@ export type ArticleBanner = {
   altText: string;
   targetUrl: string;
   placement: "TOP" | "SIDEBAR";
+  showOnAllArticles: boolean;
+  articleIds: string[];
   isActive?: boolean;
   startsAt?: string | null;
   endsAt?: string | null;

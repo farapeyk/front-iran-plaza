@@ -76,6 +76,7 @@ async function main() {
   fixtures['/api/content/categories']=[];
   fixtures['/api/content/articles/'+article.id]={...article,revision:1,reviewNote:null,submittedAt:null,approvedAt:null};
   fixtures['/api/content/articles/'+article.id+'/revisions']=[];
+  fixtures['/api/content/articles?limit=50&page=1']={data:[{id:article.id,title:article.title,status:'PUBLISHED'}],total:1,page:1,limit:50};
   const requestedPaths=[];
   const backend = http.createServer((req, res) => {
     requestedPaths.push(req.url);
@@ -179,6 +180,8 @@ async function main() {
     );
     assert.ok(bannerManagerHtml.includes('بنرهای مقاله'));
     assert.ok(bannerManagerHtml.includes('بنر جدید'));
+    assert.ok(bannerManagerHtml.includes('image/gif'));
+    assert.ok(bannerManagerHtml.includes('نمایش در همه مقاله‌ها'));
     const articleEditor=await fetch(origin+'/content/articles/'+article.id,{headers,redirect:'manual'});
     const articleEditorHtml=await articleEditor.text();
     assert.equal(
