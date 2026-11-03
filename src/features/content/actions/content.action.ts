@@ -4,14 +4,23 @@ import { revalidatePath } from "next/cache";
 import { authedFetch } from "@/features/business/actions/authed-fetch";
 import { normalizeCanonicalUrl } from "@/features/content/lib/canonical-url";
 import { articlePath } from "@/features/content/lib/public-paths";
+import { backendGet, BackendError } from "@/lib/api/backend-get";
+import { getActionAccessToken } from "@/lib/auth/action-access-token";
 import type { ArticleBanner, ArticleBlock, ArticleFaq, ArticleListResponse, ArticleSchemaType, ContentIdentity, EditorArticle } from "@/features/content/types";
 
 export async function searchBannerArticlesAction(search: string) {
-  const identity = await authedFetch<ContentIdentity>("/api/content/me", "GET");
-  if (!identity.success) return identity;
-  if (!identity.data.canPublish) return { success: false as const, message: "دسترسی لازم برای مدیریت بنرها را ندارید." };
+  const token = await getActionAccessToken();
+  if (!token) return { success: false as const, message: "نشست شما منقضی شده، دوباره وارد شوید." };
   const query = new URLSearchParams({ limit: "50", page: "1", search: search.trim().slice(0, 120) });
-  return authedFetch<ArticleListResponse>(`/api/content/articles?${query.toString()}`, "GET");
+  try {
+    const identity = await backendGet<ContentIdentity>("/api/content/me", token);
+    if (!identity.canPublish) return { success: false as const, message: "دسترسی لازم برای مدیریت بنرها را ندارید." };
+    const data = await backendGet<ArticleListResponse>(`/api/content/articles?${query.toString()}`, token);
+    return { success: true as const, data };
+  } catch (error) {
+    const status = error instanceof BackendError ? error.status : 0;
+    return { success: false as const, message: status === 401 ? "نشست شما منقضی شده، دوباره وارد شوید." : "جستجوی مقاله‌ها انجام نشد. دوباره تلاش کنید." };
+  }
 }
 
 export type ArticleInput = {

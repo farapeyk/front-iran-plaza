@@ -152,11 +152,14 @@ test('canonical article URLs gain https when omitted and reject relative or unsa
 
 test('article actions send normalized canonical URLs and stop invalid ones locally', async () => {
   const calls=[];
+  const reads=[];
   const canonical=load('src/features/content/lib/canonical-url.ts');
   const actions=load('src/features/content/actions/content.action.ts',{
     '@/features/business/actions/authed-fetch':{authedFetch:async(path,method,body)=>{calls.push({path,method,body});return {success:true,data:{id:'article_1',slug:body.slug}};}},
     '@/features/content/lib/canonical-url':canonical,
     '@/features/content/lib/public-paths':publicPaths,
+    '@/lib/api/backend-get':{BackendError:class BackendError extends Error{},backendGet:async(path,token)=>{reads.push({path,token});return path==='/api/content/me'?{canPublish:true}:{data:[{id:'article_1',title:'عنوان تست',status:'PUBLISHED'}],total:1,page:1,limit:50};}},
+    '@/lib/auth/action-access-token':{getActionAccessToken:async()=> 'editor-token'},
     'next/cache':{revalidatePath:()=>{}},
   });
   const input={title:'Article title',slug:'article-title',excerpt:'A valid article excerpt.',bodyBlocks:[],canonicalUrl:'iranplaza.ir/article-title/'};
@@ -165,6 +168,12 @@ test('article actions send normalized canonical URLs and stop invalid ones local
   const invalid=await actions.createArticleAction({...input,canonicalUrl:'/articles/article-title'});
   assert.equal(invalid.success,false);
   assert.equal(calls.length,1);
+  const search=await actions.searchBannerArticlesAction('عنوان تست');
+  assert.equal(search.success,true);
+  assert.deepEqual(reads,[
+    {path:'/api/content/me',token:'editor-token'},
+    {path:'/api/content/articles?limit=50&page=1&search=%D8%B9%D9%86%D9%88%D8%A7%D9%86+%D8%AA%D8%B3%D8%AA',token:'editor-token'},
+  ]);
 });
 
 test('article validation names every invalid field and explains the expected value in Persian', () => {
