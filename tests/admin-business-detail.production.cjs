@@ -131,6 +131,11 @@ async function main() {
     const articleHtml=await articleResponse.text();
     assert.equal(articleResponse.status,200);
     assert.ok(articleHtml.includes('Registered Shiraz restaurant'));
+    assert.ok(articleHtml.includes('data-slot="article-business-list"'));
+    assert.ok(articleHtml.includes('data-slot="article-business-card"'));
+    assert.ok(articleHtml.includes('href="tel:09120000000"'));
+    assert.ok(articleHtml.includes('href="/businesses/'+publicSlug+'"'));
+    assert.equal(articleHtml.includes('>Ads<'),false);
     assert.ok(articleHtml.includes('Rich editorial text'));
     assert.ok(articleHtml.includes('Call now'));
     assert.ok(articleHtml.includes('Top article banner'));

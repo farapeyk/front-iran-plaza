@@ -940,6 +940,8 @@ src/features/business/types/business-profile.ts
 src/features/content/actions/content.action.ts
 src/features/content/actions/feedback.action.ts
 src/features/content/components/article-banner-manager.tsx
+src/features/content/components/article-business-list.module.css
+src/features/content/components/article-business-list.tsx
 src/features/content/components/article-editor-form.tsx
 src/features/content/components/article-editor-insights.tsx
 src/features/content/components/article-feedback-form.tsx
@@ -1043,6 +1045,7 @@ tests/admin-business-detail.production.cjs
 tests/admin-business-detail.test.cjs
 tests/admin-business-management.test.cjs
 tests/admin-routing.test.cjs
+tests/article-business-list.test.cjs
 tests/article-seo-audit.test.cjs
 tests/article-seo.test.cjs
 tests/browser/design-transfer.spec.ts

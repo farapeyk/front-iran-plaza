@@ -14,18 +14,17 @@ test('CIP badge keeps the requested black and gold treatment', () => {
 
 test('CIP renders independently of VIP on profiles and editorial business lists', () => {
   const card = read('src/design/components/business-list-card.tsx');
-  const article = read('src/features/content/components/article-public-page.tsx');
+  const article = read('src/features/content/components/article-business-list.tsx');
   const profile = read('src/features/public/components/business-profile-summary.tsx');
   assert.ok((card.match(/business\.isCip\s*&&\s*<CipBadge/g) || []).length >= 4);
-  assert.match(article, /isCip:\s*business\.isCip/);
+  assert.match(article, /business\.isCip\s*\?\s*<CipBadge/);
   assert.match(profile, /isCip\s*&&\s*<CipBadge/);
 });
 
 test('editorial business lists link free businesses to their public profiles', () => {
-  const card = read('src/design/components/business-list-card.tsx');
-  const article = read('src/features/content/components/article-public-page.tsx');
-  assert.equal((article.match(/showFreeProfileLink/g) || []).length, 2);
-  assert.equal((card.match(/showFreeProfileLink\s*&&\s*profileBtn/g) || []).length, 2);
+  const article = read('src/features/content/components/article-business-list.tsx');
+  assert.match(article, /const href = `\/businesses\/\$\{business\.slug\}`/);
+  assert.match(article, /مشاهده پروفایل/);
 });
 
 test('admin CIP control sends an explicit boolean to the dedicated endpoint', () => {

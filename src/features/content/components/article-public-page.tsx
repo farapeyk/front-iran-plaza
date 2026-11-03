@@ -1,7 +1,6 @@
 import { SiteLayout } from "@/design/components/site-layout";
 import { Breadcrumb } from "@/design/components/breadcrumb";
 import { TableOfContent } from "@/design/components/table-of-content";
-import { BusinessListCard } from "@/design/components/business-list-card";
 import { RegistrationBanner } from "@/design/components/registration-banner";
 import { ArticleCard } from "@/design/components/article-card";
 import Image from "next/image";
@@ -13,6 +12,7 @@ import { displayArticleExcerpt, withoutDuplicateLeadingExcerpt, withoutLegacyArt
 import type { ArticleBanner, ArticleBlock, PublicArticle, PublicArticleListItem } from "@/features/content/types";
 import { buildArticleStructuredData } from "@/features/seo/article-seo";
 import { JsonLd } from "@/features/seo/json-ld";
+import { ArticleBusinessList } from "@/features/content/components/article-business-list";
 
 const fileUrl = (id: string) => `/api/backend/files/${encodeURIComponent(id)}`;
 
@@ -87,16 +87,7 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath,
               }
               if (block.type === "business-list") {
                 const businesses = (block.businessIds ?? []).map(id => businessById.get(id)).filter((item): item is NonNullable<typeof item> => Boolean(item));
-                return (
-                  <section key={block.id} id={block.id} className="space-y-3">
-                    {block.listTitle ? <h2 className="text-2xl font-black text-[var(--text-title)]">{block.listTitle}</h2> : null}
-                    {businesses.map(business => {
-                      const vip = business.planType === "VIP" && Boolean(business.planExpiryDate && new Date(business.planExpiryDate) > new Date());
-                      const card = { id: business.id, name: business.name, description: business.description || "", location: [business.city, business.neighborhood, business.address].filter(Boolean).join("، "), image: business.logoId ? fileUrl(business.logoId) : "/design/icons/briefcase.svg", vip, isCip: business.isCip, status: vip ? "vip" as const : "free" as const, href: `/businesses/${business.slug}`, phone: business.phone };
-                      return <div key={business.id}><BusinessListCard business={card} layout="desktop" className="hidden max-w-none lg:flex" showFreeProfileLink /><BusinessListCard business={card} layout="mobile" className="max-w-none lg:hidden" showFreeProfileLink /></div>;
-                    })}
-                  </section>
-                );
+                return <div key={block.id} id={block.id}><ArticleBusinessList businesses={businesses} title={block.listTitle} /></div>;
               }
               if (block.type === "table") return <ArticleTableView key={block.id} block={block} />;
               return <TextBlock key={block.id} block={block} />;
