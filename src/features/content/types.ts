@@ -43,6 +43,8 @@ export type ArticleBanner = {
   altText: string;
   targetUrl: string;
   placement: "TOP" | "SIDEBAR";
+  displayMode?: "FULL" | "MATCH_FEATURED";
+  image?: { width: number | null; height: number | null };
   showOnAllArticles: boolean;
   articleIds: string[];
   isActive?: boolean;

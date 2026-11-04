@@ -141,3 +141,16 @@ test('article preview and edit controls are wired to authenticated editorial dat
   assert.match(publicPage, /ویرایش این مقاله/u);
   assert.match(editor, /پیش‌نمایش قالب اصلی/u);
 });
+
+test('article banners support full-image and featured-image display sizes', () => {
+  const root = path.join(__dirname, '..');
+  const publicPage = fs.readFileSync(path.join(root, 'src/features/content/components/article-public-page.tsx'), 'utf8');
+  const manager = fs.readFileSync(path.join(root, 'src/features/content/components/article-banner-manager.tsx'), 'utf8');
+
+  assert.match(publicPage, /banner\.displayMode === "FULL"/u);
+  assert.match(publicPage, /banner\.image\?\.width/u);
+  assert.match(publicPage, /aspect-\[16\/9\].*object-cover/u);
+  assert.match(manager, /value\.displayMode \?\? "MATCH_FEATURED"/u);
+  assert.match(manager, /value="FULL">نمایش کامل با نسبت اصلی تصویر/u);
+  assert.match(manager, /value="MATCH_FEATURED">هم‌اندازهٔ تصویر شاخص مقاله/u);
+});

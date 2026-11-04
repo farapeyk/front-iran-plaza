@@ -5,6 +5,7 @@
  * Iran Plaza backend API
  * OpenAPI spec version: 0.1
  */
+import type { CreateArticleBannerDtoDisplayMode } from './createArticleBannerDtoDisplayMode';
 import type { CreateArticleBannerDtoPlacement } from './createArticleBannerDtoPlacement';
 
 export interface CreateArticleBannerDto {
@@ -14,6 +15,11 @@ export interface CreateArticleBannerDto {
   altText: string;
   targetUrl: string;
   placement: CreateArticleBannerDtoPlacement;
+  displayMode?: CreateArticleBannerDtoDisplayMode;
+  /** نمایش بنر در همه مقاله‌ها */
+  showOnAllArticles?: boolean;
+  /** شناسه مقاله‌های منتخب برای نمایش بنر */
+  articleIds?: string[];
   isActive?: boolean;
   /**
      * زمان شروع نمایش به فرمت ISO 8601؛ null برای حذف زمان‌بندی

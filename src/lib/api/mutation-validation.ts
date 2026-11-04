@@ -85,6 +85,7 @@ const articleBanner = z.object({
   altText: z.string().trim().min(2).max(160),
   targetUrl: z.url().max(500).refine(value => /^https?:\/\//i.test(value), 'آدرس مقصد بنر باید با http یا https شروع شود'),
   placement: z.enum(['TOP', 'SIDEBAR']),
+  displayMode: z.enum(['FULL', 'MATCH_FEATURED']).optional(),
   showOnAllArticles: z.boolean().optional(),
   articleIds: z.array(id).max(500).optional(),
   isActive: z.boolean().optional(),

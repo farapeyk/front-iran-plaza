@@ -57,6 +57,9 @@ test('frontend contract keeps the reviewed backend names and operations, with co
   assert.equal(articleBlock.properties.businessIds.items.type, 'string');
   assert.equal(articleBlock.properties.listTitle.type, 'string');
   assert.equal(schema.components.schemas.ArticleFaqDto.properties.isActive.type, 'boolean');
+  assert.deepEqual(schema.components.schemas.CreateArticleBannerDto.properties.displayMode.enum, ['FULL', 'MATCH_FEATURED']);
+  assert.equal(schema.components.schemas.CreateArticleBannerDto.properties.displayMode.default, 'MATCH_FEATURED');
+  assert.deepEqual(schema.components.schemas.UpdateArticleBannerDto.properties.displayMode.enum, ['FULL', 'MATCH_FEATURED']);
   const createArticle = schema.components.schemas.CreateArticleDto;
   for (const field of ['title', 'slug', 'excerpt', 'bodyBlocks']) assert.ok(createArticle.required.includes(field));
   assert.equal(createArticle.properties.excerpt.maxLength, 5000);

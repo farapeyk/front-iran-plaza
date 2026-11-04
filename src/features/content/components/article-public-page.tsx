@@ -29,7 +29,13 @@ function TextBlock({ block }: { block: ArticleBlock }) {
 }
 
 function ArticleBannerView({ banner, compact = false }: { banner: ArticleBanner; compact?: boolean }) {
-  return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="relative block overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50"><Image unoptimized width={compact ? 560 : 1200} height={compact ? 420 : 240} sizes={compact ? "280px" : "(min-width: 1024px) 760px, 100vw"} src={fileUrl(banner.imageId)} alt={banner.altText} className={`h-auto w-full object-contain ${compact ? "max-h-72" : "max-h-60"}`} /></a>;
+  if (!compact && banner.displayMode === "FULL") {
+    return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="block overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50"><Image unoptimized width={banner.image?.width || 1200} height={banner.image?.height || 675} sizes="(min-width: 1024px) 760px, 100vw" src={fileUrl(banner.imageId)} alt={banner.altText} className="h-auto w-full" /></a>;
+  }
+  if (!compact) {
+    return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="relative block aspect-[16/9] overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50"><Image unoptimized fill sizes="(min-width: 1024px) 760px, 100vw" src={fileUrl(banner.imageId)} alt={banner.altText} className="object-cover" /></a>;
+  }
+  return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="relative block overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50"><Image unoptimized width={560} height={420} sizes="280px" src={fileUrl(banner.imageId)} alt={banner.altText} className="h-auto max-h-72 w-full object-contain" /></a>;
 }
 
 function ArticleTableView({ block }: { block: ArticleBlock }) {

@@ -10,6 +10,11 @@ import type { ContentControllerListStatus } from './contentControllerListStatus'
 
 export type ContentControllerListParams = {
 search?: string;
+/**
+ * Filter editorial articles by title only.
+ * @maxLength 120
+ */
+title?: string;
 status?: ContentControllerListStatus;
 categoryId?: string;
 mine?: boolean;

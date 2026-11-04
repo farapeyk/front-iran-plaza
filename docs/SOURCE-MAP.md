@@ -498,6 +498,7 @@ src/design/api/generated/models/contentControllerUpdateCategory403.ts
 src/design/api/generated/models/contentControllerUpdateCategory404.ts
 src/design/api/generated/models/contentControllerUpdateCategory409.ts
 src/design/api/generated/models/createArticleBannerDto.ts
+src/design/api/generated/models/createArticleBannerDtoDisplayMode.ts
 src/design/api/generated/models/createArticleBannerDtoPlacement.ts
 src/design/api/generated/models/createArticleCategoryDto.ts
 src/design/api/generated/models/createArticleDto.ts
@@ -641,6 +642,7 @@ src/design/api/generated/models/trackEventDtoMetadata.ts
 src/design/api/generated/models/trackEventDtoType.ts
 src/design/api/generated/models/trackingControllerTrack201.ts
 src/design/api/generated/models/updateArticleBannerDto.ts
+src/design/api/generated/models/updateArticleBannerDtoDisplayMode.ts
 src/design/api/generated/models/updateArticleBannerDtoPlacement.ts
 src/design/api/generated/models/updateAdminUserDto.ts
 src/design/api/generated/models/updateAdminUserDtoUserType.ts

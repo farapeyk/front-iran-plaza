@@ -196,9 +196,17 @@
       "TOP",
       "SIDEBAR"
     ],
+    "schemas/CreateArticleBannerDto/properties/displayMode": [
+      "FULL",
+      "MATCH_FEATURED"
+    ],
     "schemas/UpdateArticleBannerDto/properties/placement": [
       "TOP",
       "SIDEBAR"
+    ],
+    "schemas/UpdateArticleBannerDto/properties/displayMode": [
+      "FULL",
+      "MATCH_FEATURED"
     ],
     "schemas/ArticleBlockDto/properties/level": [
       2,

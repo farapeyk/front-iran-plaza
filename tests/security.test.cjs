@@ -115,7 +115,7 @@ test('content CMS mutations are allowlisted and validated before reaching the ba
   assert.equal(validateMutation('/api/content/articles/article_1/approve', 'POST', {}), null);
   assert.equal(validateMutation('/api/content/articles/article_1/publish', 'POST', undefined), null);
   assert.equal(validateMutation('/api/content/feedback/feedback_1', 'PATCH', { status: 'APPROVED' }), null);
-  const banner = { title: 'Article banner', imageId: 'file_1', altText: 'Banner description', targetUrl: 'https://iranplaza.ir/register', placement: 'TOP', isActive: true, startsAt: '2026-10-14T12:00:00.000Z', endsAt: null, sortOrder: 1 };
+  const banner = { title: 'Article banner', imageId: 'file_1', altText: 'Banner description', targetUrl: 'https://iranplaza.ir/register', placement: 'TOP', displayMode: 'MATCH_FEATURED', isActive: true, startsAt: '2026-10-14T12:00:00.000Z', endsAt: null, sortOrder: 1 };
   assert.equal(validateMutation('/api/content/banners', 'POST', banner), null);
   assert.equal(validateMutation('/api/content/banners/banner_1', 'PATCH', { isActive: false }), null);
   assert.equal(validateMutation('/api/content/banners/banner_1', 'DELETE', undefined), null);
@@ -133,6 +133,7 @@ test('content CMS mutations are allowlisted and validated before reaching the ba
   assert.ok(validateMutation('/api/content/articles/article_1/request-changes', 'POST', {}));
   assert.ok(validateMutation('/api/content/feedback/feedback_1', 'PATCH', { status: 'PENDING' }));
   assert.ok(validateMutation('/api/content/banners', 'POST', { ...banner, targetUrl: 'javascript:alert(1)' }));
+  assert.ok(validateMutation('/api/content/banners', 'POST', { ...banner, displayMode: 'UNKNOWN' }));
   assert.ok(validateMutation('/api/content/articles', 'POST', { ...article, bodyBlocks: [{ id: 'bad-table', type: 'table', table: { headers: ['One', 'Two'], rows: [{ cells: ['Only one'] }] } }] }));
 });
 

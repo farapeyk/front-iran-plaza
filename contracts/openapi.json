@@ -20250,6 +20250,16 @@
             }
           },
           {
+            "name": "title",
+            "required": false,
+            "in": "query",
+            "description": "Filter editorial articles by title only.",
+            "schema": {
+              "maxLength": 120,
+              "type": "string"
+            }
+          },
+          {
             "name": "status",
             "required": false,
             "in": "query",
@@ -28175,6 +28185,27 @@
               "SIDEBAR"
             ]
           },
+          "displayMode": {
+            "type": "string",
+            "enum": [
+              "FULL",
+              "MATCH_FEATURED"
+            ],
+            "default": "MATCH_FEATURED"
+          },
+          "showOnAllArticles": {
+            "type": "boolean",
+            "default": true,
+            "description": "نمایش بنر در همه مقاله‌ها"
+          },
+          "articleIds": {
+            "default": [],
+            "description": "شناسه مقاله‌های منتخب برای نمایش بنر",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "isActive": {
             "type": "boolean",
             "default": true
@@ -28226,6 +28257,27 @@
               "TOP",
               "SIDEBAR"
             ]
+          },
+          "displayMode": {
+            "type": "string",
+            "enum": [
+              "FULL",
+              "MATCH_FEATURED"
+            ],
+            "default": "MATCH_FEATURED"
+          },
+          "showOnAllArticles": {
+            "type": "boolean",
+            "default": true,
+            "description": "نمایش بنر در همه مقاله‌ها"
+          },
+          "articleIds": {
+            "default": [],
+            "description": "شناسه مقاله‌های منتخب برای نمایش بنر",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "isActive": {
             "type": "boolean",

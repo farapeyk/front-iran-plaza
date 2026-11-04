@@ -115,6 +115,7 @@ export type ArticleBannerInput = {
   altText: string;
   targetUrl: string;
   placement: "TOP" | "SIDEBAR";
+  displayMode?: "FULL" | "MATCH_FEATURED";
   showOnAllArticles?: boolean;
   articleIds?: string[];
   isActive?: boolean;
