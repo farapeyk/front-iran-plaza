@@ -8,10 +8,10 @@ import { backendGet, BackendError } from "@/lib/api/backend-get";
 import { getActionAccessToken } from "@/lib/auth/action-access-token";
 import type { ArticleBanner, ArticleBlock, ArticleFaq, ArticleListResponse, ArticleSchemaType, ContentIdentity, EditorArticle } from "@/features/content/types";
 
-export async function searchBannerArticlesAction(search: string) {
+export async function searchBannerArticlesAction(search: string, page = 1) {
   const token = await getActionAccessToken();
   if (!token) return { success: false as const, message: "نشست شما منقضی شده، دوباره وارد شوید." };
-  const query = new URLSearchParams({ limit: "50", page: "1", search: search.trim().slice(0, 120) });
+  const query = new URLSearchParams({ limit: "50", page: String(Math.max(1, Math.min(Math.trunc(page) || 1, 100000))), title: search.trim().slice(0, 120) });
   try {
     const identity = await backendGet<ContentIdentity>("/api/content/me", token);
     if (!identity.canPublish) return { success: false as const, message: "دسترسی لازم برای مدیریت بنرها را ندارید." };

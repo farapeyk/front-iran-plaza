@@ -172,7 +172,7 @@ test('article actions send normalized canonical URLs and stop invalid ones local
   assert.equal(search.success,true);
   assert.deepEqual(reads,[
     {path:'/api/content/me',token:'editor-token'},
-    {path:'/api/content/articles?limit=50&page=1&search=%D8%B9%D9%86%D9%88%D8%A7%D9%86+%D8%AA%D8%B3%D8%AA',token:'editor-token'},
+    {path:'/api/content/articles?limit=50&page=1&title=%D8%B9%D9%86%D9%88%D8%A7%D9%86+%D8%AA%D8%B3%D8%AA',token:'editor-token'},
   ]);
 });
 

@@ -27,7 +27,9 @@ function BannerImageUpload({ imageId, alt, onChange }: { imageId: string; alt: s
 
 function BannerFields({ value, onChange, articles }: { value: ArticleBannerInput; onChange: (value: ArticleBannerInput) => void; articles: BannerArticle[] }) {
   const [articleSearch, setArticleSearch] = useState("");
+  const [articlePage, setArticlePage] = useState(1);
   const [searchResults, setSearchResults] = useState(articles);
+  const [resultTotal, setResultTotal] = useState(articles.length);
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState("");
   useEffect(() => {
@@ -36,14 +38,18 @@ function BannerFields({ value, onChange, articles }: { value: ArticleBannerInput
     const timer = window.setTimeout(async () => {
       setSearching(true);
       setSearchError("");
-      const result = await searchBannerArticlesAction(articleSearch);
+      setSearchResults([]);
+      const result = await searchBannerArticlesAction(articleSearch, articlePage);
       if (cancelled) return;
-      if (result.success) setSearchResults(result.data.data.map(({ id, title, status }) => ({ id, title, status })));
+      if (result.success) {
+        setSearchResults(result.data.data.map(({ id, title, status }) => ({ id, title, status })));
+        setResultTotal(result.data.total);
+      }
       else setSearchError(result.message);
       setSearching(false);
     }, 250);
     return () => { cancelled = true; window.clearTimeout(timer); };
-  }, [articleSearch, value.showOnAllArticles]);
+  }, [articleSearch, articlePage, value.showOnAllArticles]);
   const update = <K extends keyof ArticleBannerInput>(key: K, next: ArticleBannerInput[K]) => onChange({ ...value, [key]: next });
   const toggleArticle = (id: string) => update("articleIds", value.articleIds?.includes(id) ? value.articleIds.filter(item => item !== id) : [...(value.articleIds ?? []), id]);
   return <div className="grid gap-4 md:grid-cols-2">
@@ -54,7 +60,7 @@ function BannerFields({ value, onChange, articles }: { value: ArticleBannerInput
     <label className="space-y-1"><span>محل نمایش</span><select value={value.placement} onChange={event => update("placement", event.target.value as ArticleBannerInput["placement"])} className={fieldClass}><option value="TOP">بالای تصویر اصلی</option><option value="SIDEBAR">سایدبار، زیر ثبت کسب‌وکار</option></select></label>
     <label className="space-y-1"><span>اولویت نمایش</span><input type="number" min={0} value={value.sortOrder ?? 0} onChange={event => update("sortOrder", Number(event.target.value))} className={fieldClass} /></label>
     <div className="space-y-3 rounded-md border p-3 md:col-span-2"><label className="flex items-center gap-2"><input type="checkbox" checked={value.showOnAllArticles ?? true} onChange={event => update("showOnAllArticles", event.target.checked)} />نمایش در همه مقاله‌ها</label>
-      {!value.showOnAllArticles ? <fieldset className="space-y-2"><legend className="text-sm font-medium">مقاله‌های موردنظر را انتخاب کنید</legend><input type="search" value={articleSearch} onChange={event => setArticleSearch(event.target.value)} placeholder="جستجوی مقاله بر اساس عنوان..." aria-label="جستجوی مقاله‌ها" className={fieldClass} /><p className="text-xs text-neutral-500">{value.articleIds?.length ?? 0} مقاله انتخاب شده</p>{searchError ? <p role="alert" className="text-sm text-red-700">{searchError}</p> : null}<div aria-busy={searching} className="max-h-56 space-y-1 overflow-y-auto rounded border p-2">{searchResults.map(article => <label key={article.id} className="flex items-center gap-2 rounded px-2 py-1 text-sm hover:bg-neutral-50"><input type="checkbox" checked={value.articleIds?.includes(article.id) ?? false} onChange={() => toggleArticle(article.id)} /><span>{article.title}</span><small className="text-neutral-500">{statusLabel[article.status]}</small></label>)}{searching ? <p className="p-2 text-sm text-neutral-500">در حال جستجو...</p> : null}{!searching && searchResults.length === 0 ? <p className="p-2 text-sm text-neutral-500">مقاله‌ای پیدا نشد.</p> : null}</div></fieldset> : <p className="text-xs text-neutral-500">بنر در همه صفحه‌های مقاله‌ای که نمایش بنر در آن‌ها فعال است، نمایش داده می‌شود.</p>}
+      {!value.showOnAllArticles ? <fieldset className="space-y-2"><legend className="text-sm font-medium">مقاله‌های موردنظر را انتخاب کنید</legend><input type="search" value={articleSearch} onChange={event => { setArticleSearch(event.target.value); setArticlePage(1); }} placeholder="جستجوی مقاله بر اساس عنوان..." aria-label="جستجوی مقاله‌ها" className={fieldClass} /><p className="text-xs text-neutral-500">{value.articleIds?.length ?? 0} مقاله انتخاب شده · {resultTotal.toLocaleString("fa-IR")} نتیجه</p>{searchError ? <p role="alert" className="text-sm text-red-700">{searchError}</p> : null}<div aria-busy={searching} className="max-h-56 space-y-1 overflow-y-auto rounded border p-2">{searchResults.map(article => <label key={article.id} className="flex items-center gap-2 rounded px-2 py-1 text-sm hover:bg-neutral-50"><input type="checkbox" checked={value.articleIds?.includes(article.id) ?? false} onChange={() => toggleArticle(article.id)} /><span>{article.title}</span><small className="text-neutral-500">{statusLabel[article.status]}</small></label>)}{searching ? <p className="p-2 text-sm text-neutral-500">در حال جستجو...</p> : null}{!searching && searchResults.length === 0 ? <p className="p-2 text-sm text-neutral-500">مقاله‌ای پیدا نشد.</p> : null}</div>{resultTotal > 50 ? <div className="flex items-center justify-between text-sm"><button type="button" disabled={searching || articlePage <= 1} onClick={() => setArticlePage(page => Math.max(1, page - 1))} className="rounded border px-3 py-1 disabled:opacity-50">قبلی</button><span>صفحه {articlePage.toLocaleString("fa-IR")}</span><button type="button" disabled={searching || articlePage * 50 >= resultTotal} onClick={() => setArticlePage(page => page + 1)} className="rounded border px-3 py-1 disabled:opacity-50">بعدی</button></div> : null}</fieldset> : <p className="text-xs text-neutral-500">بنر در همه صفحه‌های مقاله‌ای که نمایش بنر در آن‌ها فعال است، نمایش داده می‌شود.</p>}
     </div>
     <label className="space-y-1"><span>شروع نمایش (اختیاری)</span><input type="datetime-local" value={typeof value.startsAt === "string" ? localDate(value.startsAt) : ""} onChange={event => update("startsAt", isoDate(event.target.value))} className={fieldClass} /></label>
     <label className="space-y-1"><span>پایان نمایش (اختیاری)</span><input type="datetime-local" value={typeof value.endsAt === "string" ? localDate(value.endsAt) : ""} onChange={event => update("endsAt", isoDate(event.target.value))} className={fieldClass} /></label>

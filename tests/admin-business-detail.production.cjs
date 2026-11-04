@@ -13,8 +13,10 @@ async function main() {
   const bannerManagerSource = fs.readFileSync(path.resolve(__dirname, '../src/features/content/components/article-banner-manager.tsx'), 'utf8');
   const contentActionsSource = fs.readFileSync(path.resolve(__dirname, '../src/features/content/actions/content.action.ts'), 'utf8');
   assert.ok(bannerManagerSource.includes('جستجوی مقاله بر اساس عنوان'));
-  assert.ok(bannerManagerSource.includes('searchBannerArticlesAction(articleSearch)'));
+  assert.ok(bannerManagerSource.includes('searchBannerArticlesAction(articleSearch, articlePage)'));
   assert.ok(contentActionsSource.includes('backendGet<ArticleListResponse>(`/api/content/articles?${query.toString()}`, token)'));
+  assert.ok(contentActionsSource.includes('title: search.trim().slice(0, 120)'));
+  assert.ok(bannerManagerSource.includes('articlePage * 50 >= resultTotal'));
   const id = 'cmsfz4qtl00027msz3yr5z4nl';
   const mainPath = '/api/businesses/' + id;
   const publicSlug='نمایشگاه-ماشین-e823cb';
