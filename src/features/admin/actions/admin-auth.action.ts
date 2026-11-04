@@ -3,7 +3,8 @@
 import { validateAuthResponse } from '@/lib/auth/validate-auth-response';
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { setAuthCookies, clearAuthCookies } from "@/lib/auth/cookies";
+import { setAuthCookies } from "@/lib/auth/cookies";
+import { endAuthSession } from "@/lib/auth/logout";
 import { isAdminUser } from "@/lib/auth/roles";
 import type { VerifyOtpResponse } from "@/types/auth";
 import { getBackendUrl } from "@/lib/api/backend-url";
@@ -55,6 +56,6 @@ export async function adminLoginPasswordAction(input: unknown): Promise<AdminLog
 }
 
 export async function adminLogoutAction() {
-  await clearAuthCookies();
+  await endAuthSession();
   redirect("/admin/login");
 }

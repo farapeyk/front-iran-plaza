@@ -85,6 +85,7 @@ test('OTP and password login send both admin roles straight to admin, including 
     '@/lib/auth/roles': roles,
     '@/lib/auth/validate-auth-response': { validateAuthResponse: async value => value },
     '@/lib/auth/cookies': { setAuthCookies: async () => { writes++; }, clearAuthCookies: async () => {} },
+    '@/lib/auth/logout': { endAuthSession: async () => {} },
     'next/navigation': { redirect: destination => { throw new Error('REDIRECT:' + destination); } },
     '@/features/auth/schemas/otp.schema': load('src/features/auth/schemas/otp.schema.ts'),
     '@/lib/api/backend-url': { getBackendUrl: path => 'http://backend.invalid' + path },

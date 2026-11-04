@@ -641,11 +641,11 @@ src/design/api/generated/models/trackEventDto.ts
 src/design/api/generated/models/trackEventDtoMetadata.ts
 src/design/api/generated/models/trackEventDtoType.ts
 src/design/api/generated/models/trackingControllerTrack201.ts
+src/design/api/generated/models/updateAdminUserDto.ts
+src/design/api/generated/models/updateAdminUserDtoUserType.ts
 src/design/api/generated/models/updateArticleBannerDto.ts
 src/design/api/generated/models/updateArticleBannerDtoDisplayMode.ts
 src/design/api/generated/models/updateArticleBannerDtoPlacement.ts
-src/design/api/generated/models/updateAdminUserDto.ts
-src/design/api/generated/models/updateAdminUserDtoUserType.ts
 src/design/api/generated/models/updateArticleCategoryDto.ts
 src/design/api/generated/models/updateArticleDto.ts
 src/design/api/generated/models/updateArticleDtoSchemaType.ts
@@ -1026,6 +1026,7 @@ src/lib/api/page-fetch.ts
 src/lib/auth/action-access-token.ts
 src/lib/auth/cookies.ts
 src/lib/auth/get-current-user.ts
+src/lib/auth/logout.ts
 src/lib/auth/refresh-session.ts
 src/lib/auth/roles.ts
 src/lib/auth/safe-redirect.ts
@@ -1068,10 +1069,11 @@ tests/glob-security.test.cjs
 tests/helpers.cjs
 tests/http.test.cjs
 tests/image-crop.test.cjs
+tests/logout.test.cjs
 tests/mobile-search.test.cjs
 tests/onboarding.test.cjs
-tests/products.test.cjs
 tests/production-deployment.test.cjs
+tests/products.test.cjs
 tests/reviews.test.cjs
 tests/rich-text-links.test.cjs
 tests/rich-text-media.test.cjs
