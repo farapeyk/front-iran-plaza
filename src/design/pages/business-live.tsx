@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { MapPin, Phone, Share2 } from "lucide-react";
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { SiteLayout } from '@/design/components/site-layout';
 import { UserAvatar } from '@/design/components/user-avatar';
@@ -29,6 +29,8 @@ import { CipBadge } from '@/design/components/cip-badge';
 import type { BusinessProfileControllerGetFeatures200Item } from '@/design/api/generated/models/businessProfileControllerGetFeatures200Item';
 import { ReplyCommentSheet, type ReplyComment } from '@/design/components/reply-comment-sheet';
 import { BusinessProfileSummary } from '@/features/public/components/business-profile-summary';
+import { rememberRecentBusiness } from '@/design/lib/recent-businesses';
+import { useDesignUser } from '@/design/provider';
 
 const fileUrl=(id:string)=>'/api/backend/files/'+encodeURIComponent(id);
 function shareBusinessProfile(name:string,showMessage:(message:string)=>void) {
@@ -141,6 +143,7 @@ function BusinessOfferings({business}:{business:BusinessControllerGetFullBySlug2
 
 export function BusinessLivePage({business,reviews,favorited,features}:{business:BusinessControllerGetFullBySlug200;reviews:ReviewData[];favorited:boolean;features:BusinessProfileControllerGetFeatures200Item[]}) {
   const router=useRouter();
+  const user=useDesignUser();
   const [contact,setContact]=useState(false);
   const [galleryOpen,setGalleryOpen]=useState(false);
   const [rating,setRating]=useState(0);
@@ -152,6 +155,22 @@ export function BusinessLivePage({business,reviews,favorited,features}:{business
   const [galleryIndex,setGalleryIndex]=useState(0);
   const logo=business.logoId?fileUrl(business.logoId):'/design/icons/briefcase.svg';
   const activeVip=business.planType==='VIP'&&!!business.planExpiryDate&&new Date(business.planExpiryDate)>new Date();
+  useEffect(()=>{
+    if(!user?.id)return;
+    try {
+      rememberRecentBusiness(user.id,{
+        id:business.id,
+        slug:business.slug,
+        name:business.name,
+        description:business.description??'',
+        location:[business.city,business.neighborhood].filter(Boolean).join('، ')||business.address||'',
+        logoId:business.logoId,
+        vip:activeVip,
+      },window.localStorage);
+    } catch {
+      // Recent-visit tracking is optional; private browsing may disable storage.
+    }
+  },[activeVip,business.address,business.city,business.description,business.id,business.logoId,business.name,business.neighborhood,business.slug,user?.id]);
   const gallery=business.gallery.map(image=>({src:fileUrl(image.fileId),isVideo:false}));
   const ratedReviews=reviews.filter(review=>review.rating!=null); const average=ratedReviews.length?ratedReviews.reduce((sum,review)=>sum+(review.rating??0),0)/ratedReviews.length:0;
   const rotateGallery=(direction:number)=>setGalleryIndex(index=>(index+direction+gallery.length)%gallery.length);

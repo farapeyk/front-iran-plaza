@@ -2,6 +2,7 @@
 import Image from "next/image";
 
 import { useState } from "react"
+import { usePathname } from "next/navigation"
 import { Link, useLocation } from "@/design/navigation"
 import { cn } from "@/design/lib/utils"
 import { Logo } from "@/design/components/logo"
@@ -16,6 +17,9 @@ import {
 } from "@/design/data/dashboard-nav"
 const briefcase = "/design/icons/briefcase.svg"
 const arrowDown = "/design/icons/arrow-down.svg"
+const userIcon = "/design/icons/user.svg"
+const favoriteIcon = "/design/icons/solid/heart.svg"
+const notificationIcon = "/design/icons/notification-bing.svg"
 
 type SubscriptionStatus = "free" | "active" | "expired"
 
@@ -122,18 +126,20 @@ function DashboardSidebar({
   onNavigate,
 }: DashboardSidebarProps) {
   const { pathname } = useLocation()
+  const canonicalPathname = usePathname()
   const user = useDesignUser()
   const userName = suppliedName ?? user?.fullName ?? "حساب کاربری"
   const userPhone = suppliedPhone ?? user?.phone ?? ""
   const hasBusiness = !!useDesignBusiness()
+  const isBusinessPanel = hasBusiness && canonicalPathname.startsWith("/dashboard/business")
   const [menu, setMenu] = useState(() => ({
     pathname,
     hasBusiness,
-    open: hasBusiness && isProfileSection(pathname),
+    open: hasBusiness && isBusinessPanel && isProfileSection(pathname),
   }))
   let profileOpen = menu.open
   if (menu.pathname !== pathname || menu.hasBusiness !== hasBusiness) {
-    profileOpen = hasBusiness && (isProfileSection(pathname) || menu.open)
+    profileOpen = hasBusiness && isBusinessPanel && (isProfileSection(pathname) || menu.open)
     setMenu({ pathname, hasBusiness, open: profileOpen })
   }
 
@@ -150,19 +156,20 @@ function DashboardSidebar({
       </div>
 
       <nav className="flex flex-1 flex-col overflow-y-auto px-3 pb-2 sm:px-4">
-        <SidebarItem
-          title="پروفایل من"
-          icon={briefcase}
-          to="/profile"
-          openable={hasBusiness}
-          open={profileOpen}
-          onToggle={() => setMenu((current) => ({ ...current, open: !current.open }))}
-          active={isProfileSection(pathname)}
-          onNavigate={onNavigate}
-        />
-
-        {profileOpen && hasBusiness
-          ? profileSubmenuItems.map((item) => {
+        {isBusinessPanel ? (
+          <>
+            <SidebarItem title="داشبورد کسب‌وکار" icon={briefcase} to="/dashboard/business" active={canonicalPathname === "/dashboard/business"} onNavigate={onNavigate} />
+            <SidebarItem
+              title="مدیریت پروفایل و شعب"
+              icon={briefcase}
+              to="/profile"
+              openable
+              open={profileOpen}
+              onToggle={() => setMenu((current) => ({ ...current, open: !current.open }))}
+              active={isProfileSection(pathname)}
+              onNavigate={onNavigate}
+            />
+            {profileOpen && profileSubmenuItems.map((item) => {
               const active = isNavActive(pathname, item.to, "end" in item && item.end)
               return (
                 <Link
@@ -173,36 +180,33 @@ function DashboardSidebar({
                   data-active={active ? "true" : undefined}
                   className={cn(
                     "flex h-12 w-full items-center gap-3 rounded px-3 text-sm font-bold text-[var(--text-body)] sm:h-14 sm:gap-4 sm:px-4 sm:text-base",
-                    active
-                      ? "bg-secondary-100 text-[var(--text-title)]"
-                      : "hover:bg-[var(--opacity-dark-8)]"
+                    active ? "bg-secondary-100 text-[var(--text-title)]" : "hover:bg-[var(--opacity-dark-8)]"
                   )}
                 >
                   <span className="size-4 shrink-0" aria-hidden />
                   <span className="min-w-0 flex-1 text-start">{item.title}</span>
-                  <Image
-                    alt=""
-                    className="size-5 shrink-0 sm:size-6"
-                    height={24}
-                    src={item.icon}
-                    width={24}
-                  />
+                  <Image alt="" className="size-5 shrink-0 sm:size-6" height={24} src={item.icon} width={24} />
                 </Link>
               )
-            })
-          : null}
-
-        {dashboardMainItems.map((item) => (
-          <SidebarItem
-            key={item.title}
-            title={item.title}
-            icon={item.icon}
-            to={item.to}
-            disabled={"disabled" in item && item.disabled}
-            active={isNavActive(pathname, item.to)}
-            onNavigate={onNavigate}
-          />
-        ))}
+            })}
+            {dashboardMainItems.filter((item) => !("disabled" in item && item.disabled)).map((item) => (
+              <SidebarItem key={item.title} title={item.title} icon={item.icon} to={item.to} disabled={"disabled" in item && item.disabled} active={isNavActive(pathname, item.to)} onNavigate={onNavigate} />
+            ))}
+            <SidebarItem title="علاقه‌مندی‌ها" icon={favoriteIcon} to="/dashboard/favorites" active={pathname === "/dashboard/favorites"} onNavigate={onNavigate} />
+            <SidebarItem title="اعلان‌ها" icon={notificationIcon} to="/dashboard/notifications" active={pathname === "/dashboard/notifications"} onNavigate={onNavigate} />
+            <SidebarItem title="پنل مشتری" icon={userIcon} to="/dashboard" onNavigate={onNavigate} />
+          </>
+        ) : (
+          <>
+            <SidebarItem title="داشبورد مشتری" icon={userIcon} to="/dashboard" active={canonicalPathname === "/dashboard"} onNavigate={onNavigate} />
+            {hasBusiness && <SidebarItem title="داشبورد کسب‌وکار" icon={briefcase} to="/dashboard/business" onNavigate={onNavigate} />}
+            {dashboardMainItems.map((item) => (
+              <SidebarItem key={item.title} title={item.title} icon={item.icon} to={item.to} disabled={"disabled" in item && item.disabled} active={isNavActive(pathname, item.to)} onNavigate={onNavigate} />
+            ))}
+            <SidebarItem title="علاقه‌مندی‌ها" icon={favoriteIcon} to="/dashboard/favorites" active={pathname === "/dashboard/favorites"} onNavigate={onNavigate} />
+            <SidebarItem title="اعلان‌ها" icon={notificationIcon} to="/dashboard/notifications" active={pathname === "/dashboard/notifications"} onNavigate={onNavigate} />
+          </>
+        )}
 
         <SidebarItem
           title={dashboardLogoutItem.title}

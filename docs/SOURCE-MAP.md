@@ -5,6 +5,7 @@ src/app/(auth)/layout.tsx
 src/app/(auth)/login/page.tsx
 src/app/(dashboard)/dashboard/business/documents/page.tsx
 src/app/(dashboard)/dashboard/business/new/page.tsx
+src/app/(dashboard)/dashboard/business/page.tsx
 src/app/(dashboard)/dashboard/business/profile/about/page.tsx
 src/app/(dashboard)/dashboard/business/profile/address/page.tsx
 src/app/(dashboard)/dashboard/business/profile/basic/page.tsx
@@ -816,6 +817,7 @@ src/design/data/site-index.ts
 src/design/fonts.css
 src/design/lib/get-design-account.ts
 src/design/lib/image-crop.ts
+src/design/lib/recent-businesses.ts
 src/design/lib/search-history.ts
 src/design/lib/use-modal-focus.ts
 src/design/lib/utils.ts
@@ -825,9 +827,11 @@ src/design/pages/account-live.tsx
 src/design/pages/articles-live.tsx
 src/design/pages/articles.tsx
 src/design/pages/billing-live.tsx
+src/design/pages/business-dashboard-live.tsx
 src/design/pages/business-live.tsx
 src/design/pages/business-profile.tsx
 src/design/pages/categories.tsx
+src/design/pages/customer-dashboard-live.tsx
 src/design/pages/dashboard-live.tsx
 src/design/pages/design-system/buttons.tsx
 src/design/pages/design-system/components.tsx
@@ -1074,6 +1078,7 @@ tests/mobile-search.test.cjs
 tests/onboarding.test.cjs
 tests/production-deployment.test.cjs
 tests/products.test.cjs
+tests/recent-businesses.test.cjs
 tests/reviews.test.cjs
 tests/rich-text-links.test.cjs
 tests/rich-text-media.test.cjs
