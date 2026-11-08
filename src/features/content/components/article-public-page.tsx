@@ -35,7 +35,11 @@ function ArticleBannerView({ banner, compact = false }: { banner: ArticleBanner;
   if (!compact) {
     return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="relative block aspect-[16/9] overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50"><Image unoptimized fill sizes="(min-width: 1024px) 760px, 100vw" src={fileUrl(banner.imageId)} alt={banner.altText} className="object-cover" /></a>;
   }
-  return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="block h-[86px] overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50 lg:h-auto"><Image unoptimized width={560} height={420} sizes="(min-width: 1024px) 280px, 345px" src={fileUrl(banner.imageId)} alt={banner.altText} className="h-full w-full object-cover lg:h-auto lg:max-h-72 lg:object-contain" /></a>;
+  return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="block h-[86px] overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50 lg:h-auto"><Image unoptimized width={560} height={420} sizes="(min-width: 1024px) 280px, 345px" src={fileUrl(banner.imageId)} alt={banner.altText} className="h-full w-full object-contain lg:h-auto lg:max-h-72" /></a>;
+}
+
+function ArticleSidebarContent({ banners }: { banners: ArticleBanner[] }) {
+  return <><RegistrationBanner variant="sidebar" className="h-[86px]" />{banners.map(banner => <ArticleBannerView key={banner.id} banner={banner} compact />)}</>;
 }
 
 function ArticleTableView({ block }: { block: ArticleBlock }) {
@@ -84,6 +88,7 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath,
               </figure>
             ) : null}
             {tocItems.length ? <TableOfContent items={tocItems} className="w-full" /> : null}
+            <aside className="mx-auto w-full max-w-[345px] space-y-4 lg:hidden"><ArticleSidebarContent banners={sidebarBanners} /></aside>
             {article.keyTakeaways?.length ? <aside className="rounded-[var(--radius-xs)] border border-emerald-200 bg-emerald-50/70 p-5"><h2 className="font-black text-emerald-950">خلاصه سریع</h2><ul className="mt-3 list-disc space-y-2 pe-5 leading-7 text-emerald-950">{article.keyTakeaways.map(item => <li key={item}>{item}</li>)}</ul></aside> : null}
             <p className="whitespace-pre-line text-lg leading-loose text-[var(--text-body)]">{excerpt}</p>
 
@@ -123,7 +128,7 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath,
               </section>
             ) : null}
           </article>
-          <aside className="mx-auto w-full max-w-[345px] shrink-0 space-y-4 lg:sticky lg:top-24 lg:mx-0 lg:max-w-none lg:w-[280px]"><RegistrationBanner variant="sidebar" className="h-[86px]" />{sidebarBanners.map(banner => <ArticleBannerView key={banner.id} banner={banner} compact />)}</aside>
+          <aside className="hidden w-[280px] shrink-0 space-y-4 lg:sticky lg:top-24 lg:block"><ArticleSidebarContent banners={sidebarBanners} /></aside>
         </div>
       </main>
     </SiteLayout>
