@@ -12,6 +12,7 @@ import { businessCard } from "@/design/api/business";
 import { decodeBusinesses } from "@/design/api/catalog";
 import { businessControllerListPublic, favoriteControllerGetMine } from "@/design/api/generated/browser";
 import { readRecentBusinesses } from "@/design/lib/recent-businesses";
+import { readCustomerDashboardCache, writeCustomerDashboardCache } from "@/design/lib/customer-dashboard-cache";
 import { useDesignBusiness, useDesignUser } from "@/design/provider";
 
 type FavoriteItem = Awaited<ReturnType<typeof favoriteControllerGetMine>>[number];
@@ -98,12 +99,15 @@ export function CustomerDashboardLivePage({
       } catch {
         setRecent([]);
       }
-      setFavorites([]);
-      setLatest([]);
+      const cachedFavorites = readCustomerDashboardCache(user.id, "favorites", window.sessionStorage);
+      const cachedLatest = readCustomerDashboardCache(user.id, "latest", window.sessionStorage);
+      const cachedFeatured = readCustomerDashboardCache(user.id, "featured", window.sessionStorage);
+      setFavorites(cachedFavorites ?? []);
+      setLatest(cachedLatest ?? []);
       setLatestTotal(null);
-      setFeatured([]);
+      setFeatured(cachedFeatured ?? []);
       setFeaturedTotal(null);
-      setLoading(true);
+      setLoading(!cachedFavorites && !cachedLatest && !cachedFeatured);
       setBusinessError("");
       setFeaturedError("");
       setFavoriteError("");
@@ -116,28 +120,34 @@ export function CustomerDashboardLivePage({
       if (controller.signal.aborted) return;
       if (latestResult.status === "fulfilled") {
         try {
-          setLatest(decodeBusinesses(latestResult.value.data).map(businessCard));
+          const items = decodeBusinesses(latestResult.value.data).map(businessCard);
+          setLatest(items);
+          writeCustomerDashboardCache(user.id, "latest", items, window.sessionStorage);
           setLatestTotal(latestResult.value.total);
         } catch {
-          setBusinessError("دریافت کسب‌وکارها انجام نشد. دوباره تلاش کنید.");
+          if (!cachedLatest) setBusinessError("دریافت کسب‌وکارها انجام نشد. دوباره تلاش کنید.");
         }
       } else {
-        setBusinessError("دریافت کسب‌وکارها انجام نشد. دوباره تلاش کنید.");
+        if (!cachedLatest) setBusinessError("دریافت کسب‌وکارها انجام نشد. دوباره تلاش کنید.");
       }
       if (featuredResult.status === "fulfilled") {
         try {
-          setFeatured(decodeBusinesses(featuredResult.value.data).map(businessCard));
+          const items = decodeBusinesses(featuredResult.value.data).map(businessCard);
+          setFeatured(items);
+          writeCustomerDashboardCache(user.id, "featured", items, window.sessionStorage);
           setFeaturedTotal(featuredResult.value.total);
         } catch {
-          setFeaturedError("دریافت کسب‌وکارهای ویژه انجام نشد.");
+          if (!cachedFeatured) setFeaturedError("دریافت کسب‌وکارهای ویژه انجام نشد.");
         }
       } else {
-        setFeaturedError("دریافت کسب‌وکارهای ویژه انجام نشد.");
+        if (!cachedFeatured) setFeaturedError("دریافت کسب‌وکارهای ویژه انجام نشد.");
       }
       if (favoriteResult.status === "fulfilled") {
-        setFavorites(favoriteResult.value.map(favoriteCardData));
+        const items = favoriteResult.value.map(favoriteCardData);
+        setFavorites(items);
+        writeCustomerDashboardCache(user.id, "favorites", items, window.sessionStorage);
       } else {
-        setFavoriteError("دریافت علاقه‌مندی‌ها انجام نشد.");
+        if (!cachedFavorites) setFavoriteError("دریافت علاقه‌مندی‌ها انجام نشد.");
       }
         setLoading(false);
       });

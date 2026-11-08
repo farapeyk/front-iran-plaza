@@ -815,6 +815,7 @@ src/design/data/home-categories.ts
 src/design/data/new-members.ts
 src/design/data/site-index.ts
 src/design/fonts.css
+src/design/lib/customer-dashboard-cache.ts
 src/design/lib/get-design-account.ts
 src/design/lib/image-crop.ts
 src/design/lib/recent-businesses.ts
@@ -1073,6 +1074,7 @@ tests/glob-security.test.cjs
 tests/helpers.cjs
 tests/http.test.cjs
 tests/image-crop.test.cjs
+tests/customer-dashboard-cache.test.cjs
 tests/logout.test.cjs
 tests/mobile-search.test.cjs
 tests/onboarding.test.cjs
