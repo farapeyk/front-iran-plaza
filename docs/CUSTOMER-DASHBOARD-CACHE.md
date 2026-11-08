@@ -12,4 +12,11 @@
 
 تست‌های `tests/customer-dashboard-cache.test.cjs` جداسازی بر اساس کاربر، اعتبار زمانی، داده خراب و در دسترس نبودن storage را بررسی می‌کنند. این تست‌ها با storage ساختگی اجرا می‌شوند و آزمون مرورگر واقعی محسوب نمی‌شوند.
 
-تغییر runtime در push شاخه `main`، workflow `.github/workflows/production.yml` را اجرا می‌کند. workflow تست‌ها و build را انجام می‌دهد و سپس به‌ترتیب منطقه ایران و خارجی را deploy می‌کند. وضعیت نهایی اجرای GitHub Actions و سلامت production پس از push باید به این سند افزوده شود.
+تغییر runtime با push شاخه `main`، workflow `.github/workflows/production.yml` را اجرا می‌کند. workflow تست‌ها و build را انجام می‌دهد و سپس به‌ترتیب منطقه ایران و خارجی را deploy می‌کند.
+
+### گزارش استقرار ۸ نوامبر ۲۰۲۶
+
+- Commit: `4993641c1d8d5d67cc5e2d58600d9989f65a73e3` روی `main`؛ push موفق بود.
+- [اجرای Production CI/CD](https://github.com/farapeyk/front-iran-plaza/actions/runs/42481475439): همه مراحل موفق، شامل QA نهایی، ساخت بسته‌ی Alpine و استقرار ایران و منطقه خارجی.
+- دریافت صفحه‌ی عمومی `https://iran-plaza.ir` از ابزار وب موفق بود. درخواست مستقیم TLS از محیط محلی ویندوز handshake را کامل نکرد؛ بنابراین smoke test HTTP محلی ثبت نشده است.
+- داشبورد مشتری با حساب واقعی و مرورگر پس از استقرار بررسی نشد؛ آزمون‌های محلی از storage ساختگی استفاده کردند.
