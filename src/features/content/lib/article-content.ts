@@ -87,7 +87,10 @@ export function withoutDuplicateLeadingExcerpt(excerpt: string, blocks: ArticleB
   const introduction: string[] = [];
   for (let index = 0; index < blocks.length; index += 1) {
     const block = blocks[index];
-    if (block.type !== "paragraph") break;
+    // Rich text can contain rendered custom HTML whose plain-text projection
+    // matches the excerpt. Keep that block: replacing it with the excerpt
+    // would hide its HTML layout in both preview and the public article.
+    if (block.type !== "paragraph" || block.richText) break;
     const text = normalizedText(block.text);
     if (!text) break;
     introduction.push(text);

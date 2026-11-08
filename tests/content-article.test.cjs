@@ -96,6 +96,15 @@ test('all consecutive introduction paragraphs are removed when together they exa
   );
 });
 
+test('custom HTML rich-text blocks remain visible when their plain text matches the excerpt', () => {
+  const block = {
+    id: 'html-intro', type: 'paragraph', text: 'A styled introduction',
+    richText: { type: 'doc', content: [{ type: 'rawHtml', attrs: { html: '<div class="intro">A styled introduction</div>' } }] },
+  };
+
+  assert.deepEqual(withoutDuplicateLeadingExcerpt('A styled introduction', [block]), [block]);
+});
+
 test('article pagination stays compact across long archives', () => {
   assert.deepEqual(compactPaginationItems(3, 6), [1, 2, 3, 4, 5, 6]);
   assert.deepEqual(compactPaginationItems(1, 20), [1, 2, 3, 4, 5, 'ellipsis-end', 20]);
