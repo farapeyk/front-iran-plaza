@@ -40,7 +40,7 @@ function RegistrationBanner({
     return (
       <div
         className={cn(
-          "flex w-full items-center gap-3 overflow-hidden rounded-[var(--radius-xs)] bg-gradient-to-l from-primary-700 via-primary-950 to-primary-500 p-3",
+          "flex h-full w-full items-center gap-3 overflow-hidden rounded-[var(--radius-xs)] bg-gradient-to-l from-primary-700 via-primary-950 to-primary-500 p-3",
           className
         )}
       >

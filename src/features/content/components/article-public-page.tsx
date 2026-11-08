@@ -35,7 +35,7 @@ function ArticleBannerView({ banner, compact = false }: { banner: ArticleBanner;
   if (!compact) {
     return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="relative block aspect-[16/9] overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50"><Image unoptimized fill sizes="(min-width: 1024px) 760px, 100vw" src={fileUrl(banner.imageId)} alt={banner.altText} className="object-cover" /></a>;
   }
-  return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="relative block overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50"><Image unoptimized width={560} height={420} sizes="280px" src={fileUrl(banner.imageId)} alt={banner.altText} className="h-auto max-h-72 w-full object-contain" /></a>;
+  return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="block h-[86px] overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50 lg:h-auto"><Image unoptimized width={560} height={420} sizes="(min-width: 1024px) 280px, 345px" src={fileUrl(banner.imageId)} alt={banner.altText} className="h-full w-full object-cover lg:h-auto lg:max-h-72 lg:object-contain" /></a>;
 }
 
 function ArticleTableView({ block }: { block: ArticleBlock }) {
@@ -123,7 +123,7 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath,
               </section>
             ) : null}
           </article>
-          <aside className="w-full shrink-0 space-y-4 lg:sticky lg:top-24 lg:w-[280px]"><RegistrationBanner variant="sidebar" />{sidebarBanners.map(banner => <ArticleBannerView key={banner.id} banner={banner} compact />)}</aside>
+          <aside className="mx-auto w-full max-w-[345px] shrink-0 space-y-4 lg:sticky lg:top-24 lg:mx-0 lg:max-w-none lg:w-[280px]"><RegistrationBanner variant="sidebar" className="h-[86px]" />{sidebarBanners.map(banner => <ArticleBannerView key={banner.id} banner={banner} compact />)}</aside>
         </div>
       </main>
     </SiteLayout>
