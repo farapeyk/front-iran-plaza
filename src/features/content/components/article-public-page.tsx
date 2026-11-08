@@ -35,11 +35,12 @@ function ArticleBannerView({ banner, compact = false }: { banner: ArticleBanner;
   if (!compact) {
     return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="relative block aspect-[16/9] overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50"><Image unoptimized fill sizes="(min-width: 1024px) 760px, 100vw" src={fileUrl(banner.imageId)} alt={banner.altText} className="object-cover" /></a>;
   }
-  return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="block h-[86px] overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50 lg:h-auto"><Image unoptimized width={560} height={420} sizes="(min-width: 1024px) 280px, 345px" src={fileUrl(banner.imageId)} alt={banner.altText} className="h-full w-full object-contain lg:h-auto lg:max-h-72" /></a>;
+  return <a href={banner.targetUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={banner.title} className="block overflow-hidden rounded-[var(--radius-xs)] border bg-neutral-50"><Image unoptimized width={banner.image?.width || 560} height={banner.image?.height || 420} sizes="(min-width: 1024px) 280px, 345px" src={fileUrl(banner.imageId)} alt={banner.altText} className="h-auto max-h-72 w-full object-contain" /></a>;
 }
 
-function ArticleSidebarContent({ banners }: { banners: ArticleBanner[] }) {
-  return <><RegistrationBanner variant="sidebar" className="h-[86px]" />{banners.map(banner => <ArticleBannerView key={banner.id} banner={banner} compact />)}</>;
+function ArticleSidebarContent({ banners, mobile = false }: { banners: ArticleBanner[]; mobile?: boolean }) {
+  const visibleBanners = mobile ? banners.slice(0, 1) : banners;
+  return <><RegistrationBanner variant="sidebar" className="h-[86px]" />{visibleBanners.map(banner => <ArticleBannerView key={banner.id} banner={banner} compact />)}</>;
 }
 
 function ArticleTableView({ block }: { block: ArticleBlock }) {
@@ -88,7 +89,7 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath,
               </figure>
             ) : null}
             {tocItems.length ? <TableOfContent items={tocItems} className="w-full" /> : null}
-            <aside className="mx-auto w-full max-w-[345px] space-y-4 lg:hidden"><ArticleSidebarContent banners={sidebarBanners} /></aside>
+            <aside className="mx-auto w-full max-w-[345px] space-y-4 lg:hidden"><ArticleSidebarContent banners={sidebarBanners} mobile /></aside>
             {article.keyTakeaways?.length ? <aside className="rounded-[var(--radius-xs)] border border-emerald-200 bg-emerald-50/70 p-5"><h2 className="font-black text-emerald-950">خلاصه سریع</h2><ul className="mt-3 list-disc space-y-2 pe-5 leading-7 text-emerald-950">{article.keyTakeaways.map(item => <li key={item}>{item}</li>)}</ul></aside> : null}
             <p className="whitespace-pre-line text-lg leading-loose text-[var(--text-body)]">{excerpt}</p>
 
