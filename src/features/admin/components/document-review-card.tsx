@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { approveDocumentAction, rejectDocumentAction } from "@/features/admin/actions/moderation.action";
 
@@ -29,15 +29,27 @@ export interface BusinessDocumentData {
 // Swagger شما نبود (فقط DELETE هست). اگه فایل‌ها از مسیر دیگه‌ای سرو
 // می‌شن، این تابع رو اصلاح کنید.
 function fileUrl(fileId: string) {
-  return `/api/backend/files/${fileId}`;
+  return `/api/backend/files/${encodeURIComponent(fileId)}`;
 }
 
 export function DocumentReviewCard({ document, businessId }: { document: BusinessDocumentData; businessId: string }) {
   const [isPending, startTransition] = useTransition();
   const [showReject, setShowReject] = useState(false);
+  const [showImage, setShowImage] = useState(false);
   const [reason, setReason] = useState("");
 
   const status = STATUS_LABEL[document.status] ?? STATUS_LABEL.PENDING;
+  const documentLabel = DOC_TYPE_LABEL[document.type] ?? document.type;
+  const imageUrl = fileUrl(document.fileId);
+
+  useEffect(() => {
+    if (!showImage) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setShowImage(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showImage]);
 
   function handleApprove() {
     startTransition(async () => {
@@ -64,7 +76,10 @@ export function DocumentReviewCard({ document, businessId }: { document: Busines
 
   return (
     <div className="border border-neutral-200 rounded-lg overflow-hidden">
-      <Image unoptimized src={fileUrl(document.fileId)} alt={DOC_TYPE_LABEL[document.type] ?? document.type} width={640} height={320} sizes="(min-width: 768px) 50vw, 100vw" className="w-full h-40 object-cover bg-neutral-100" />
+      <button type="button" onClick={() => setShowImage(true)} aria-label={`نمایش بزرگ ${documentLabel}`} className="block w-full cursor-zoom-in bg-neutral-100">
+        <Image unoptimized src={imageUrl} alt={documentLabel} width={960} height={720} sizes="(min-width: 768px) 50vw, 100vw" className="max-h-80 w-full object-contain" />
+        <span className="block border-t border-neutral-200 bg-white px-3 py-2 text-xs font-medium text-emerald-900">برای بررسی، تصویر را باز کنید</span>
+      </button>
 
       <div className="p-3">
         <div className="flex items-center justify-between mb-2">
@@ -116,6 +131,23 @@ export function DocumentReviewCard({ document, businessId }: { document: Busines
           </>
         )}
       </div>
+
+      {showImage ? (
+        <div role="dialog" aria-modal="true" aria-label={`بررسی ${documentLabel}`} onClick={() => setShowImage(false)} className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-3 sm:p-6">
+          <div onClick={event => event.stopPropagation()} className="flex h-[92dvh] max-h-[900px] w-full max-w-6xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl">
+            <div className="flex shrink-0 items-center justify-between gap-3 border-b px-4 py-3">
+              <h2 className="font-bold text-neutral-900">{documentLabel}</h2>
+              <div className="flex items-center gap-3">
+                <a href={imageUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-emerald-900 underline">باز کردن در زبانهٔ جدید</a>
+                <button type="button" autoFocus onClick={() => setShowImage(false)} className="rounded-md border px-3 py-1.5 text-sm hover:bg-neutral-50">بستن <span aria-hidden="true">×</span></button>
+              </div>
+            </div>
+            <div className="relative min-h-0 flex-1 bg-neutral-950">
+              <Image unoptimized fill sizes="(min-width: 1024px) 90vw, 100vw" src={imageUrl} alt={documentLabel} className="object-contain" />
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
