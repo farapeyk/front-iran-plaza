@@ -103,6 +103,7 @@ src/app/post-sitemap.xml/route.ts
 src/app/robots.ts
 src/app/sitemap.ts
 src/app/sitemap_index.xml/route.ts
+src/app/too-many-requests/page.tsx
 src/components/category-icon.tsx
 src/components/pagination.tsx
 src/components/ui/accordion.tsx
@@ -1022,6 +1023,7 @@ src/features/seo/site-structured-data.ts
 src/features/seo/sitemap-data.ts
 src/features/seo/sitemap-policy.ts
 src/features/seo/sitemap-xml.ts
+src/features/shared/components/too-many-requests-notice.tsx
 src/lib/api/action-fetch.ts
 src/lib/api/backend-get.ts
 src/lib/api/backend-url.ts

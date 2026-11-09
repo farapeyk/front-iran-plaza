@@ -6,6 +6,9 @@ export async function browserFetch<T>(url: string, options: RequestInit = {}): P
   const response = await fetch('/api/backend/' + url.slice(5), { ...options, credentials: 'same-origin', redirect: 'error', signal: options.signal ?? AbortSignal.timeout(15000) });
   const type = response.headers.get('content-type') ?? '';
   const body = response.status === 204 ? undefined : type.includes('json') ? await response.json() : url.startsWith('/api/files/') && response.ok ? await response.blob() : type.startsWith('text/') ? await response.text() : await response.blob();
+  if (response.status === 429 && typeof window !== 'undefined') {
+    window.location.replace('/too-many-requests');
+  }
   if (!response.ok) throw new ApiError(response.status, body);
   return body as T;
 }

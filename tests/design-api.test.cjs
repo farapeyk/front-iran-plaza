@@ -1,12 +1,13 @@
 const {test}=require('node:test');const assert=require('node:assert/strict');const {load}=require('./helpers.cjs');
 test('browser transport follows BFF paths, preserves FormData and abort signals, and handles JSON/blob/204',async()=>{
-  const {browserFetch}=load('src/design/api/browser.ts');const original=global.fetch;const calls=[];const controller=new AbortController();const data=new FormData();data.set('file',new Blob(['fixture']),'fixture.txt');
+  const {browserFetch}=load('src/design/api/browser.ts');const original=global.fetch;const originalWindow=global.window;const calls=[];const controller=new AbortController();const data=new FormData();data.set('file',new Blob(['fixture']),'fixture.txt');
   try{global.fetch=async(url,options)=>{calls.push({url,options});return Response.json({id:'created'});};assert.deepEqual(await browserFetch('/api/files/upload',{method:'POST',body:data,signal:controller.signal}),{id:'created'});assert.equal(calls[0].url,'/api/backend/files/upload');assert.equal(calls[0].options.body,data);assert.equal(calls[0].options.signal,controller.signal);assert.equal(calls[0].options.credentials,'same-origin');assert.equal(new Headers(calls[0].options.headers).has('Authorization'),false);
     global.fetch=async()=>new Response('text fixture',{headers:{'Content-Type':'text/plain'}});assert.equal(await(await browserFetch('/api/files/id')).text(),'text fixture');
     global.fetch=async()=>new Response(null,{status:204});assert.equal(await browserFetch('/api/businesses/id'),undefined);
     global.fetch=async()=>Response.json({message:'Forbidden'},{status:403});await assert.rejects(browserFetch('/api/businesses/id'),error=>error.status===403&&error.message==='Forbidden');
+    let destination;global.window={location:{replace:path=>{destination=path;}}};global.fetch=async()=>Response.json({message:'Too many requests'},{status:429});await assert.rejects(browserFetch('/api/businesses/id'),error=>error.status===429);assert.equal(destination,'/too-many-requests');
     await assert.rejects(browserFetch('https://external.invalid/api/files'));assert.equal(calls.length,1);
-  }finally{global.fetch=original;}
+  }finally{global.fetch=original;if(originalWindow===undefined)delete global.window;else global.window=originalWindow;}
 });
 test('generated directory and upload clients encode query/path parameters and binary multipart bodies',async()=>{
   const calls=[];const api=load('src/design/api/generated/browser.ts',{'../browser':{browserFetch:async(url,options)=>{calls.push({url,options});return {data:[],total:0,page:1,limit:20};}}});

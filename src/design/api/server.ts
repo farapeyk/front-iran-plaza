@@ -1,4 +1,5 @@
 import 'server-only';
+import { redirect } from 'next/navigation';
 import { getAccessTokenCookie } from '@/lib/auth/cookies';
 import { BackendError } from '@/lib/api/backend-get';
 export async function serverFetch<T>(url: string, options: RequestInit = {}): Promise<T> {
@@ -8,7 +9,10 @@ export async function serverFetch<T>(url: string, options: RequestInit = {}): Pr
   const headers = new Headers(options.headers);
   if (token) headers.set('Authorization', `Bearer ${token}`);
   const response = await fetch(base + url, { ...options, headers, cache: 'no-store', redirect: 'error', signal: options.signal ?? AbortSignal.timeout(15000) });
-  if (!response.ok) throw new BackendError(response.status);
+  if (!response.ok) {
+    if (response.status === 429) redirect('/too-many-requests');
+    throw new BackendError(response.status);
+  }
   if (response.status === 204) return undefined as T;
   const type=response.headers.get('content-type')??'';
   return (type.includes('json')?await response.json():url.startsWith('/api/files/')?await response.blob():type.startsWith('text/')?await response.text():await response.blob()) as T;
