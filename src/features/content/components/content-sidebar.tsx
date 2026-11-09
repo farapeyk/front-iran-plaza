@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, FilePlus2, FolderTree, Images, LogOut, MessageSquare } from "lucide-react";
+import { BookOpen, FilePlus2, FolderTree, Images, LogOut, MessageSquare, Link2 } from "lucide-react";
 import { logoutAction } from "@/features/auth/actions/logout.action";
 
 export function ContentSidebar({ canPublish }: { canPublish: boolean }) {
@@ -14,6 +14,7 @@ export function ContentSidebar({ canPublish }: { canPublish: boolean }) {
     ...(canPublish ? [
       { href: "/content/categories", label: "دسته‌بندی‌ها", icon: FolderTree },
       { href: "/content/banners", label: "بنرهای مقاله", icon: Images },
+      { href: "/content/redirects", label: "ریدایرکت آدرس‌ها", icon: Link2 },
       { href: "/content/feedback", label: "نظرات مقاله‌ها", icon: MessageSquare },
     ] : []),
   ];

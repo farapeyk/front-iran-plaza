@@ -19,6 +19,30 @@ export default async function proxy(request: NextRequest) {
     return NextResponse.redirect(canonicalUrl, 308);
   }
 
+  const redirectPathParts = pathname.split("/").filter(Boolean);
+  const redirectRoot = redirectPathParts[0];
+  if (request.method === "GET" && redirectRoot && !RESERVED_ROOT_SLUGS.has(redirectRoot)) {
+    const backend = process.env.BACKEND_INTERNAL_URL?.replace(/\/$/, "");
+    if (backend) {
+      try {
+        const response = await fetch(`${backend}/api/articles/redirect?path=${encodeURIComponent(decodeURIComponent(pathname))}`, {
+          cache: "no-store",
+          signal: AbortSignal.timeout(3000),
+        });
+        if (response.ok) {
+          const result: unknown = await response.json();
+          if (typeof result === "object" && result !== null && "redirectTo" in result && typeof result.redirectTo === "string") {
+            const target = new URL(`/${result.redirectTo.replace(/^\/+|\/+$/g, "")}/`, request.url);
+            target.search = search;
+            return NextResponse.redirect(target, 301);
+          }
+        }
+      } catch {
+        // Allow the public page to render normally if the backend is unavailable.
+      }
+    }
+  }
+
   const isLoginPage = LOGIN_PAGES.includes(pathname);
   const isProtected = PROTECTED_SEGMENTS.some((seg) => pathname === seg || pathname.startsWith(seg + '/'));
   if (!isProtected && !isLoginPage) {

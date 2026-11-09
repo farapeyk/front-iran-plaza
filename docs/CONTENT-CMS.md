@@ -178,3 +178,8 @@ QA نمایش اندازهٔ بنر (۲۰۲۶-۱۱-۰۴): ۱۴۰ تست Node، `
 انتخاب مقاله برای بنر در /content/banners بر اساس عنوان جست‌وجو می‌شود و نتیجه‌ها با صفحه‌بندی ۵۰تایی نمایش داده می‌شوند؛ فیلتر عنوان به API تحریریه ارسال می‌شود و نتایج نامرتبط بر اساس slug وارد نمی‌شوند.
 
 QA تغییر جست‌وجوی مقاله در ۲۰۲۶-۱۱-۰۴: typecheck، lint، ۱۳۹ تست، بررسی بازتولید client و build پاس شدند؛ تست route تولیدی با سرویس‌های HTTP fixture اجرا شد، نه سرویس production.
+# Redirect management
+
+Content managers with publish permission can manage manual permanent redirects in `/content/redirects`. The editor accepts internal paths and supports adding or replacing mappings, enabling/disabling them, and deletion. Active mappings resolve exact legacy paths, including nested paths, through the backend resolver and the request proxy issues an HTTP 301 while retaining the query string. Backend rules and route contracts are documented in the backend `docs/CONTENT-CMS.md`.
+
+QA (2026-11-08): TypeScript check, production build, and all 149 frontend tests passed. The regression test checks a nested legacy path, HTTP 301 status, and query string preservation.

@@ -91,6 +91,7 @@ src/app/content/feedback/page.tsx
 src/app/content/layout.tsx
 src/app/content/media/page.tsx
 src/app/content/page.tsx
+src/app/content/redirects/page.tsx
 src/app/error.tsx
 src/app/favicon.ico
 src/app/globals.css
@@ -959,6 +960,7 @@ src/features/content/components/content-authors-manager.tsx
 src/features/content/components/content-category-manager.tsx
 src/features/content/components/content-media-library.tsx
 src/features/content/components/content-sidebar.tsx
+src/features/content/components/editorial-redirect-manager.tsx
 src/features/content/components/feedback-queue.tsx
 src/features/content/components/rich-text-editor.tsx
 src/features/content/components/rich-text-renderer.tsx

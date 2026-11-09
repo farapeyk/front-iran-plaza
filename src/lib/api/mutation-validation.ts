@@ -165,6 +165,8 @@ const schemas: Record<string, z.ZodType> = {
   'PATCH content/feedback/id': z.object({ status: z.enum(['APPROVED', 'REJECTED']) }).strict(),
   'POST content/banners': articleBanner,
   'PATCH content/banners/id': articleBanner.partial(),
+  'POST content/redirects': z.object({ source: text.min(1).max(500), target: text.min(1).max(500), isActive: z.boolean().optional() }).strict(),
+  'PATCH content/redirects/id': z.object({ source: text.min(1).max(500).optional(), target: text.min(1).max(500).optional(), isActive: z.boolean().optional() }).strict(),
   'POST admin/content/authors': z.object({ phone: z.string().regex(/^09\d{9}$/), fullName: text.max(120), email: z.email().max(190).optional() }).strict(),
 };
 const noBody = new Set([
@@ -175,7 +177,7 @@ const noBody = new Set([
   'DELETE content/banners/id',
 ]);
 const withReason = new Set(['POST businesses/id/reject','POST businesses/id/suspend','POST admin/documents/id/reject','PATCH admin/users/id/suspend']);
-const resourceRoots = new Set(['businesses','reviews','notifications','users','documents','categories','articles','feedback','authors','banners']);
+const resourceRoots = new Set(['businesses','reviews','notifications','users','documents','categories','articles','feedback','authors','banners','redirects']);
 const resourceCollections = new Set(['gallery','features','branches','services','products','product-categories']);
 
 const validationFieldLabels: Record<string, string> = {
