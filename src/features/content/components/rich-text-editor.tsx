@@ -227,8 +227,10 @@ export function RichTextEditor({ value, fallbackText, onChange }: RichTextEditor
     const result = await uploadFileAction(data);
     setUploading(false);
     if (!result.success) { setToolError(result.message); return; }
-    setImageDraft({ src: `/api/backend/files/${encodeURIComponent(result.fileId)}`, alt: file.name.replace(/\.[^.]+$/, "") });
-    setInsertPanel("image");
+    const src = `/api/backend/files/${encodeURIComponent(result.fileId)}`;
+    editor.chain().focus().setImage({ src, alt: file.name.replace(/\.[^.]+$/, "").slice(0, 160) }).run();
+    setImageDraft({ src: "", alt: "" });
+    setInsertPanel(null);
   };
 
   const openLibrary = async () => {
