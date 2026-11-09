@@ -180,6 +180,6 @@ QA نمایش اندازهٔ بنر (۲۰۲۶-۱۱-۰۴): ۱۴۰ تست Node، `
 QA تغییر جست‌وجوی مقاله در ۲۰۲۶-۱۱-۰۴: typecheck، lint، ۱۳۹ تست، بررسی بازتولید client و build پاس شدند؛ تست route تولیدی با سرویس‌های HTTP fixture اجرا شد، نه سرویس production.
 # Redirect management
 
-Content managers with publish permission can manage manual permanent redirects in `/content/redirects`. The editor accepts internal paths and supports adding or replacing mappings, enabling/disabling them, and deletion. Active mappings resolve exact legacy paths, including nested paths, through the backend resolver and the request proxy issues an HTTP 301 while retaining the query string. Backend rules and route contracts are documented in the backend `docs/CONTENT-CMS.md`.
+Content managers with publish permission can manage manual permanent redirects in `/content/redirects`. The editor accepts internal paths or full URLs on the current site, and supports adding or replacing mappings, enabling/disabling them, and deletion. Destination queries are allowed; source queries are matched from the incoming request and carried through when they do not override a destination parameter. Active mappings resolve exact legacy paths, including nested paths, through the backend resolver and the request proxy issues an HTTP 301. Backend rules and route contracts are documented in the backend `docs/CONTENT-CMS.md`.
 
-QA (2026-11-08): TypeScript check, production build, and all 149 frontend tests passed. The regression test checks a nested legacy path, HTTP 301 status, and query string preservation.
+QA (2026-11-09): TypeScript check, production build, and all 150 frontend tests passed. Regression coverage checks nested legacy paths, HTTP 301, and destination/source query handling.

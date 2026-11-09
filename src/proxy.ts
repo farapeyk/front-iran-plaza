@@ -32,8 +32,15 @@ export default async function proxy(request: NextRequest) {
         if (response.ok) {
           const result: unknown = await response.json();
           if (typeof result === "object" && result !== null && "redirectTo" in result && typeof result.redirectTo === "string") {
-            const target = new URL(`/${result.redirectTo.replace(/^\/+|\/+$/g, "")}/`, request.url);
-            target.search = search;
+            const destination = result.redirectTo.startsWith("/") ? result.redirectTo : `/${result.redirectTo}`;
+            const target = new URL(destination, request.url);
+            if (target.origin !== request.nextUrl.origin) return NextResponse.next();
+            if (!target.pathname.endsWith("/")) target.pathname += "/";
+            const destinationQuery = new URLSearchParams(target.search);
+            for (const [key, value] of new URLSearchParams(search)) {
+              if (!destinationQuery.has(key)) destinationQuery.append(key, value);
+            }
+            target.search = destinationQuery.toString();
             return NextResponse.redirect(target, 301);
           }
         }

@@ -99,6 +99,28 @@ test('manual article redirects return an HTTP 301 for nested paths and retain th
   }
 });
 
+test('manual article redirects retain destination query parameters and add non-conflicting source parameters', async () => {
+  const originalFetch = global.fetch;
+  const originalBackend = process.env.BACKEND_INTERNAL_URL;
+  process.env.BACKEND_INTERNAL_URL = 'http://backend.invalid';
+  global.fetch = async () => new Response(JSON.stringify({ redirectTo: '/articles/?page=10' }), { status: 200, headers: { 'content-type': 'application/json' } });
+  try {
+    const proxy = load('src/proxy.ts', {
+      '@/features/content/lib/public-paths': publicPaths,
+      '@/lib/auth/roles': roles,
+      '@/lib/constants/auth': { ACCESS_TOKEN_COOKIE: 'access_token' },
+      '@/lib/auth/verify-access-token': { verifyAccessToken: async () => null },
+    }).default;
+    const response = await proxy(new NextRequest('http://frontend.invalid/old-page/?from=legacy&page=3'));
+    assert.equal(response.status, 301);
+    assert.equal(response.headers.get('location'), 'http://frontend.invalid/articles/?page=10&from=legacy');
+  } finally {
+    global.fetch = originalFetch;
+    if (originalBackend === undefined) delete process.env.BACKEND_INTERNAL_URL;
+    else process.env.BACKEND_INTERNAL_URL = originalBackend;
+  }
+});
+
 test('OTP and password login send both admin roles straight to admin, including incomplete profiles', async () => {
   const originalFetch = global.fetch;
   let response;
