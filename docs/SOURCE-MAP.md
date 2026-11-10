@@ -953,6 +953,7 @@ src/features/content/actions/feedback.action.ts
 src/features/content/components/article-banner-manager.tsx
 src/features/content/components/article-business-list.module.css
 src/features/content/components/article-business-list.tsx
+src/features/content/components/article-delete-button.tsx
 src/features/content/components/article-editor-form.tsx
 src/features/content/components/article-editor-insights.tsx
 src/features/content/components/article-feedback-form.tsx

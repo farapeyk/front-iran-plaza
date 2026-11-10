@@ -119,6 +119,8 @@ test('content CMS mutations are allowlisted and validated before reaching the ba
   assert.equal(validateMutation('/api/content/banners', 'POST', banner), null);
   assert.equal(validateMutation('/api/content/banners/banner_1', 'PATCH', { isActive: false }), null);
   assert.equal(validateMutation('/api/content/banners/banner_1', 'DELETE', undefined), null);
+  assert.equal(validateMutation('/api/content/articles/article_1', 'DELETE', undefined), null);
+  assert.equal(validateMutation('/api/files/file_1', 'DELETE', undefined), null);
   assert.equal(validateMutation('/api/admin/content/authors', 'POST', { phone: '09121234567', fullName: 'Content Author' }), null);
   assert.equal(validateMutation('/api/admin/content/authors/user_1', 'DELETE', undefined), null);
   assert.equal(validateMutation(`/api/articles/${'a'.repeat(120)}/feedback`, 'POST', { rating: 5 }), null);

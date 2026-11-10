@@ -183,3 +183,8 @@ QA تغییر جست‌وجوی مقاله در ۲۰۲۶-۱۱-۰۴: typecheck، 
 Content managers with publish permission can manage manual permanent redirects in `/content/redirects`. The editor accepts internal paths or full URLs on the current site, and supports adding or replacing mappings, enabling/disabling them, and deletion. Destination queries are allowed; source queries are matched from the incoming request and carried through when they do not override a destination parameter. Active mappings resolve exact legacy paths, including nested paths, through the backend resolver and the request proxy issues an HTTP 301. Backend rules and route contracts are documented in the backend `docs/CONTENT-CMS.md`.
 
 QA (2026-11-09): TypeScript check, production build, and all 150 frontend tests passed. Regression coverage checks nested legacy paths, HTTP 301, and destination/source query handling.
+
+### حذف مقاله و رسانه
+در فهرست تحریریه، مدیر محتوا می‌تواند مقالهٔ پیش‌نویس را مستقیم حذف کند؛ مقالهٔ منتشرشده ابتدا باید از انتشار خارج و بایگانی شود. حذف کامل فقط برای پیش‌نویس و بایگانی‌شده فعال است. کتابخانه رسانه دکمه حذف دارد؛ فایل‌های متعلق به کاربر جاری حذف می‌شوند و فایل‌های متصل به مقاله یا بنر از سمت API محافظت می‌شوند.
+
+QA این تغییر: `pnpm typecheck`، `pnpm test` و `pnpm build` اجرا شدند؛ آزمون‌ها شامل اعتبارسنجی درخواست حذف مقاله و فایل هستند.

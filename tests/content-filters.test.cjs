@@ -41,7 +41,8 @@ test('content workspace exposes distinct draft/published filters and keeps the a
   const requests = [];
   const page = load('src/app/content/page.tsx', {
     'next/link': 'a',
-    '@/lib/api/backend-get': { backendGet: async url => { requests.push(url); return url === '/api/content/categories' ? [] : result; } },
+    '@/features/content/components/article-delete-button': { ArticleDeleteButton: 'button' },
+    '@/lib/api/backend-get': { backendGet: async url => { requests.push(url); return url === '/api/content/categories' ? [] : url === '/api/content/me' ? { canPublish: true } : result; } },
     '@/lib/auth/cookies': { getAccessTokenCookie: async () => 'token' },
   }).default;
 
@@ -68,7 +69,8 @@ test('content workspace does not forward an unknown article status to the API', 
   const requests = [];
   const page = load('src/app/content/page.tsx', {
     'next/link': 'a',
-    '@/lib/api/backend-get': { backendGet: async url => { requests.push(url); return url === '/api/content/categories' ? [] : { ...result, page: 1, total: 1 }; } },
+    '@/features/content/components/article-delete-button': { ArticleDeleteButton: 'button' },
+    '@/lib/api/backend-get': { backendGet: async url => { requests.push(url); return url === '/api/content/categories' ? [] : url === '/api/content/me' ? { canPublish: true } : { ...result, page: 1, total: 1 }; } },
     '@/lib/auth/cookies': { getAccessTokenCookie: async () => 'token' },
   }).default;
 

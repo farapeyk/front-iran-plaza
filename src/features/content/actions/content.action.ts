@@ -91,6 +91,18 @@ export async function articleWorkflowAction(
   return result;
 }
 
+export async function deleteArticleAction(id: string) {
+  const result = await authedFetch<{ id: string; deleted: true }>(`/api/content/articles/${encodeURIComponent(id)}`, "DELETE");
+  if (result.success) revalidatePath("/content");
+  return result;
+}
+
+export async function deleteContentMediaAction(id: string) {
+  const result = await authedFetch<{ message: string }>(`/api/files/${encodeURIComponent(id)}`, "DELETE");
+  if (result.success) revalidatePath("/content/media");
+  return result;
+}
+
 export async function createContentCategoryAction(input: { name: string; slug: string; description?: string; parentId?: string; sortOrder?: number }) {
   const result = await authedFetch("/api/content/categories", "POST", input);
   if (result.success) revalidatePath("/content/categories");

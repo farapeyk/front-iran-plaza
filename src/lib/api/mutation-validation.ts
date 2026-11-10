@@ -174,10 +174,11 @@ const noBody = new Set([
   'PATCH admin/users/id/reinstate','PATCH admin/businesses/id/plan/downgrade','PATCH notifications/id/read','POST auth/logout',
   'POST content/articles/id/submit','POST content/articles/id/publish','POST content/articles/id/unpublish',
   'POST content/articles/id/archive','DELETE admin/content/authors/id',
+  'DELETE content/articles/id','DELETE files/id',
   'DELETE content/banners/id',
 ]);
 const withReason = new Set(['POST businesses/id/reject','POST businesses/id/suspend','POST admin/documents/id/reject','PATCH admin/users/id/suspend']);
-const resourceRoots = new Set(['businesses','reviews','notifications','users','documents','categories','articles','feedback','authors','banners','redirects']);
+const resourceRoots = new Set(['businesses','reviews','notifications','users','documents','categories','articles','feedback','authors','banners','redirects','files']);
 const resourceCollections = new Set(['gallery','features','branches','services','products','product-categories']);
 
 const validationFieldLabels: Record<string, string> = {
