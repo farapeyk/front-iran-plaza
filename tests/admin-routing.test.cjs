@@ -115,6 +115,33 @@ test('manual article redirects return an HTTP 301 for nested paths and retain th
   }
 });
 
+test('manual redirects are resolved under the reserved CIP root', async () => {
+  const originalFetch = global.fetch;
+  const originalBackend = process.env.BACKEND_INTERNAL_URL;
+  let requestedUrl;
+  process.env.BACKEND_INTERNAL_URL = 'http://backend.invalid';
+  global.fetch = async url => {
+    requestedUrl = String(url);
+    return new Response(JSON.stringify({ redirectTo: '/5-of-the-best-gold-shops-in-sadra-shiraz/' }), { status: 200, headers: { 'content-type': 'application/json' } });
+  };
+  try {
+    const proxy = load('src/proxy.ts', {
+      '@/features/content/lib/public-paths': publicPaths,
+      '@/lib/auth/roles': roles,
+      '@/lib/constants/auth': { ACCESS_TOKEN_COOKIE: 'access_token' },
+      '@/lib/auth/verify-access-token': { verifyAccessToken: async () => null },
+    }).default;
+    const response = await proxy(new NextRequest('http://frontend.invalid/cip/the-best-gold-shop-in-sadra-shiraz/'));
+    assert.equal(response.status, 301);
+    assert.equal(response.headers.get('location'), 'http://frontend.invalid/5-of-the-best-gold-shops-in-sadra-shiraz/');
+    assert.equal(requestedUrl, 'http://backend.invalid/api/articles/redirect?path=%2Fcip%2Fthe-best-gold-shop-in-sadra-shiraz%2F');
+  } finally {
+    global.fetch = originalFetch;
+    if (originalBackend === undefined) delete process.env.BACKEND_INTERNAL_URL;
+    else process.env.BACKEND_INTERNAL_URL = originalBackend;
+  }
+});
+
 test('manual article redirects retain destination query parameters and add non-conflicting source parameters', async () => {
   const originalFetch = global.fetch;
   const originalBackend = process.env.BACKEND_INTERNAL_URL;
