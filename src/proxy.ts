@@ -81,5 +81,5 @@ export default async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next|.*\\..*).*)"],
+  matcher: ["/((?!api(?:/|$)|_next(?:/|$)|.*\\.(?:avif|css|eot|gif|ico|jpe?g|js|map|otf|png|svg|ttf|webmanifest|webp|woff2?)$).*)"],
 };

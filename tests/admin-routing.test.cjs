@@ -77,6 +77,22 @@ test('legacy article and category URLs keep their trailing-slash canonical shape
   assert.equal((await proxy(new NextRequest('http://frontend.invalid/about'))).status, 200);
 });
 
+test('middleware matcher runs redirects for dotted legacy pages while skipping static assets', () => {
+  const { config } = load('src/proxy.ts', {
+    '@/features/content/lib/public-paths': publicPaths,
+    '@/lib/auth/roles': roles,
+    '@/lib/constants/auth': { ACCESS_TOKEN_COOKIE: 'access_token' },
+    '@/lib/auth/verify-access-token': { verifyAccessToken: async () => null },
+  });
+  const matcher = config.matcher[0];
+  const excluded = matcher.slice('/((?!'.length, -').*)'.length);
+  const matchesMiddleware = new RegExp(`^/(?!${excluded}).*$`);
+  assert.equal(matchesMiddleware.test('/old-page.html'), true);
+  assert.equal(matchesMiddleware.test('/old/page.php'), true);
+  assert.equal(matchesMiddleware.test('/_next/static/chunk.js'), false);
+  assert.equal(matchesMiddleware.test('/images/logo.webp'), false);
+});
+
 test('manual article redirects return an HTTP 301 for nested paths and retain the query string', async () => {
   const originalFetch = global.fetch;
   const originalBackend = process.env.BACKEND_INTERNAL_URL;
