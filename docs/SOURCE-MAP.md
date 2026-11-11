@@ -105,6 +105,7 @@ src/app/sitemap.ts
 src/app/sitemap_index.xml/route.ts
 src/app/too-many-requests/page.tsx
 src/components/category-icon.tsx
+src/components/maps/raster-map.tsx
 src/components/pagination.tsx
 src/components/ui/accordion.tsx
 src/components/ui/avatar.tsx
@@ -1081,6 +1082,7 @@ tests/http.test.cjs
 tests/image-crop.test.cjs
 tests/customer-dashboard-cache.test.cjs
 tests/logout.test.cjs
+tests/maplibre.test.cjs
 tests/mobile-search.test.cjs
 tests/onboarding.test.cjs
 tests/production-deployment.test.cjs

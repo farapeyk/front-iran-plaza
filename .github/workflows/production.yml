@@ -25,6 +25,7 @@ jobs:
       NEXT_PUBLIC_CLARITY_PROJECT_ID: ytzg76hino
       NEXT_PUBLIC_YANDEX_SITE_VERIFICATION: ${{ vars.YANDEX_SITE_VERIFICATION }}
       NEXT_PUBLIC_BAIDU_SITE_VERIFICATION: ${{ vars.BAIDU_SITE_VERIFICATION }}
+      NEXT_PUBLIC_MAP_TILE_URL: ${{ vars.NEXT_PUBLIC_MAP_TILE_URL }}
 
     steps:
       - name: Check out the exact revision
@@ -68,6 +69,7 @@ jobs:
             --env NEXT_PUBLIC_CLARITY_PROJECT_ID \
             --env NEXT_PUBLIC_YANDEX_SITE_VERIFICATION \
             --env NEXT_PUBLIC_BAIDU_SITE_VERIFICATION \
+            --env NEXT_PUBLIC_MAP_TILE_URL \
             --env JWT_ACCESS_SECRET=github-actions-build-only-secret-32-bytes \
             --env NEXT_TELEMETRY_DISABLED=1 \
             --volume "$alpine_source:/source:ro" \

@@ -1,24 +1,17 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-
-const markerIcon = L.icon({
-  iconUrl: "/leaflet/images/marker-icon.webp",
-  iconRetinaUrl: "/leaflet/images/marker-icon-2x.webp",
-  shadowUrl: "/leaflet/images/marker-shadow.webp",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
+import RasterMap from "@/components/maps/raster-map";
 
 export default function StaticLocationMap({ latitude, longitude }: { latitude: number; longitude: number }) {
   return (
     <div className="rounded-lg overflow-hidden border border-neutral-200" style={{ height: 220 }}>
-      <MapContainer center={[latitude, longitude]} zoom={15} style={{ height: "100%", width: "100%" }} scrollWheelZoom={false} dragging={false} zoomControl={false}>
-        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <Marker position={[latitude, longitude]} icon={markerIcon} />
-      </MapContainer>
+      <RasterMap
+        center={{ latitude, longitude }}
+        zoom={15}
+        marker={{ latitude, longitude }}
+        interactive={false}
+        className="h-full w-full"
+      />
     </div>
   );
 }

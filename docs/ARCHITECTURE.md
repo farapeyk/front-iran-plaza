@@ -15,7 +15,7 @@
 | فرم و اعتبارسنجی | React Hook Form `^7.83.0`، Zod `^4.4.3`، resolvers |
 | رابط کاربری | اجزای محلی `components/ui`، Base UI، Radix، Lucide و Sonner |
 | نشست | `jose ^6.2.4`، JWT و کوکی HttpOnly |
-| نقشه | Leaflet `^1.9.4` و React Leaflet `^5.0.0` |
+| نقشه | MapLibre GL JS `^6.17.0` |
 
 بسته‌هایی مثل React Query، React Table، Zustand، next-intl، Recharts و Tiptap در dependencies ثبت شده‌اند؛ نصب آن‌ها به‌تنهایی نشان نمی‌دهد جریان اصلی برنامه از آن‌ها استفاده می‌کند. فرم‌ها و onboarding فعلی عمدتاً با state محلی، Context و Server Actions کار می‌کنند.
 
@@ -70,7 +70,7 @@ CMS از Server Component برای فهرست و جزئیات indexable، Server
 
 Root layout زبان `fa` و جهت `rtl` دارد؛ Sonner در بالای صفحه پیام نمایش می‌دهد. Tailwind و CSS عمومی ظاهر مشترک را تعریف می‌کنند. فونت سیستمی Tahoma/Arial و monospace استفاده می‌شود. دریافت فونت Google از build حذف و متغیر CSS خودارجاع فونت اصلاح شده است.
 
-نقشه از tileهای OpenStreetMap استفاده می‌کند. انتخاب موقعیت و نمایش نقشه در اجزای کلاینت انجام می‌شود؛ برای افزودن نقشه جدید، الگوی dynamic import موجود و محدودیت SSR در Leaflet را رعایت کنید. تاریخ شمسی در `src/lib/utils/jalali.ts` تبدیل می‌شود و داده تاریخ برای API به شکل میلادی آماده می‌شود.
+نقشه‌ها با MapLibre GL JS و raster tileهای XYZ رندر می‌شوند. انتخاب موقعیت و نمایش نقشه در اجزای کلاینت با `src/components/maps/raster-map.tsx` انجام می‌شود؛ MapLibre فقط در مرورگر بارگذاری می‌شود. URL تایل اختیاری `NEXT_PUBLIC_MAP_TILE_URL` را هنگام build می‌توان به پراکسی داخلی داد؛ مقدار خالی از OSM مستقیم استفاده می‌کند. تاریخ شمسی در `src/lib/utils/jalali.ts` تبدیل می‌شود و داده تاریخ برای API به شکل میلادی آماده می‌شود.
 
 ## مرز بک‌اند و دیتابیس
 

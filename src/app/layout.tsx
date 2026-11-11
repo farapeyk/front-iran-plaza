@@ -4,6 +4,7 @@ import { buildSiteVerification, readSiteIntegrations } from "@/features/analytic
 import { siteOrigin } from "@/features/seo/article-seo";
 import { JsonLd } from "@/features/seo/json-ld";
 import { buildSiteStructuredData } from "@/features/seo/site-structured-data";
+import "maplibre-gl/dist/maplibre-gl.css";
 import "./globals.css";
 
 const siteIntegrations = readSiteIntegrations();

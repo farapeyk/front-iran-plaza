@@ -37,6 +37,7 @@ SITE_URL=https://example.com
 | `BACKEND_INTERNAL_URL` | URL پایه قابل دسترس از سرور Next؛ مسیرهای actionها معمولاً خودشان `/api` را اضافه می‌کنند. پایه را بدون `/api` و ترجیحاً بدون `/` انتهایی تنظیم کنید. |
 | `JWT_ACCESS_SECRET` | کلید بررسی امضای access token؛ باید با بک‌اند تطابق داشته باشد و فقط سمت سرور بماند. |
 | `SITE_URL` | اختیاری؛ origin واقعی سایت برای metadataBase و sitemap، فقط سمت سرور. پیش از build تنظیم شود؛ robots و sitemap فعلاً ایستا تولید می‌شوند. |
+| `NEXT_PUBLIC_MAP_TILE_URL` | اختیاری؛ قالب آدرس raster tile شامل `{z}/{x}/{y}` برای MapLibre. هنگام build ست می‌شود؛ اگر خالی باشد از OSM مستقیم استفاده می‌شود. هر کلید داخل URL در مرورگر قابل‌مشاهده خواهد بود. |
 | `NODE_ENV` | در production باعث `secure: true` در کوکی‌ها می‌شود؛ محیط production باید HTTPS داشته باشد. |
 
 هیچ‌کدام از دو مقدار اختصاصی بالا نباید با پیشوند `NEXT_PUBLIC_` منتشر شوند. `.gitignore` فایل‌های خصوصی `.env*` را نادیده می‌گیرد؛ `.env.example` قابل versioning است. برای راه‌اندازی، این نمونه را در فایل محیطی خصوصی خود وارد کنید و مقدار placeholder را با تنظیم معتبر جایگزین کنید.
