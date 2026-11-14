@@ -21,7 +21,7 @@ export default async function proxy(request: NextRequest) {
 
   const redirectPathParts = pathname.split("/").filter(Boolean);
   const redirectRoot = redirectPathParts[0];
-  if (request.method === "GET" && redirectRoot && (!RESERVED_ROOT_SLUGS.has(redirectRoot) || redirectRoot === "cip")) {
+  if (request.method === "GET" && redirectRoot && (!RESERVED_ROOT_SLUGS.has(redirectRoot) || redirectRoot === "cip" || redirectRoot === "category")) {
     const backend = process.env.BACKEND_INTERNAL_URL?.replace(/\/$/, "");
     if (backend) {
       try {
