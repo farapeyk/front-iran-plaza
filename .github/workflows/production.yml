@@ -120,10 +120,36 @@ jobs:
           test "$archive_bytes" -le $((512 * 1024 * 1024))
           echo "Packaged offline frontend archive: $archive_bytes bytes"
 
+      - name: Install pinned Iranian deploy host key
+        env:
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.PROD_SSH_KNOWN_HOSTS }}
+          IRAN_TARGET: ${{ secrets.PROD_IRAN_SSH_TARGET }}
+          IRAN_PORT: ${{ secrets.PROD_IRAN_SSH_PORT }}
+        run: |
+          install -d -m 0700 "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" >"$HOME/.ssh/known_hosts"
+          chmod 0600 "$HOME/.ssh/known_hosts"
+
+          host=${IRAN_TARGET#*@}
+          scan_file=$(mktemp)
+          trap 'rm -f "$scan_file"' EXIT
+          ssh-keyscan -T 10 -t rsa -p "$IRAN_PORT" "$host" 2>/dev/null >"$scan_file"
+          test -s "$scan_file" || { echo 'Iran deploy host did not present an RSA host key' >&2; exit 1; }
+
+          actual_fingerprint=$(ssh-keygen -lf "$scan_file" -E sha256 | awk '{print $2}')
+          expected_fingerprint='SHA256:WPJOZzUTGx+XKhYFii4YzFn4LY/9PydYGGPSVOGn+Fs'
+          test "$actual_fingerprint" = "$expected_fingerprint" || {
+            echo 'Iran deploy host fingerprint does not match the configured pin' >&2
+            exit 1
+          }
+
+          ssh-keygen -R "[$host]:$IRAN_PORT" -f "$HOME/.ssh/known_hosts" >/dev/null 2>&1 || true
+          cat "$scan_file" >>"$HOME/.ssh/known_hosts"
+          chmod 0600 "$HOME/.ssh/known_hosts"
+
       - name: Deploy Iran, then foreign region
         env:
           DEPLOY_SSH_KEY: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
-          DEPLOY_KNOWN_HOSTS: ${{ secrets.PROD_SSH_KNOWN_HOSTS }}
           IRAN_TARGET: ${{ secrets.PROD_IRAN_SSH_TARGET }}
           IRAN_PORT: ${{ secrets.PROD_IRAN_SSH_PORT }}
           FOREIGN_TARGET: ${{ secrets.PROD_FOREIGN_SSH_TARGET }}
@@ -131,8 +157,7 @@ jobs:
         run: |
           install -d -m 0700 "$HOME/.ssh"
           printf '%s\n' "$DEPLOY_SSH_KEY" >"$HOME/.ssh/id_ed25519"
-          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" >"$HOME/.ssh/known_hosts"
-          chmod 0600 "$HOME/.ssh/id_ed25519" "$HOME/.ssh/known_hosts"
+          chmod 0600 "$HOME/.ssh/id_ed25519"
 
           ssh_options=(
             -i "$HOME/.ssh/id_ed25519"

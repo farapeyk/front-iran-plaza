@@ -29,3 +29,12 @@ test('production hosts assemble the image without Corepack or pnpm', () => {
   assert.match(offlineDockerfile, /USER node/);
   assert.match(offlineDockerfile, /CMD \["node", "server\.js"\]/);
 });
+
+test('Iran deployment only refreshes its known host key after the RSA fingerprint matches the pinned value', () => {
+  assert.match(workflow, /Install pinned Iranian deploy host key/);
+  assert.match(workflow, /ssh-keyscan -T 10 -t rsa -p/);
+  assert.match(workflow, /ssh-keygen -lf .* -E sha256/);
+  assert.match(workflow, /SHA256:WPJOZzUTGx\+XKhYFii4YzFn4LY\/9PydYGGPSVOGn\+Fs/);
+  assert.match(workflow, /ssh-keygen -R .*known_hosts/);
+  assert.match(workflow, /StrictHostKeyChecking=yes/);
+});

@@ -21,6 +21,11 @@ health check می‌ماند و صفحه اصلی را روی loopback درخو�
 
 workflow از کلید SSH محدودشده استفاده می‌کند، نه root password. secretهای لازم
 `PROD_SSH_PRIVATE_KEY`، `PROD_SSH_KNOWN_HOSTS`، مقصد و پورت هر دو ناحیه‌اند.
+کلید میزبان RSA سرور ایران با fingerprint اعلام‌شده در گزارش GitHub
+`SHA256:WPJOZzUTGx+XKhYFii4YzFn4LY/9PydYGGPSVOGn+Fs` pin شده است. workflow کلید را
+با `ssh-keyscan` می‌خواند، fingerprint را با pin مقایسه می‌کند و فقط در صورت تطبیق
+ورودی قدیمی همان میزبان را جایگزین می‌کند؛ `StrictHostKeyChecking=yes` برای هر دو
+سرور فعال می‌ماند. تغییر fingerprint نیازمند تأیید و به‌روزرسانی pin است.
 جزئیات bootstrap، backup، rollback و فرمان status در سند
 `docs/PRODUCTION-CI-CD.md` مخزن بک‌اند ثبت شده‌اند؛ اسکریپت‌های مرجع در
 `deploy/ci/` همان مخزن هستند.
