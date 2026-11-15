@@ -47,7 +47,7 @@ export type ArticleInput = {
   faqs?: ArticleFaq[];
   seoTitle?: string;
   seoDescription?: string;
-  canonicalUrl?: string;
+  canonicalUrl?: string | null;
   robotsIndex?: boolean;
   robotsFollow?: boolean;
   showBanners?: boolean;
@@ -56,8 +56,9 @@ export type ArticleInput = {
 };
 
 function prepareArticleInput<T extends ArticleInput>(input: T): T | null {
+  if (input.canonicalUrl === null) return input;
   const canonicalUrl = normalizeCanonicalUrl(input.canonicalUrl);
-  return canonicalUrl === null ? null : { ...input, canonicalUrl };
+  return canonicalUrl === null ? null : { ...input, canonicalUrl: canonicalUrl ?? null };
 }
 
 export async function createArticleAction(input: ArticleInput) {

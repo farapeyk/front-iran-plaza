@@ -56,6 +56,15 @@ test('article metadata emits absolute canonical, Open Graph, Twitter and Googleb
   assert.equal(metadata.robots.googleBot['max-image-preview'], 'large');
   assert.deepEqual(metadata.authors, [{ name: 'نویسنده آزمایشی' }]);
 });
+test('legacy WordPress query permalinks fall back to the managed article URL', () => {
+  const input = article();
+  input.canonicalUrl = 'https://iran-plaza.ir/?p=14029';
+  const metadata = seo.buildArticleMetadata(input, 'https://iran-plaza.ir');
+  assert.equal(metadata.alternates.canonical, 'https://iran-plaza.ir/best-restaurants-shiraz/');
+  assert.equal(metadata.openGraph.url, metadata.alternates.canonical);
+  const graph = seo.buildArticleStructuredData(input, undefined, 'https://iran-plaza.ir')['@graph'];
+  assert.equal(graph.find(node => node['@type'] === 'BlogPosting').url, metadata.alternates.canonical);
+});
 test('article metadata replaces a legacy read-more snippet with the visible introduction', () => {
   const input = article();
   input.seoDescription = null;
@@ -140,6 +149,7 @@ test('frontend mutation boundary accepts only typed FAQ and list SEO controls', 
     faqs: [{ question: 'پرسش معتبر چیست؟', answer: 'این پاسخ معتبر و کامل است.', isActive: false }],
   };
   assert.equal(validateMutation('/api/content/articles', 'POST', payload), null);
+  assert.equal(validateMutation('/api/content/articles/article-id', 'PATCH', { expectedRevision: 1, canonicalUrl: null }), null);
   assert.match(validateMutation('/api/content/articles', 'POST', {
     ...payload,
     faqs: [{ ...payload.faqs[0], isActive: 'خیر' }],

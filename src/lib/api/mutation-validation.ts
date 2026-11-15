@@ -61,7 +61,7 @@ const createArticle = z.object({
   faqs: z.array(articleFaq).max(30).optional(),
   seoTitle: z.string().trim().max(160).optional(),
   seoDescription: z.string().trim().max(170).optional(),
-  canonicalUrl: z.url().max(500).optional(),
+  canonicalUrl: z.url().max(500).nullable().optional(),
   robotsIndex: z.boolean().optional(),
   robotsFollow: z.boolean().optional(),
   showBanners: z.boolean().optional(),

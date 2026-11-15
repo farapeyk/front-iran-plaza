@@ -15,6 +15,17 @@ export function siteOrigin(configured = process.env.SITE_URL): string {
 export function absoluteSiteUrl(value: string, configured = process.env.SITE_URL): string {
   return new URL(value, `${siteOrigin(configured)}/`).href;
 }
+function articleCanonical(article: PublicArticle): string {
+  const supplied = article.canonicalUrl;
+  // Legacy WordPress permalinks are identifiers, not canonical article URLs.
+  if (supplied) {
+    try {
+      const url = new URL(supplied);
+      if (!(url.pathname === "/" && url.searchParams.has("p"))) return supplied;
+    } catch { /* Fall back to the managed article path for invalid legacy values. */ }
+  }
+  return articlePath(article.slug);
+}
 export function articleDescription(article: PublicArticle): string {
   const excerpt = displayArticleExcerpt(article.excerpt, withoutLegacyArticleWidgets(article.bodyBlocks));
   const value = (article.seoDescription || excerpt).trim();
@@ -23,7 +34,7 @@ export function articleDescription(article: PublicArticle): string {
 export function buildArticleMetadata(article: PublicArticle, configured = process.env.SITE_URL): Metadata {
   const title = article.seoTitle || article.title;
   const description = articleDescription(article);
-  const canonical = absoluteSiteUrl(article.canonicalUrl || articlePath(article.slug), configured);
+  const canonical = absoluteSiteUrl(articleCanonical(article), configured);
   const image = article.coverImageId
     ? absoluteSiteUrl(`/api/backend/files/${encodeURIComponent(article.coverImageId)}`, configured)
     : undefined;
@@ -100,7 +111,7 @@ export function buildArticleStructuredData(
   configured = process.env.SITE_URL,
 ): { "@context": "https://schema.org"; "@graph": Array<Record<string, unknown>> } {
   const origin = siteOrigin(configured);
-  const articleUrl = absoluteSiteUrl(article.canonicalUrl || articlePath(article.slug), configured);
+  const articleUrl = absoluteSiteUrl(articleCanonical(article), configured);
   const articleId = `${articleUrl}#article`;
   const webPageId = `${articleUrl}#webpage`;
   const organizationId = `${origin}/#organization`;
