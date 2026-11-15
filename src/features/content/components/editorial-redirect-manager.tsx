@@ -53,6 +53,7 @@ export function EditorialRedirectManager({ initial }: { initial: EditorialRedire
   const [items, setItems] = useState(initial);
   const [source, setSource] = useState("");
   const [target, setTarget] = useState("");
+  const [statusCode, setStatusCode] = useState<"301" | "410">("301");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -60,11 +61,11 @@ export function EditorialRedirectManager({ initial }: { initial: EditorialRedire
     event.preventDefault(); setBusy(true); setError("");
     try {
       const normalizedSource = normalizeInput(source, false);
-      const normalizedTarget = normalizeInput(target, true);
-      const response = await fetch("/api/backend/content/redirects", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ source: normalizedSource, target: normalizedTarget, isActive: true }) });
+      const normalizedTarget = statusCode === "301" ? normalizeInput(target, true) : null;
+      const response = await fetch("/api/backend/content/redirects", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ source: normalizedSource, target: normalizedTarget, statusCode: Number(statusCode), isActive: true }) });
       const data = await responseData(response);
       if (!response.ok) throw new Error(messageFrom(data, "ذخیره ریدایرکت انجام نشد."));
-      setItems(current => [data as unknown as EditorialRedirect, ...current.filter(item => item.id !== data.id)]); setSource(""); setTarget("");
+      setItems(current => [data as unknown as EditorialRedirect, ...current.filter(item => item.id !== data.id)]); setSource(""); setTarget(""); setStatusCode("301");
     } catch (cause) { setError(cause instanceof Error ? cause.message : "خطا در ذخیره‌سازی ریدایرکت."); }
     finally { setBusy(false); }
   }
@@ -87,13 +88,14 @@ export function EditorialRedirectManager({ initial }: { initial: EditorialRedire
   }
 
   return <section className="space-y-6">
-    <form onSubmit={save} className="grid gap-4 rounded-2xl border bg-white p-5 md:grid-cols-[1fr_1fr_auto] md:items-end">
+    <form onSubmit={save} className="grid gap-4 rounded-2xl border bg-white p-5 md:grid-cols-[1fr_1fr_0.7fr_auto] md:items-end">
       <label className="space-y-2 text-sm font-bold">آدرس قدیمی<input required dir="ltr" value={source} onChange={event => setSource(event.target.value)} placeholder="/old-article/" className="w-full rounded-xl border px-3 py-2.5 font-normal" /></label>
-      <label className="space-y-2 text-sm font-bold">آدرس مقصد<input required dir="ltr" value={target} onChange={event => setTarget(event.target.value)} placeholder="/articles/new-path/ یا https://iran-plaza.ir/" className="w-full rounded-xl border px-3 py-2.5 font-normal" /></label>
+      <label className="space-y-2 text-sm font-bold">نوع پاسخ<select value={statusCode} onChange={event => setStatusCode(event.target.value as "301" | "410")} className="w-full rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="301">انتقال دائمی · 301</option><option value="410">حذف‌شده · 410</option></select></label>
+      {statusCode === "301" ? <label className="space-y-2 text-sm font-bold">آدرس مقصد<input required dir="ltr" value={target} onChange={event => setTarget(event.target.value)} placeholder="/articles/new-path/ یا https://iran-plaza.ir/" className="w-full rounded-xl border px-3 py-2.5 font-normal" /></label> : <p className="self-center text-sm text-slate-600">برای پاسخ 410 نیازی به مقصد نیست.</p>}
       <button disabled={busy} className="rounded-xl bg-emerald-700 px-5 py-2.5 font-bold text-white disabled:opacity-50">{busy ? "در حال ذخیره…" : "افزودن ریدایرکت"}</button>
       {error ? <p role="alert" className="text-sm text-red-700 md:col-span-3">{error}</p> : null}
       <p className="text-xs text-slate-500 md:col-span-3">آدرس کامل همین سایت یا مسیر داخلی مجاز است. مقصد می‌تواند query داشته باشد؛ آدرس قدیمی را بدون query وارد کنید.</p>
     </form>
-    <div className="overflow-x-auto rounded-2xl border bg-white"><table className="w-full min-w-[650px] text-sm"><thead className="bg-slate-50"><tr><th className="p-4 text-right">قدیمی</th><th className="p-4 text-right">مقصد</th><th className="p-4 text-right">وضعیت</th><th className="p-4 text-left">عملیات</th></tr></thead><tbody>{items.map(item => <tr key={item.id} className="border-t"><td dir="ltr" className="p-4 text-right">{item.source}</td><td dir="ltr" className="p-4 text-right">{item.target}</td><td className="p-4">{item.isActive ? "فعال · 301" : "غیرفعال"}</td><td className="space-x-2 space-x-reverse p-4 text-left"><button onClick={() => void toggle(item)} className="rounded-lg border px-3 py-1.5">{item.isActive ? "غیرفعال‌کردن" : "فعال‌کردن"}</button><button onClick={() => void remove(item)} className="rounded-lg border border-red-200 px-3 py-1.5 text-red-700">حذف</button></td></tr>)}{items.length === 0 ? <tr><td colSpan={4} className="p-8 text-center text-slate-500">هنوز ریدایرکتی ثبت نشده است.</td></tr> : null}</tbody></table></div>
+    <div className="overflow-x-auto rounded-2xl border bg-white"><table className="w-full min-w-[650px] text-sm"><thead className="bg-slate-50"><tr><th className="p-4 text-right">قدیمی</th><th className="p-4 text-right">مقصد</th><th className="p-4 text-right">وضعیت</th><th className="p-4 text-left">عملیات</th></tr></thead><tbody>{items.map(item => <tr key={item.id} className="border-t"><td dir="ltr" className="p-4 text-right">{item.source}</td><td dir="ltr" className="p-4 text-right">{item.target || "—"}</td><td className="p-4">{item.isActive ? `فعال · ${item.statusCode}` : "غیرفعال"}</td><td className="space-x-2 space-x-reverse p-4 text-left"><button onClick={() => void toggle(item)} className="rounded-lg border px-3 py-1.5">{item.isActive ? "غیرفعال‌کردن" : "فعال‌کردن"}</button><button onClick={() => void remove(item)} className="rounded-lg border border-red-200 px-3 py-1.5 text-red-700">حذف</button></td></tr>)}{items.length === 0 ? <tr><td colSpan={4} className="p-8 text-center text-slate-500">هنوز ریدایرکتی ثبت نشده است.</td></tr> : null}</tbody></table></div>
   </section>;
 }

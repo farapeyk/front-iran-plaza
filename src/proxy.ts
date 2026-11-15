@@ -31,6 +31,9 @@ export default async function proxy(request: NextRequest) {
         });
         if (response.ok) {
           const result: unknown = await response.json();
+          if (typeof result === "object" && result !== null && "statusCode" in result && result.statusCode === 410) {
+            return new NextResponse(null, { status: 410 });
+          }
           if (typeof result === "object" && result !== null && "redirectTo" in result && typeof result.redirectTo === "string") {
             const destination = result.redirectTo.startsWith("/") ? result.redirectTo : `/${result.redirectTo}`;
             const target = new URL(destination, request.url);
