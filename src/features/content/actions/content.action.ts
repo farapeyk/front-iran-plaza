@@ -8,6 +8,12 @@ import { backendGet, BackendError } from "@/lib/api/backend-get";
 import { getActionAccessToken } from "@/lib/auth/action-access-token";
 import type { ArticleBanner, ArticleBlock, ArticleFaq, ArticleListResponse, ArticleSchemaType, ContentIdentity, EditorArticle } from "@/features/content/types";
 
+export async function saveEditorialProfileAction(userId: string, profile: { slug: string; displayName: string; bio: string }) {
+  const result = await authedFetch(`/api/admin/content/authors/${encodeURIComponent(userId)}/profile`, "POST", profile);
+  if (result.success) revalidatePath(`/authors/${encodeURIComponent(profile.slug)}`);
+  return result;
+}
+
 export async function searchBannerArticlesAction(search: string, page = 1) {
   const token = await getActionAccessToken();
   if (!token) return { success: false as const, message: "نشست شما منقضی شده، دوباره وارد شوید." };
@@ -24,6 +30,7 @@ export async function searchBannerArticlesAction(search: string, page = 1) {
 }
 
 export type ArticleInput = {
+  byline?: string | null;
   title: string;
   slug: string;
   excerpt: string;

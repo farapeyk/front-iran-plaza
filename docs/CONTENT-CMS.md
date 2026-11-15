@@ -188,3 +188,9 @@ QA (2026-11-14): TypeScript check, production build, and all 156 frontend tests 
 در فهرست تحریریه، مدیر محتوا می‌تواند مقالهٔ پیش‌نویس را مستقیم حذف کند؛ مقالهٔ منتشرشده ابتدا باید از انتشار خارج و بایگانی شود. حذف کامل فقط برای پیش‌نویس و بایگانی‌شده فعال است. کتابخانه رسانه دکمه حذف دارد؛ فایل‌های متعلق به کاربر جاری حذف می‌شوند و فایل‌های متصل به مقاله یا بنر از سمت API محافظت می‌شوند.
 
 QA این تغییر: `pnpm typecheck`، `pnpm test` و `pnpm build` اجرا شدند؛ آزمون‌ها شامل اعتبارسنجی درخواست حذف مقاله و فایل هستند.
+
+### Author profiles
+
+Authors and administrators have public editorial profiles at `/authors/{slug}`. The content authors manager edits a profile slug, display name, and short bio. Published article pages link the displayed author name to the matching profile; each profile lists the author's three latest published articles. The article editor's byline is an article-only display override and does not update the account or profile name.
+
+QA (2026-11-15): frontend typecheck, production build, and all 159 frontend tests passed.

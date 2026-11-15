@@ -71,7 +71,7 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath,
         <header className="mx-auto mt-[var(--5xl)] max-w-[1000px] space-y-4 text-start">
           <h1 className="text-[length:var(--text-h1)] font-black leading-tight text-[var(--text-title)]">{article.title}</h1>
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-[var(--text-body)]">
-            <span>نویسنده: {article.author.fullName || "تیم ایران پلازا"}</span>
+            <span>نویسنده: {article.author.profileSlug ? <Link className="font-bold text-emerald-800 hover:underline" href={`/authors/${encodeURIComponent(article.author.profileSlug)}`}>{article.author.fullName || "تیم ایران پلازا"}</Link> : (article.author.fullName || "تیم ایران پلازا")}</span>
             <time dateTime={article.publishedAt as string}>{preview ? `آخرین ذخیره: ${published}` : published}</time>
             <span>زمان مطالعه: {article.readingTimeMin.toLocaleString("fa-IR")} دقیقه</span>
             {article.rating !== null ? <span>امتیاز {article.rating.toLocaleString("fa-IR", { maximumFractionDigits: 1 })} از ۵ ({article.ratingCount.toLocaleString("fa-IR")} رأی)</span> : null}

@@ -91,6 +91,7 @@ export type ArticleBusinessLink = {
 };
 
 export type EditorArticle = {
+  byline: string | null;
   id: string;
   title: string;
   slug: string;
@@ -151,6 +152,7 @@ export type PublicArticleListItem = {
 export type PublicArticleListResponse = { data: PublicArticleListItem[]; total: number; page: number; limit: number };
 
 export type PublicArticle = Omit<EditorArticle, "categoryId" | "status" | "reviewNote" | "revision" | "submittedAt" | "approvedAt"> & {
+  author: EditorArticle["author"] & { profileSlug?: string | null };
   status: "PUBLISHED";
   rating: number | null;
   ratingCount: number;
@@ -190,11 +192,12 @@ export type ContentMediaItem = {
 export type ContentMediaResponse = { data: ContentMediaItem[]; total: number; page: number; limit: number };
 
 export type ContentAuthorAssignment = {
+  isAdmin?: boolean;
   id: string;
   isActive: boolean;
   expiresAt: string | null;
   createdAt: string;
-  user: { id: string; phone: string; fullName: string | null; email: string | null; isActive: boolean };
+  user: { id: string; phone: string; fullName: string | null; email: string | null; isActive: boolean; editorialProfile?: { slug: string; displayName: string; bio: string } | null };
 };
 
 export type ArticleFeedbackQueueItem = {

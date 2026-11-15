@@ -34,6 +34,7 @@ src/app/(public)/[slug]/page.tsx
 src/app/(public)/about/page.tsx
 src/app/(public)/articles/[slug]/page.tsx
 src/app/(public)/articles/page.tsx
+src/app/(public)/authors/[slug]/page.tsx
 src/app/(public)/business-registration/page.tsx
 src/app/(public)/businesses/[slug]/page.tsx
 src/app/(public)/businesses/page.tsx
@@ -963,6 +964,7 @@ src/features/content/components/content-authors-manager.tsx
 src/features/content/components/content-category-manager.tsx
 src/features/content/components/content-media-library.tsx
 src/features/content/components/content-sidebar.tsx
+src/features/content/components/editorial-profile-manager.tsx
 src/features/content/components/editorial-redirect-manager.tsx
 src/features/content/components/feedback-queue.tsx
 src/features/content/components/rich-text-editor.tsx
@@ -1073,6 +1075,7 @@ tests/client-address.test.cjs
 tests/content-article.test.cjs
 tests/content-filters.test.cjs
 tests/contract.test.cjs
+tests/customer-dashboard-cache.test.cjs
 tests/design-api.test.cjs
 tests/docs.test.cjs
 tests/editorial-tags.test.cjs
@@ -1080,7 +1083,6 @@ tests/glob-security.test.cjs
 tests/helpers.cjs
 tests/http.test.cjs
 tests/image-crop.test.cjs
-tests/customer-dashboard-cache.test.cjs
 tests/logout.test.cjs
 tests/maplibre.test.cjs
 tests/mobile-search.test.cjs
