@@ -136,6 +136,7 @@ test('content editor exposes FAQ visibility and ItemList title controls', () => 
 test('frontend mutation boundary accepts only typed FAQ and list SEO controls', () => {
   const { validateMutation } = load('src/lib/api/mutation-validation.ts');
   const payload = {
+    byline: null,
     title: 'عنوان مقاله',
     slug: 'article-slug',
     excerpt: 'این یک خلاصه معتبر برای مقاله است.',
@@ -149,7 +150,7 @@ test('frontend mutation boundary accepts only typed FAQ and list SEO controls', 
     faqs: [{ question: 'پرسش معتبر چیست؟', answer: 'این پاسخ معتبر و کامل است.', isActive: false }],
   };
   assert.equal(validateMutation('/api/content/articles', 'POST', payload), null);
-  assert.equal(validateMutation('/api/content/articles/article-id', 'PATCH', { expectedRevision: 1, canonicalUrl: null }), null);
+  assert.equal(validateMutation('/api/content/articles/article-id', 'PATCH', { ...payload, expectedRevision: 1, canonicalUrl: null }), null);
   assert.match(validateMutation('/api/content/articles', 'POST', {
     ...payload,
     faqs: [{ ...payload.faqs[0], isActive: 'خیر' }],

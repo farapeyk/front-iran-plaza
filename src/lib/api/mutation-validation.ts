@@ -45,6 +45,7 @@ const articleFaq = z.object({
   isActive: z.boolean().optional(),
 }).strict();
 const createArticle = z.object({
+  byline: z.string().trim().max(120).nullable().optional(),
   title: z.string().trim().min(3).max(180),
   slug: slug.min(3),
   excerpt: z.string().trim().min(10).max(5000),

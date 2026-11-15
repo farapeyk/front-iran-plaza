@@ -51,7 +51,7 @@ Canonical اختیاری است و باید URL مطلق HTTP/HTTPS باشد. ب
 
 - Server Component داده را از `/api/articles` و `/api/articles/:slug` می‌گیرد.
 - metadata شامل title، description، author/category، canonical، robots/Googlebot، Open Graph و Twitter Card است؛ مقادیر اجتماعی از همان فیلدهای SEO و تصویر شاخص قابل‌ویرایش پنل ساخته می‌شوند. پاک‌کردن فیلد canonical مقدار `null` را ذخیره می‌کند؛ permalink قدیمی وردپرس به شکل `/?p=<id>` در خروجی عمومی به مسیر اسلاگ مقاله بازمی‌گردد.
-- QA رفع canonical قدیمی: `pnpm test` (۱۶۱ آزمون)، `pnpm lint`، `pnpm typecheck` و `pnpm build` موفق شدند. آزمون‌ها از API/دیتابیس واقعی یا مرورگر تولیدی استفاده نمی‌کنند.
+- اعتبارسنجی mutation تحریریه فیلد `byline` اختیاری و nullable را می‌پذیرد تا payload واقعی فرم با schema سخت‌گیرانه سازگار بماند. QA: `pnpm test` (۱۶۱ آزمون)، `pnpm lint`، `pnpm typecheck` و `pnpm build` موفق شدند. آزمون‌ها از API/دیتابیس واقعی یا مرورگر تولیدی استفاده نمی‌کنند.
 - هر دسته یک URL سلسله‌مراتبی indexable دارد؛ جستجو و صفحه‌های بعدی `noindex,follow` هستند و canonical مطلق به URL اصلی آرشیو یا همان دسته روی `SITE_URL` (با fallback دامنه رسمی `https://iran-plaza.ir`) اشاره می‌کند.
 - صفحه‌بندی آرشیو در فهرست‌های طولانی فقط صفحه‌های ابتدا، انتها و نزدیک به صفحه جاری را همراه سه‌نقطه نشان می‌دهد تا در نمایش موبایل به‌هم نریزد؛ عبارت جستجو و دسته انتخاب‌شده در لینک‌ها حفظ می‌شوند.
 - JSON-LD سایت `Organization` و `WebSite` و JSON-LD مقاله `WebPage`، `BlogPosting` و `BreadcrumbList` را دارد؛ `FAQPage` فقط از FAQهای فعال و `ItemList` با عنوان، ترتیب و `LocalBusiness` منطبق با فهرست قابل‌مشاهده صفحه ساخته می‌شود. آرشیو و دسته‌ها نیز `ItemList` مقاله‌های همان صفحه را منتشر می‌کنند.
