@@ -98,3 +98,20 @@ test('valid CMS create mutations pass validation and reach the network layer', a
     assert.equal(calls[1].url,'http://backend.invalid/api/content/categories');
   } finally {global.fetch=fetchOriginal;if(previous===undefined)delete process.env.BACKEND_INTERNAL_URL;else process.env.BACKEND_INTERNAL_URL=previous;}
 });
+
+test('editorial author profile mutations pass validation and reach the backend', async () => {
+  const previous=process.env.BACKEND_INTERNAL_URL,fetchOriginal=global.fetch;const calls=[];
+  process.env.BACKEND_INTERNAL_URL='http://backend.invalid';
+  const validation=load('src/lib/api/mutation-validation.ts');
+  const {actionFetch}=load('src/lib/api/action-fetch.ts',{'./mutation-validation':validation,'./backend-url':backendUrls});
+  try {
+    global.fetch=async(url,options)=>{calls.push({url,options});return Response.json({slug:'mohsen'});};
+    const response=await actionFetch('http://backend.invalid/api/admin/content/authors/user_admin/profile',{
+      method:'POST',
+      body:JSON.stringify({slug:'mohsen',displayName:'محسن',bio:'نویسنده ایران پلازا'}),
+    });
+    assert.equal(response.status,200);
+    assert.equal(calls.length,1);
+    assert.equal(calls[0].url,'http://backend.invalid/api/admin/content/authors/user_admin/profile');
+  } finally {global.fetch=fetchOriginal;if(previous===undefined)delete process.env.BACKEND_INTERNAL_URL;else process.env.BACKEND_INTERNAL_URL=previous;}
+});

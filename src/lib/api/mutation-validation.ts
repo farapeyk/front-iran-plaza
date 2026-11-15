@@ -168,6 +168,7 @@ const schemas: Record<string, z.ZodType> = {
   'POST content/redirects': z.object({ source: text.min(1).max(500), target: text.min(1).max(500).nullable().optional(), statusCode: z.union([z.literal(301), z.literal(410)]).optional(), isActive: z.boolean().optional() }).strict(),
   'PATCH content/redirects/id': z.object({ source: text.min(1).max(500).optional(), target: text.min(1).max(500).nullable().optional(), statusCode: z.union([z.literal(301), z.literal(410)]).optional(), isActive: z.boolean().optional() }).strict(),
   'POST admin/content/authors': z.object({ phone: z.string().regex(/^09\d{9}$/), fullName: text.max(120), email: z.email().max(190).optional() }).strict(),
+  'POST admin/content/authors/id/profile': z.object({ slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).min(3).max(80), displayName: text.min(2).max(120), bio: z.string().trim().max(500) }).strict(),
 };
 const noBody = new Set([
   'POST businesses/id/favorite','POST businesses/id/approve','POST admin/documents/id/approve',
