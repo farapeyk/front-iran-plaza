@@ -11,6 +11,8 @@ function firstValidIp(value: string | null): string | undefined {
 }
 
 export function clientAddressFromHeaders(headers: Headers): string | undefined {
-  return firstValidIp(headers.get("x-forwarded-for"))
-    ?? firstValidIp(headers.get("x-real-ip"));
+  // Prefer the CDN-configured single visitor address over XFF, which may hold
+  // a chain of CDN/proxy addresses or client-supplied values.
+  return firstValidIp(headers.get("x-real-ip"))
+    ?? firstValidIp(headers.get("x-forwarded-for"));
 }

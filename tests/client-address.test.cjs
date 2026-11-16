@@ -4,11 +4,11 @@ const { load } = require('./helpers.cjs');
 
 const { clientAddressFromHeaders } = load('src/lib/api/client-address.ts');
 
-test('client address uses the proxy chain and validates IP values', () => {
+test('client address prefers the CDN visitor header and validates fallback IP values', () => {
   assert.equal(clientAddressFromHeaders(new Headers({
     'x-forwarded-for': '5.202.138.212, 192.0.2.20',
     'x-real-ip': '192.0.2.20',
-  })), '5.202.138.212');
+  })), '192.0.2.20');
 
   assert.equal(clientAddressFromHeaders(new Headers({
     'x-forwarded-for': 'not-an-ip, 198.51.100.10, 192.0.2.20',
