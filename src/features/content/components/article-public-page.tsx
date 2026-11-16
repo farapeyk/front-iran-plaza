@@ -45,9 +45,26 @@ function ArticleSidebarContent({ banners }: { banners: ArticleBanner[] }) {
 function ArticleTableView({ block }: { block: ArticleBlock }) {
   const table = block.table;
   if (!table) return null;
-  return <div className="overflow-x-auto rounded-[var(--radius-xs)] border"><table className="min-w-full border-collapse text-sm"><thead><tr>{table.headers.map((header, index) => <th key={index} scope="col" className="border-b border-s bg-neutral-50 px-4 py-3 text-start font-bold first:border-s-0">{header}</th>)}{table.showContactColumn ? <th scope="col" className="border-b border-s bg-neutral-50 px-4 py-3 text-center">تماس</th> : null}</tr></thead><tbody>{table.rows.map((row, rowIndex) => <tr key={rowIndex} className="even:bg-neutral-50/60">{row.cells.map((cell, index) => <td key={index} className="border-s border-t px-4 py-3 first:border-s-0">{cell}</td>)}{table.showContactColumn ? <td className="border-s border-t px-4 py-3 text-center">{row.phone ? <a href={`tel:${row.phone.replace(/[^+\d]/g, "")}`} className="inline-flex rounded-full border border-emerald-700 px-3 py-1 font-medium text-emerald-800">{table.contactLabel || "تماس"}</a> : <span aria-label="شماره تماس ثبت نشده">—</span>}</td> : null}</tr>)}</tbody></table></div>;
+  const headers = [...table.headers, ...(table.showContactColumn ? ["تماس"] : [])];
+  return <div role="table" aria-label={headers.join("، ")} itemScope itemType="https://schema.org/Table" className="space-y-3 text-sm sm:space-y-0 sm:overflow-x-auto sm:rounded-[var(--radius-xs)] sm:border">
+    <div role="rowgroup" className="hidden bg-neutral-50 sm:block">
+      <div role="row" itemProp="hasPart" itemScope itemType="https://schema.org/TableRow" className="hidden sm:grid" style={{ gridTemplateColumns: `repeat(${headers.length}, minmax(0, 1fr))` }}>
+        {headers.map((header, index) => <div key={index} role="columnheader" itemProp="hasPart" itemScope itemType="https://schema.org/TableCell" className={`px-4 py-3 text-start font-bold ${index ? "border-s" : ""}`}><span itemProp="text">{header}</span></div>)}
+      </div>
+    </div>
+    <div role="rowgroup" className="contents">
+      {table.rows.map((row, rowIndex) => {
+        const values = [...row.cells, ...(table.showContactColumn ? [row.phone || ""] : [])];
+        return <div key={rowIndex} role="row" itemProp="hasPart" itemScope itemType="https://schema.org/TableRow" className="block overflow-hidden rounded-[var(--radius-xs)] border bg-white sm:grid sm:rounded-none sm:border-0 sm:even:bg-neutral-50/60" style={{ gridTemplateColumns: `repeat(${headers.length}, minmax(0, 1fr))` }}>
+          {values.map((value, index) => <div key={index} role="cell" itemProp="hasPart" itemScope itemType="https://schema.org/TableCell" aria-label={`${headers[index]}: ${value}`} className="flex min-w-0 items-start gap-3 border-t px-4 py-3 first:border-t-0 sm:border-s sm:first:border-s-0">
+            <span className="shrink-0 font-bold text-neutral-600 sm:hidden">{headers[index]}</span>
+            <span itemProp="text" className="min-w-0 break-words">{table.showContactColumn && index === values.length - 1 ? row.phone ? <a href={`tel:${row.phone.replace(/[^+\d]/g, "")}`} className="inline-flex rounded-full border border-emerald-700 px-3 py-1 font-medium text-emerald-800">{table.contactLabel || "تماس"}</a> : <span aria-label="شماره تماس ثبت نشده">—</span> : value}</span>
+          </div>)}
+        </div>;
+      })}
+    </div>
+  </div>;
 }
-
 export function ArticlePublicPage({ article, relatedArticles = [], categoryPath, preview = false, editHref }: { article: PublicArticle; relatedArticles?: PublicArticleListItem[]; categoryPath?: string; preview?: boolean; editHref?: string }) {
   const cleanedBlocks = withoutLegacyArticleWidgets(article.bodyBlocks);
   const excerpt = displayArticleExcerpt(article.excerpt, cleanedBlocks);
