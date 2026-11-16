@@ -3,6 +3,7 @@ import { RegistrationBanner } from "@/design/components/registration-banner";
 import { NewMembers } from "@/design/components/new-members";
 import { ArticleCard } from "@/design/components/article-card";
 import { Link } from "@/design/navigation";
+import { ArticleSearch } from "@/features/content/components/article-search";
 import type { ContentCategory, PublicArticleListResponse } from "@/features/content/types";
 import { compactPaginationItems } from "@/features/content/lib/article-content";
 import { articlePath, categoryPath } from "@/features/content/lib/public-paths";
@@ -44,10 +45,12 @@ export function ArticlesLivePage({
               {selectedCategory?.description || "راهنماها، تجربه‌ها و فهرست‌های کاربردی بر پایه کسب‌وکارهای ثبت‌شده در ایران پلازا."}
             </p>
           </div>
-          <form action={archivePath} className="flex h-14 w-full max-w-[420px] items-center gap-[var(--md)] rounded-full border border-[var(--border-default)] bg-[var(--surface)] px-[var(--lg)]">
-            <input name="q" defaultValue={query} placeholder="جستجوی مقاله" className="h-full min-w-0 flex-1 bg-transparent text-start text-base outline-none placeholder:text-[var(--input-placeholder)]" />
-            <button type="submit" className="font-bold text-primary-700">جستجو</button>
-          </form>
+          <ArticleSearch
+            archivePath={archivePath}
+            initialQuery={query}
+            category={category}
+            initialSuggestions={query ? result.data.slice(0, 5).map(({ id, title, slug, excerpt, category: articleCategory }) => ({ id, title, slug, excerpt, category: articleCategory })) : []}
+          />
         </header>
 
         <nav aria-label="دسته‌بندی مقاله‌ها" className="flex flex-wrap justify-center gap-2">

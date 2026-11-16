@@ -960,6 +960,7 @@ src/features/content/components/article-editor-form.tsx
 src/features/content/components/article-editor-insights.tsx
 src/features/content/components/article-feedback-form.tsx
 src/features/content/components/article-public-page.tsx
+src/features/content/components/article-search.tsx
 src/features/content/components/content-authors-manager.tsx
 src/features/content/components/content-category-manager.tsx
 src/features/content/components/content-media-library.tsx
@@ -971,6 +972,7 @@ src/features/content/components/rich-text-editor.tsx
 src/features/content/components/rich-text-renderer.tsx
 src/features/content/lib/article-content.ts
 src/features/content/lib/article-preview.ts
+src/features/content/lib/article-search.ts
 src/features/content/lib/article-seo-audit.ts
 src/features/content/lib/canonical-url.ts
 src/features/content/lib/editorial-tags.ts
@@ -1064,6 +1066,7 @@ tests/admin-business-detail.test.cjs
 tests/admin-business-management.test.cjs
 tests/admin-routing.test.cjs
 tests/article-business-list.test.cjs
+tests/article-search.test.cjs
 tests/article-seo-audit.test.cjs
 tests/article-seo.test.cjs
 tests/browser/design-transfer.spec.ts
