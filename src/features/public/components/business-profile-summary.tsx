@@ -155,7 +155,7 @@ export function BusinessProfileSummary({
             items={[
               { label: "خانه", to: "/" },
               { label: "کسب‌وکارها", to: "/businesses" },
-              ...breadcrumbCategories.map((category) => ({ label: category.name, to: `/businesses?categoryId=${encodeURIComponent(category.id)}` })),
+              ...breadcrumbCategories.map((category) => ({ label: category.name, to: `/businesses/category/${encodeURIComponent(category.slug)}` })),
               { label: business.name },
             ]}
           />

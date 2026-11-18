@@ -18,7 +18,7 @@ export async function CategoriesSection() {
       {!unavailable && categories.length === 0 && <p className="text-sm text-neutral-500">هنوز دسته‌بندی ثبت نشده است.</p>}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
         {categories.map((cat) => (
-          <Link href={"/businesses?categoryId=" + encodeURIComponent(cat.id)}
+          <Link href={"/businesses/category/" + encodeURIComponent(cat.slug)}
             key={cat.id} 
             className="flex flex-col items-center p-4 rounded-2xl border border-gray-100 hover:shadow-md hover:border-emerald-200 transition-all cursor-pointer bg-white group"
           >

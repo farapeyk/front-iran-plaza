@@ -25,7 +25,7 @@ export function Breadcrumb({ categories, selectedCategoryId, currentLabel }: { c
       {chain.map((c) => (
         <span key={c.id} className="flex items-center gap-1.5">
           <ChevronLeft size={12} />
-          <Link href={`/businesses?categoryId=${c.id}`} className="hover:text-emerald-800">
+          <Link href={`/businesses/category/${encodeURIComponent(c.slug)}`} className="hover:text-emerald-800">
             {c.name}
           </Link>
         </span>

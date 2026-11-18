@@ -15,6 +15,8 @@ function normalizeInput(value: string, allowQuery: boolean): string {
     if (url.hash) throw new Error("آدرس مقصد نباید بخش # داشته باشد.");
     if (!allowQuery && url.search) throw new Error("برای آدرس قدیمی، فقط مسیر را وارد کنید و query را ننویسید.");
     path = url.pathname + (allowQuery ? url.search : "");
+  } else if (path && !path.startsWith("/")) {
+    path = `/${path}`;
   }
 
   if (!path.startsWith("/") || path.startsWith("//") || path.includes("#") || /[\\\u0000-\u001f]/.test(path)) {
@@ -22,7 +24,15 @@ function normalizeInput(value: string, allowQuery: boolean): string {
   }
   if (!allowQuery && path.includes("?")) throw new Error("برای آدرس قدیمی، فقط مسیر را وارد کنید و query را ننویسید.");
 
-  const [pathname, query = ""] = path.split("?", 2);
+  const [rawPathname, query = ""] = path.split("?", 2);
+  let pathname: string;
+  try {
+    // URL.pathname percent-encodes Persian text; store readable Unicode so it
+    // matches the decoded pathname received by the frontend proxy.
+    pathname = decodeURI(rawPathname);
+  } catch {
+    throw new Error("آدرس شامل کدگذاری نامعتبر است.");
+  }
   const normalizedPath = `/${pathname.split("/").filter(Boolean).join("/")}/`;
   return allowQuery && query ? `${normalizedPath}?${query}` : normalizedPath;
 }
@@ -89,9 +99,9 @@ export function EditorialRedirectManager({ initial }: { initial: EditorialRedire
 
   return <section className="space-y-6">
     <form onSubmit={save} className="grid gap-4 rounded-2xl border bg-white p-5 md:grid-cols-[1fr_1fr_0.7fr_auto] md:items-end">
-      <label className="space-y-2 text-sm font-bold">آدرس قدیمی<input required dir="ltr" value={source} onChange={event => setSource(event.target.value)} placeholder="/old-article/" className="w-full rounded-xl border px-3 py-2.5 font-normal" /></label>
+      <label className="space-y-2 text-sm font-bold">آدرس قدیمی<input required dir="ltr" value={source} onChange={event => setSource(event.target.value)} placeholder="authors/sima/page/8/ یا /صفحه-اصلی/" className="w-full rounded-xl border px-3 py-2.5 font-normal" /></label>
       <label className="space-y-2 text-sm font-bold">نوع پاسخ<select value={statusCode} onChange={event => setStatusCode(event.target.value as "301" | "410")} className="w-full rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="301">انتقال دائمی · 301</option><option value="410">حذف‌شده · 410</option></select></label>
-      {statusCode === "301" ? <label className="space-y-2 text-sm font-bold">آدرس مقصد<input required dir="ltr" value={target} onChange={event => setTarget(event.target.value)} placeholder="/articles/new-path/ یا https://iran-plaza.ir/" className="w-full rounded-xl border px-3 py-2.5 font-normal" /></label> : <p className="self-center text-sm text-slate-600">برای پاسخ 410 نیازی به مقصد نیست.</p>}
+      {statusCode === "301" ? <label className="space-y-2 text-sm font-bold">آدرس مقصد<input required dir="ltr" value={target} onChange={event => setTarget(event.target.value)} placeholder="/authors/mohsen جدید/ یا https://iran-plaza.ir/" className="w-full rounded-xl border px-3 py-2.5 font-normal" /></label> : <p className="self-center text-sm text-slate-600">برای پاسخ 410 نیازی به مقصد نیست.</p>}
       <button disabled={busy} className="rounded-xl bg-emerald-700 px-5 py-2.5 font-bold text-white disabled:opacity-50">{busy ? "در حال ذخیره…" : "افزودن ریدایرکت"}</button>
       {error ? <p role="alert" className="text-sm text-red-700 md:col-span-3">{error}</p> : null}
       <p className="text-xs text-slate-500 md:col-span-3">آدرس کامل همین سایت یا مسیر داخلی مجاز است. مقصد می‌تواند query داشته باشد؛ آدرس قدیمی را بدون query وارد کنید.</p>

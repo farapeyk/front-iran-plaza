@@ -84,7 +84,7 @@ function DesktopBusinessesCategory({
                 <CategoryItem
                   key={category.id}
                   label={category.name}
-                  onClick={()=>{setOpen(false);navigate('/businesses?categoryId='+encodeURIComponent(category.id))}}
+                  onClick={()=>{setOpen(false);navigate('/businesses/category/'+encodeURIComponent(category.slug))}}
                   className="max-w-none"
                 />
               ))}

@@ -14,9 +14,10 @@ export function decodeBusinesses(data: unknown): PublicBusinessSummary[] {
 export function useCategories() {
   const [categories, setCategories] = useState<CategorySummary[]>([]);
   const [error, setError] = useState('');
-  useEffect(() => { const controller = new AbortController(); categoriesControllerGetCategories({signal:controller.signal}).then(setCategories).catch(() => { if(!controller.signal.aborted) setError('دریافت دسته‌بندی‌ها انجام نشد.'); }); return () => controller.abort(); }, []);
-  const cards = categories.filter(c => !c.parentId).map(c => ({ id: c.id, label: c.name, icon: c.icon || icons.find(icon => icon.label === c.name)?.icon || '/design/icons/categories.svg', href: '/businesses?categoryId=' + encodeURIComponent(c.id) }));
-  return {categories, cards, error};
+  const [loading, setLoading] = useState(true);
+  useEffect(() => { const controller = new AbortController(); categoriesControllerGetCategories({signal:controller.signal}).then(setCategories).catch(() => { if(!controller.signal.aborted) setError('دریافت دسته‌بندی‌ها انجام نشد.'); }).finally(() => { if(!controller.signal.aborted) setLoading(false); }); return () => controller.abort(); }, []);
+  const cards = categories.filter(c => !c.parentId).map(c => ({ id: c.id, label: c.name, icon: c.icon || icons.find(icon => icon.label === c.name)?.icon || '/design/icons/categories.svg', href: '/businesses/category/' + encodeURIComponent(c.slug) }));
+  return {categories, cards, error, loading};
 }
 export function useNewMembers(categoryId?: string, excludeBusinessId?: string) {
   const [items, setItems] = useState<ReturnType<typeof businessCard>[]>([]);

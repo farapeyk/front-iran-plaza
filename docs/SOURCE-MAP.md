@@ -37,6 +37,7 @@ src/app/(public)/articles/page.tsx
 src/app/(public)/authors/[slug]/page.tsx
 src/app/(public)/business-registration/page.tsx
 src/app/(public)/businesses/[slug]/page.tsx
+src/app/(public)/businesses/category/[slug]/page.tsx
 src/app/(public)/businesses/page.tsx
 src/app/(public)/categories/page.tsx
 src/app/(public)/category/[...segments]/page.tsx
@@ -1071,6 +1072,7 @@ tests/article-seo-audit.test.cjs
 tests/article-seo.test.cjs
 tests/browser/design-transfer.spec.ts
 tests/browser/reference-layout.spec.ts
+tests/business-category-routing.test.cjs
 tests/business-slug.test.cjs
 tests/category-icons.test.cjs
 tests/cip.test.cjs

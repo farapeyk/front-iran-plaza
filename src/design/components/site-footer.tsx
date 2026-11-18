@@ -103,7 +103,7 @@ function SiteFooter({ className }: { className?: string }) {
   const names=categories.filter(category=>!category.parentId).map(category=>category.name)
   const groupSize=Math.max(1,Math.ceil(names.length/3))
   const businessLinksCol1=names.slice(0,groupSize),businessLinksCol2=names.slice(groupSize,groupSize*2),businessLinksCol3=names.slice(groupSize*2)
-  const categoryHref=(name:string)=>'/businesses?categoryId='+encodeURIComponent(categories.find(category=>!category.parentId&&category.name===name)?.id??'')
+  const categoryHref=(name:string)=>'/businesses/category/'+encodeURIComponent(categories.find(category=>!category.parentId&&category.name===name)?.slug??'')
   return (
     <footer className={cn("w-full overflow-hidden bg-gradient-to-br from-primary-950 via-primary-950 to-primary-700", className)}>
       {/* Registration strip */}

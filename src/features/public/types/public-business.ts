@@ -23,6 +23,7 @@ export interface PublicBusinessListResponse {
 export interface CategorySummary {
   id: string;
   name: string;
+  slug: string;
   parentId?: string | null;
   icon?: string | null;
 }
