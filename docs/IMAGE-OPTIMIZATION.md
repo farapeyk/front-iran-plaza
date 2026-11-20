@@ -24,3 +24,9 @@ pnpm build
 ```
 
 علاوه بر فرمان‌ها، صفحات خانه، فهرست، پروفایل کسب‌وکار، مقاله، ثبت‌نام و previewهای خصوصی را در mobile/desktop بازبینی کنید. در Network باید تصاویر محتوایی پایین صفحه lazy باشند، پاسخ variantهای `/_next/image` دارای `Content-Type: image/webp` باشد و فایل خصوصی بدون خطای احراز هویت نمایش داده شود.
+
+## Production cache permissions (2026-11-20)
+
+Both production Dockerfiles create `/app/.next/cache` and assign it to `node:node` before switching to `USER node`. Ownership of files extracted below `/app` alone does not make a newly created parent directory writable. A missing writable cache caused `EACCES` during image optimization and interrupted HTTP responses. The live directories were repaired on both regions. `tests/production-deployment.test.cjs` guards both image definitions; production HTTP image requests are checked separately from these source assertions.
+
+Validation: `npm test` passed 166 tests; `npm run typecheck` and `npm run lint` passed. `npm run build` completed successfully on retry. The first build stopped after compiling to show Next.js's security upgrade reminder; the retry continued with that warning. The installed Next.js version still needs a security upgrade; no dependency change is included in this cache-permission repair. A Docker build of the actual offline Dockerfile with a minimal runtime probe passed, and `docker run --rm iranplaza/cache-permission-qa:20261120` confirmed `nonroot-image-cache-write=ok`. That probe checks permissions, not the complete app. Five real public optimizer requests passed HTTP/2 200 after the live cache and backend recovery repairs.

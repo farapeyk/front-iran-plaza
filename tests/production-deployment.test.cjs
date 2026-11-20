@@ -30,6 +30,13 @@ test('production hosts assemble the image without Corepack or pnpm', () => {
   assert.match(offlineDockerfile, /CMD \["node", "server\.js"\]/);
 });
 
+test('both production images create a cache owned by the runtime user', () => {
+  for (const file of ['Dockerfile', 'deploy/ci/Dockerfile.offline']) {
+    const source = fs.readFileSync(path.join(root, file), 'utf8');
+    assert.match(source, /RUN mkdir -p \/app\/\.next\/cache && chown -R node:node \/app\/\.next\/cache\s+USER node/);
+  }
+});
+
 test('Iran deployment only refreshes its known host key after the RSA fingerprint matches the pinned value', () => {
   assert.match(workflow, /Install pinned Iranian deploy host key/);
   assert.match(workflow, /ssh-keyscan -T 10 -t rsa -p/);
