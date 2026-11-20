@@ -10,6 +10,17 @@ const LOGIN_PAGES = ["/login", "/admin/login"];
 export default async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
+  let decodedPathname = pathname;
+  try {
+    decodedPathname = decodeURIComponent(pathname);
+  } catch {
+    // Keep the original path; malformed percent escapes will follow normal routing.
+  }
+  const legacyHomepagePath = decodedPathname.replace(/\/+$/, "") || "/";
+  if ((request.method === "GET" || request.method === "HEAD") && (legacyHomepagePath === "/new-homepage" || legacyHomepagePath === "/صفحه-اصلی")) {
+    return NextResponse.redirect(new URL("/", request.url), 301);
+  }
+
   const rootSlug = pathname.match(/^\/([a-z0-9]+(?:-[a-z0-9]+)*)$/)?.[1];
   const isLegacyArticle = Boolean(rootSlug && !RESERVED_ROOT_SLUGS.has(rootSlug));
   const isLegacyCategory = pathname.startsWith("/category/") && pathname.length > "/category/".length;

@@ -77,6 +77,39 @@ test('legacy article and category URLs keep their trailing-slash canonical shape
   assert.equal((await proxy(new NextRequest('http://frontend.invalid/about'))).status, 200);
 });
 
+test('hard redirects legacy English and Persian homepage URLs to the site root', async () => {
+  const originalFetch = global.fetch;
+  const originalBackend = process.env.BACKEND_INTERNAL_URL;
+  let backendFetchCount = 0;
+  process.env.BACKEND_INTERNAL_URL = 'http://backend.invalid';
+  global.fetch = async () => {
+    backendFetchCount += 1;
+    throw new Error('hard redirects must not depend on the backend');
+  };
+  try {
+    const proxy = load('src/proxy.ts', {
+      '@/features/content/lib/public-paths': publicPaths,
+      '@/lib/auth/roles': roles,
+      '@/lib/constants/auth': { ACCESS_TOKEN_COOKIE: 'access_token' },
+      '@/lib/auth/verify-access-token': { verifyAccessToken: async () => null },
+    }).default;
+    const routes = [
+      '/new-homepage/',
+      '/%D8%B5%D9%81%D8%AD%D9%87-%D8%A7%D8%B5%D9%84%DB%8C/',
+    ];
+    for (const route of routes) {
+      const response = await proxy(new NextRequest('https://iran-plaza.ir' + route));
+      assert.equal(response.status, 301);
+      assert.equal(response.headers.get('location'), 'https://iran-plaza.ir/');
+    }
+    assert.equal(backendFetchCount, 0);
+  } finally {
+    global.fetch = originalFetch;
+    if (originalBackend === undefined) delete process.env.BACKEND_INTERNAL_URL;
+    else process.env.BACKEND_INTERNAL_URL = originalBackend;
+  }
+});
+
 test('middleware matcher runs redirects for dotted legacy pages while skipping static assets', () => {
   const { config } = load('src/proxy.ts', {
     '@/features/content/lib/public-paths': publicPaths,
