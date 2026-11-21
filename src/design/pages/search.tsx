@@ -210,7 +210,7 @@ function BusinessesPage() {
       {!loading&&result.items.length<=6&&<RegistrationBanner className="listing-banner listing-short-banner"/>}
     </section>
     <NewMembers className="listing-members"/>
-    <section className="listing-container listing-about"><h2>{title}</h2><p>{category?`در دسته ${category.name}، کسب‌وکارهای ثبت‌شده در ایران پلازا را ببینید.`:'کسب‌وکارهای ثبت‌شده در ایران پلازا را پیدا کنید.'} با انتخاب شهر یا جستجوی نام، نتیجه‌ها را محدود کنید. برای مشاهده اطلاعات، خدمات، محصولات، آدرس و راه‌های ارتباطی هر کسب‌وکار، وارد پروفایل آن شوید.</p><Link to="/about">درباره ایران پلازا</Link></section>
+    <section className="listing-container listing-about"><h2>{title}</h2><p>{category?.description?.trim() || (category?`در دسته ${category.name}، کسب‌وکارهای ثبت‌شده در ایران پلازا را ببینید.`:'کسب‌وکارهای ثبت‌شده در ایران پلازا را پیدا کنید.') + ' با انتخاب شهر یا جستجوی نام، نتیجه‌ها را محدود کنید. برای مشاهده اطلاعات، خدمات، محصولات، آدرس و راه‌های ارتباطی هر کسب‌وکار، وارد پروفایل آن شوید.'}</p><Link to="/about">درباره ایران پلازا</Link></section>
   </SiteLayout>;
 }
 

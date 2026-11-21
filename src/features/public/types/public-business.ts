@@ -24,6 +24,7 @@ export interface CategorySummary {
   id: string;
   name: string;
   slug: string;
+  description?: string | null;
   parentId?: string | null;
   icon?: string | null;
 }

@@ -11239,6 +11239,10 @@
                       },
                       "sortOrder": {
                         "type": "number"
+                      },
+                      "description": {
+                        "type": "string",
+                        "nullable": true
                       }
                     },
                     "required": [
@@ -11248,7 +11252,8 @@
                       "name",
                       "parentId",
                       "slug",
-                      "sortOrder"
+                      "sortOrder",
+                      "description"
                     ]
                   }
                 }
@@ -11327,6 +11332,10 @@
                     },
                     "sortOrder": {
                       "type": "number"
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true
                     }
                   },
                   "required": [
@@ -11337,7 +11346,8 @@
                     "name",
                     "parentId",
                     "slug",
-                    "sortOrder"
+                    "sortOrder",
+                    "description"
                   ]
                 }
               }
@@ -11414,6 +11424,10 @@
                       },
                       "sortOrder": {
                         "type": "number"
+                      },
+                      "description": {
+                        "type": "string",
+                        "nullable": true
                       }
                     },
                     "required": [
@@ -11423,7 +11437,8 @@
                       "name",
                       "parentId",
                       "slug",
-                      "sortOrder"
+                      "sortOrder",
+                      "description"
                     ]
                   }
                 }
@@ -11498,6 +11513,10 @@
                     },
                     "tenantId": {
                       "type": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true
                     }
                   },
                   "required": [
@@ -11508,7 +11527,8 @@
                     "parentId",
                     "slug",
                     "sortOrder",
-                    "tenantId"
+                    "tenantId",
+                    "description"
                   ]
                 }
               }
@@ -26960,6 +26980,11 @@
           },
           "sortOrder": {
             "type": "number"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500,
+            "nullable": true
           }
         }
       },

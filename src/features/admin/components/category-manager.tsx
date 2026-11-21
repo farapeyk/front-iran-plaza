@@ -10,6 +10,7 @@ import { createCategoryAction, updateCategoryAction, deleteCategoryAction } from
 export interface AdminCategoryItem {
   id: string;
   name: string;
+  description: string | null;
   slug: string;
   parentId: string | null;
   icon: string | null;
@@ -104,6 +105,8 @@ function CategoryIconPicker({ value, onChange, disabled = false, compact = false
 function CategoryRow({ category, allCategories }: { category: AdminCategoryItem; allCategories: AdminCategoryItem[] }) {
   const [isPending, startTransition] = useTransition();
   const [name, setName] = useState(category.name);
+  const [description, setDescription] = useState(category.description ?? "");
+  const [savedDescription, setSavedDescription] = useState(category.description ?? "");
   const [icon, setIcon] = useState(category.icon);
   const parent = allCategories.find((item) => item.id === category.parentId);
 
@@ -114,6 +117,20 @@ function CategoryRow({ category, allCategories }: { category: AdminCategoryItem;
       const result = await updateCategoryAction(category.id, { name: trimmedName });
       if (!result.success) toast.error(result.message);
       else toast.success("نام دسته‌بندی ذخیره شد");
+    });
+  }
+
+  function handleSaveDescription() {
+    const nextDescription = description.trim();
+    if (nextDescription === savedDescription) return;
+    startTransition(async () => {
+      const result = await updateCategoryAction(category.id, { description: nextDescription || null });
+      if (!result.success) toast.error(result.message);
+      else {
+        setDescription(nextDescription);
+        setSavedDescription(nextDescription);
+        toast.success("توضیح دسته‌بندی ذخیره شد");
+      }
     });
   }
 
@@ -148,7 +165,7 @@ function CategoryRow({ category, allCategories }: { category: AdminCategoryItem;
   }
 
   return (
-    <div className="flex flex-col gap-3 border-b border-neutral-100 py-3 last:border-0 sm:flex-row sm:items-center">
+    <div className="flex flex-col gap-3 border-b border-neutral-100 py-3 last:border-0 sm:flex-row sm:items-start">
       <div className="min-w-0 flex-1">
         <input
           value={name}
@@ -159,6 +176,24 @@ function CategoryRow({ category, allCategories }: { category: AdminCategoryItem;
           className="h-9 w-full rounded-md border border-transparent bg-transparent px-2 text-sm outline-none hover:border-neutral-200 focus:border-neutral-300"
         />
         {parent && <p className="px-2 text-xs text-neutral-400">زیرمجموعه‌ی {parent.name}</p>}
+        <div className="mt-2 px-2">
+          <textarea
+            value={description}
+            onChange={(event) => setDescription(event.target.value.slice(0, 500))}
+            maxLength={500}
+            rows={3}
+            disabled={isPending}
+            aria-label={`توضیح دسته‌بندی ${category.name}`}
+            placeholder="توضیحی که پایین فهرست کسب‌وکارهای این دسته نمایش داده می‌شود"
+            className="w-full resize-y rounded-md border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-emerald-700"
+          />
+          <div className="mt-1 flex items-center justify-between text-xs text-neutral-400">
+            <span>{description.length}/500</span>
+            <button type="button" onClick={handleSaveDescription} disabled={isPending} className="font-medium text-emerald-800 disabled:opacity-50">
+              ذخیره توضیح
+            </button>
+          </div>
+        </div>
       </div>
       <CategoryIconPicker value={icon} onChange={handleIconChange} disabled={isPending} compact />
       <div className="flex items-center justify-between gap-4 sm:justify-start">

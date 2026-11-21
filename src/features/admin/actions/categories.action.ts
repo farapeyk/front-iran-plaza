@@ -5,6 +5,7 @@ import { authedFetch } from "@/features/business/actions/authed-fetch";
 
 export interface UpdateCategoryInput {
   name?: string;
+  description?: string | null;
   icon?: string;
   parentId?: string | null;
   isActive?: boolean;

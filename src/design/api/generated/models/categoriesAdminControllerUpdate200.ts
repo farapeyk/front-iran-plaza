@@ -17,4 +17,6 @@ export type CategoriesAdminControllerUpdate200 = {
   slug: string;
   sortOrder: number;
   tenantId: string;
+  /** @nullable */
+  description: string | null;
 };

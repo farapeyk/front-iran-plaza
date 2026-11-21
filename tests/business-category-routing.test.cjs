@@ -15,5 +15,7 @@ test('business category URLs use Latin slugs and legacy categoryId links still r
   assert.match(listing, /categories\.find\(c=>c\.slug===routeCategorySlug\)/);
   assert.match(listing, /categories\.find\(c=>c\.id===params\.get\('categoryId'\)\)/);
   assert.match(listing, /categoryId:categoryId\|\|query\.get\('categoryId'\)/);
+  assert.match(listing, /category\?\.description\?\.trim\(\)\s*\|\|\s*\(category\?/);
+  assert.match(listing, /در دسته \$\{category\.name\}، کسب‌وکارهای ثبت‌شده در ایران پلازا را ببینید/);
   assert.doesNotMatch(listing, /\['city','neighborhood'\] as const/);
 });

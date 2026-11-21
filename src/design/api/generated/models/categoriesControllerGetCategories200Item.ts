@@ -17,4 +17,6 @@ export type CategoriesControllerGetCategories200Item = {
   parentId: string | null;
   slug: string;
   sortOrder: number;
+  /** @nullable */
+  description: string | null;
 };

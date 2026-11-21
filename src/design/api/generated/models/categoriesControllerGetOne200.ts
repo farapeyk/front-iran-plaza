@@ -18,4 +18,6 @@ export type CategoriesControllerGetOne200 = {
   parentId: string | null;
   slug: string;
   sortOrder: number;
+  /** @nullable */
+  description: string | null;
 };

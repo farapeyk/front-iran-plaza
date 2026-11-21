@@ -19,4 +19,9 @@ export interface UpdateCategoryDto {
   parentId?: UpdateCategoryDtoParentId;
   isActive?: boolean;
   sortOrder?: number;
+  /**
+     * @maxLength 500
+     * @nullable
+     */
+  description?: string | null;
 }
