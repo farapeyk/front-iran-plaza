@@ -79,6 +79,7 @@ test('every public business profile uses the reusable responsive summary panel',
   assert.match(panel, /business\.branches\.length > 1/);
   assert.match(panel, /business\.branches\.map\(\(branch\) => \(\{ key: branch\.id, address: branch\.address \}\)\)/);
   assert.match(panel, /ProfileAddressList addresses=\{profileAddresses\}/);
+  assert.match(panel, /min-w-0 flex-1 text-right/);
   assert.match(panel, /src=\{locationIcon\}/);
   assert.doesNotMatch(panel, /businesses\/123/);
 });

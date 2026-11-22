@@ -83,10 +83,10 @@ function ProfileActions({ onAddress, onContact, compact = false }: Pick<Business
 
 function ProfileAddressList({ addresses, className = "" }: { addresses: { key: string; address: string | null }[]; className?: string }) {
   return (
-    <div className={`space-y-1 ${className}`}>
+    <div className={`w-full space-y-1 text-right ${className}`}>
       {addresses.map((item) => (
-        <div key={item.key} className="flex flex-row-reverse items-start justify-start gap-1 text-sm leading-7 text-[var(--text-body)]">
-          <span>{item.address}</span>
+        <div key={item.key} className="flex w-full flex-row-reverse items-start justify-start gap-1 text-right text-sm leading-7 text-[var(--text-body)]">
+          <span className="min-w-0 flex-1 text-right">{item.address}</span>
           <Image alt="" className="mt-1.5 size-4 shrink-0" height={16} src={locationIcon} width={16} />
         </div>
       ))}
