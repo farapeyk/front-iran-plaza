@@ -76,7 +76,10 @@ test('every public business profile uses the reusable responsive summary panel',
   assert.match(panel, /business-summary-desktop/);
   assert.match(panel, /business\.name/);
   assert.match(panel, /business\.description/);
-  assert.match(panel, /flex-row-reverse items-start justify-end gap-1 text-lg/);
+  assert.match(panel, /business\.branches\.length > 1/);
+  assert.match(panel, /business\.branches\.map\(\(branch\) => \(\{ key: branch\.id, address: branch\.address \}\)\)/);
+  assert.match(panel, /ProfileAddressList addresses=\{profileAddresses\}/);
+  assert.match(panel, /src=\{locationIcon\}/);
   assert.doesNotMatch(panel, /businesses\/123/);
 });
 

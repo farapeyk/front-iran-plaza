@@ -81,6 +81,19 @@ function ProfileActions({ onAddress, onContact, compact = false }: Pick<Business
   );
 }
 
+function ProfileAddressList({ addresses, className = "" }: { addresses: { key: string; address: string | null }[]; className?: string }) {
+  return (
+    <div className={`space-y-1 ${className}`}>
+      {addresses.map((item) => (
+        <div key={item.key} className="flex flex-row-reverse items-start justify-start gap-1 text-sm leading-7 text-[var(--text-body)]">
+          <span>{item.address}</span>
+          <Image alt="" className="mt-1.5 size-4 shrink-0" height={16} src={locationIcon} width={16} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function BusinessProfileSummary({
   business,
   logo,
@@ -98,6 +111,9 @@ export function BusinessProfileSummary({
     .flatMap(({ category }) => (category.parent ? [category.parent, category] : [category]))
     .filter((category, index, all) => all.findIndex((item) => item.id === category.id) === index);
   const address = business.address ?? business.city;
+  const profileAddresses = business.branches.length > 1
+    ? business.branches.map((branch) => ({ key: branch.id, address: branch.address }))
+    : [{ key: "primary", address }];
 
   return (
     <>
@@ -116,10 +132,7 @@ export function BusinessProfileSummary({
           <div className="mt-5 space-y-1 text-right">
             <h1 className="text-xl font-bold text-[var(--text-title)]">{business.name}</h1>
             {business.description && <p className="text-sm leading-7 text-[var(--text-body)]">{business.description}</p>}
-            <div className="flex flex-row-reverse items-start justify-start gap-1 text-sm leading-7 text-[var(--text-body)]">
-              <span>{address}</span>
-              <Image alt="" className="mt-1.5 size-4 shrink-0" height={16} src={locationIcon} width={16} />
-            </div>
+            <ProfileAddressList addresses={profileAddresses} />
           </div>
 
           <div className="mt-5 flex flex-row-reverse flex-wrap items-center justify-between gap-2">
@@ -170,9 +183,8 @@ export function BusinessProfileSummary({
                 <div className="w-full space-y-[var(--sm)] text-right">
                   <h1 className="text-[length:var(--text-h1)] font-black leading-[1.4] text-[var(--text-title)]">{business.name}</h1>
                   {business.description && <p className="text-lg leading-relaxed text-[var(--text-body)]">{business.description}</p>}
-                  <div className="flex flex-row-reverse items-start justify-end gap-1 text-lg leading-relaxed text-[var(--text-body)]">
-                    <span>{address}</span>
-                    <Image alt="" className="mt-1.5 size-4 shrink-0" height={16} src={locationIcon} width={16} />
+                  <div className="text-lg leading-relaxed [&>div]:text-lg [&>div]:leading-relaxed">
+                    <ProfileAddressList addresses={profileAddresses} className="[&>div]:text-lg [&>div]:leading-relaxed" />
                   </div>
                 </div>
                 <div className="flex flex-row-reverse flex-wrap items-center gap-[var(--sm)]">

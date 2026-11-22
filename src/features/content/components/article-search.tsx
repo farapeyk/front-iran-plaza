@@ -134,8 +134,6 @@ export function ArticleSearch({ archivePath, initialQuery = "", category, initia
                     className={`block px-4 py-3 hover:bg-black/5 ${activeIndex === index ? "bg-black/5" : ""}`}
                   >
                     <span className="block font-bold text-[var(--text-title)]">{article.title}</span>
-                    <span className="mt-1 line-clamp-2 block text-sm text-[var(--text-body)]">{article.excerpt}</span>
-                    {article.category ? <span className="mt-1 block text-xs text-primary-700">{article.category.name}</span> : null}
                   </a>
                 </li>
               ))}

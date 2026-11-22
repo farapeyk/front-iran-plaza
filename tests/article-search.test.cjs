@@ -1,6 +1,8 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { load } = require('./helpers.cjs');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const {
   ARTICLE_SEARCH_DEBOUNCE_MS,
@@ -23,6 +25,14 @@ test('public article suggestions use one bounded, encoded endpoint request and r
   assert.equal(url.searchParams.get('limit'), String(ARTICLE_SEARCH_SUGGESTION_LIMIT));
   assert.equal(ARTICLE_SEARCH_MIN_QUERY_LENGTH, 2);
   assert.equal(ARTICLE_SEARCH_DEBOUNCE_MS, 400);
+});
+
+test('article search suggestions show only article titles', () => {
+  const source = fs.readFileSync(path.join(__dirname, '../src/features/content/components/article-search.tsx'), 'utf8');
+  const suggestions = source.slice(source.indexOf('{suggestions.map('), source.indexOf('</ul>', source.indexOf('{suggestions.map(')));
+
+  assert.match(suggestions, /article\.title/);
+  assert.doesNotMatch(suggestions, /article\.(?:excerpt|category)/);
 });
 
 test('suggestion cache separates categories, caches empty results, refreshes used entries, and stays bounded', () => {
