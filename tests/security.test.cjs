@@ -140,7 +140,10 @@ test('content CMS mutations are allowlisted and validated before reaching the ba
 });
 
 test('canonical article URLs gain https when omitted and reject relative or unsafe URLs', () => {
-  const { normalizeCanonicalUrl } = load('src/features/content/lib/canonical-url.ts');
+  const { defaultArticleCanonicalUrl, normalizeCanonicalUrl } = load('src/features/content/lib/canonical-url.ts', {
+    '@/features/content/lib/public-paths': publicPaths,
+  });
+  assert.equal(defaultArticleCanonicalUrl('new-article-slug'), 'https://iran-plaza.ir/new-article-slug/');
   assert.equal(normalizeCanonicalUrl(undefined), undefined);
   assert.equal(normalizeCanonicalUrl('  '), undefined);
   assert.equal(normalizeCanonicalUrl('iranplaza.ir/example-article/'), 'https://iranplaza.ir/example-article/');
@@ -156,7 +159,9 @@ test('canonical article URLs gain https when omitted and reject relative or unsa
 test('article actions send normalized canonical URLs and stop invalid ones locally', async () => {
   const calls=[];
   const reads=[];
-  const canonical=load('src/features/content/lib/canonical-url.ts');
+  const canonical=load('src/features/content/lib/canonical-url.ts',{
+    '@/features/content/lib/public-paths':publicPaths,
+  });
   const actions=load('src/features/content/actions/content.action.ts',{
     '@/features/business/actions/authed-fetch':{authedFetch:async(path,method,body)=>{calls.push({path,method,body});return {success:true,data:{id:'article_1',slug:body.slug}};}},
     '@/features/content/lib/canonical-url':canonical,
@@ -171,6 +176,9 @@ test('article actions send normalized canonical URLs and stop invalid ones local
   const invalid=await actions.createArticleAction({...input,canonicalUrl:'/articles/article-title'});
   assert.equal(invalid.success,false);
   assert.equal(calls.length,1);
+  const defaulted=await actions.createArticleAction({...input,canonicalUrl:undefined});
+  assert.equal(defaulted.success,true);
+  assert.equal(calls[1].body.canonicalUrl,'https://iran-plaza.ir/article-title/');
   const search=await actions.searchBannerArticlesAction('عنوان تست');
   assert.equal(search.success,true);
   assert.deepEqual(reads,[

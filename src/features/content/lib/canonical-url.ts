@@ -1,3 +1,11 @@
+import { articlePath } from "@/features/content/lib/public-paths";
+
+export const DEFAULT_CANONICAL_ORIGIN = "https://iran-plaza.ir";
+
+export function defaultArticleCanonicalUrl(slug: string): string {
+  return slug.trim() ? new URL(articlePath(slug.trim()), `${DEFAULT_CANONICAL_ORIGIN}/`).href : "";
+}
+
 /** Normalizes an optional canonical URL while keeping the backend contract absolute. */
 export function normalizeCanonicalUrl(input: string | undefined): string | undefined | null {
   const trimmed = input?.trim();

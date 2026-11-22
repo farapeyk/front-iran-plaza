@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { authedFetch } from "@/features/business/actions/authed-fetch";
-import { normalizeCanonicalUrl } from "@/features/content/lib/canonical-url";
+import { defaultArticleCanonicalUrl, normalizeCanonicalUrl } from "@/features/content/lib/canonical-url";
 import { articlePath } from "@/features/content/lib/public-paths";
 import { backendGet, BackendError } from "@/lib/api/backend-get";
 import { getActionAccessToken } from "@/lib/auth/action-access-token";
@@ -62,7 +62,7 @@ function prepareArticleInput<T extends ArticleInput>(input: T): T | null {
 }
 
 export async function createArticleAction(input: ArticleInput) {
-  const prepared = prepareArticleInput(input);
+  const prepared = prepareArticleInput({ ...input, canonicalUrl: input.canonicalUrl || defaultArticleCanonicalUrl(input.slug) });
   if (!prepared) return { success: false as const, message: "آدرس Canonical معتبر نیست؛ دامنه کامل یا آدرس دارای http/https وارد کنید." };
   const result = await authedFetch<EditorArticle>("/api/content/articles", "POST", prepared);
   if (result.success) revalidatePath("/content");
