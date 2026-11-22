@@ -177,6 +177,14 @@ test('redirect manager mutations accept 301 and destination-free 410 only', () =
   assert.ok(validateMutation('/api/content/redirects', 'POST', { source: '/old/', statusCode: 302 }));
 });
 
+test('category description updates pass frontend mutation validation and stay within 500 characters', () => {
+  const { validateMutation } = load('src/lib/api/mutation-validation.ts');
+  assert.equal(validateMutation('/api/admin/categories/category_1', 'PATCH', { description: 'متن معرفی دسته‌بندی' }), null);
+  assert.equal(validateMutation('/api/admin/categories/category_1', 'PATCH', { description: null }), null);
+  assert.ok(validateMutation('/api/admin/categories/category_1', 'PATCH', { description: 'x'.repeat(501) }));
+  assert.ok(validateMutation('/api/admin/categories/category_1', 'PATCH', { description: 'متن', unexpected: true }));
+});
+
 test('manual redirects are resolved under the reserved CIP root', async () => {
   const originalFetch = global.fetch;
   const originalBackend = process.env.BACKEND_INTERNAL_URL;

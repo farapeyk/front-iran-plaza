@@ -147,7 +147,7 @@ const schemas: Record<string, z.ZodType> = {
   'POST businesses/id/reviews': z.object({ rating: z.number().int().min(1).max(5), comment: z.string().max(5000).optional() }).strict(),
   'POST reviews/id/replies': z.object({ comment: text.max(5000) }).strict(),
   'POST admin/categories': z.object({ name: text.max(150), parentId: id.optional(), icon: lucideIconName.optional() }).strict(),
-  'PATCH admin/categories/id': z.object({ name: text.max(150).optional(), parentId: id.nullable().optional(), icon: lucideIconName.optional(), isActive: z.boolean().optional(), sortOrder: z.number().int().optional() }).strict(),
+  'PATCH admin/categories/id': z.object({ name: text.max(150).optional(), description: z.string().max(500).nullable().optional(), parentId: id.nullable().optional(), icon: lucideIconName.optional(), isActive: z.boolean().optional(), sortOrder: z.number().int().optional() }).strict(),
   'PATCH admin/reviews/id': z.object({ status: z.enum(['PENDING','APPROVED','REJECTED']) }).strict(),
   'PATCH admin/businesses/id/cip': z.object({ isCip: z.boolean() }).strict(),
   'PATCH admin/businesses/id/plan': z.object({ planId: id }).strict(),
