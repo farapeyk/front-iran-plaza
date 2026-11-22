@@ -91,6 +91,7 @@ function SocialMediaIcon({
         data-type={type}
         aria-label={ariaLabel ?? name}
         className={classes}
+        onClick={onClick}
       >
         {inner}
       </a>

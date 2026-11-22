@@ -10,6 +10,8 @@ import type { CategoriesControllerGetCategories200ItemAncestorsItem } from './ca
 export type CategoriesControllerGetCategories200Item = {
   ancestors: CategoriesControllerGetCategories200ItemAncestorsItem[];
   /** @nullable */
+  description: string | null;
+  /** @nullable */
   icon: string | null;
   id: string;
   name: string;
@@ -17,6 +19,4 @@ export type CategoriesControllerGetCategories200Item = {
   parentId: string | null;
   slug: string;
   sortOrder: number;
-  /** @nullable */
-  description: string | null;
 };

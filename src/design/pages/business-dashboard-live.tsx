@@ -1,17 +1,10 @@
 "use client";
 
-import { ArrowLeft, Box, Building2, CheckCircle2, CreditCard, Eye, Image as ImageIcon, MapPin, MessageCircle, Phone, Share2, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Box, Building2, CheckCircle2, CreditCard, Image as ImageIcon, MapPin, ShieldAlert } from "lucide-react";
 import { DashboardAccountLayout } from "@/design/components/dashboard-account-layout";
 import { Button } from "@/design/components/ui/button";
 import { Link } from "@/design/navigation";
 import type { BusinessControllerGetMine200Item } from "@/design/api/generated/models/businessControllerGetMine200Item";
-
-const metricDefinitions = [
-  { title: "بازدید پروفایل", keys: ["BUSINESS_VIEW", "PAGE_VIEW"], icon: Eye },
-  { title: "کلیک تماس", keys: ["PHONE_CLICK", "CONTACT_CLICK"], icon: Phone },
-  { title: "کلیک واتساپ", keys: ["WHATSAPP_CLICK"], icon: MessageCircle },
-  { title: "اشتراک‌گذاری", keys: ["SHARE_CLICK"], icon: Share2 },
-] as const;
 
 function statusPresentation(status: BusinessControllerGetMine200Item["status"]) {
   switch (status) {
@@ -24,16 +17,11 @@ function statusPresentation(status: BusinessControllerGetMine200Item["status"]) 
 
 export function BusinessDashboardLivePage({
   business,
-  analytics,
-  analyticsAvailable,
 }: {
   business: BusinessControllerGetMine200Item;
-  analytics: Record<string, number>;
-  analyticsAvailable: boolean;
 }) {
   const status = statusPresentation(business.status);
   const StatusIcon = status.icon;
-  const format = (value: number | undefined) => analyticsAvailable ? (value ?? 0).toLocaleString("fa-IR") : "—";
   const isVipActive = business.planType === "VIP" && !!business.planExpiryDate && new Date(business.planExpiryDate) > new Date();
 
   return (
@@ -56,25 +44,6 @@ export function BusinessDashboardLivePage({
           <div className="flex flex-wrap gap-2">
             <Link to={`/businesses/${encodeURIComponent(business.slug)}`}><Button variant="outline" className="border-current bg-white/70">نمایش پروفایل عمومی</Button></Link>
             {business.onboardingStep < 11 && <Link to="/dashboard/business/profile"><Button>ادامهٔ تکمیل پروفایل</Button></Link>}
-          </div>
-        </section>
-
-        <section aria-labelledby="business-metrics-title">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-            <h2 id="business-metrics-title" className="text-lg font-black text-[var(--text-title)]">عملکرد پروفایل</h2>
-            <span className="text-xs text-[var(--text-muted)]">آمار تجمیعی ثبت‌شده برای کسب‌وکار</span>
-          </div>
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            {metricDefinitions.map(({ title, keys, icon: Icon }) => {
-              const value = keys.map((key) => analytics[key]).find((count) => typeof count === "number");
-              return (
-                <article key={title} className="rounded-[var(--radius-xs)] border border-[var(--opacity-dark-8)] bg-[var(--surface)] p-4 sm:p-5">
-                  <div className="flex items-center justify-between gap-3"><span className="text-sm text-[var(--text-body)]">{title}</span><span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-700"><Icon aria-hidden className="size-5" /></span></div>
-                  <strong className="mt-3 block text-2xl font-black text-[var(--text-title)]">{format(value)}</strong>
-                  {!analyticsAvailable && <span className="mt-1 block text-xs text-[var(--text-muted)]">دریافت آمار موقتاً ممکن نیست</span>}
-                </article>
-              );
-            })}
           </div>
         </section>
 

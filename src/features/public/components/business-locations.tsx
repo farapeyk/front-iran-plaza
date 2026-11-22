@@ -5,6 +5,7 @@ import { MapPin, Store, Phone, BadgePercent, CreditCard } from "lucide-react";
 import { BusinessLocationMap } from "@/features/public/components/business-location-map";
 import type { BusinessControllerGetFullBySlug200 } from "@/design/api/generated/models/businessControllerGetFullBySlug200";
 import type { BusinessProfileControllerGetFeatures200Item } from "@/design/api/generated/models/businessProfileControllerGetFeatures200Item";
+import { trackBusinessEvent } from '@/features/analytics/business-events';
 
 type BusinessLocationsProps = {
   business: BusinessControllerGetFullBySlug200;
@@ -46,7 +47,7 @@ export function BusinessLocations({ business, features }: BusinessLocationsProps
                   <Store size={18} className="mt-1 shrink-0 text-primary-700" />
                   <span><strong>{branch.title}</strong>{branch.isPrimary && <span className="ms-2 rounded-full bg-primary-50 px-2 py-0.5 text-xs">شعبه اصلی</span>}<span className="mt-1 block text-sm">{branch.address}</span></span>
                 </button>
-                {branch.phone && <a className="inline-flex items-center gap-1 text-sm text-primary-700" href={`tel:${branch.phone}`}><Phone size={16} />{branch.phone}</a>}
+                {branch.phone && <a className="inline-flex items-center gap-1 text-sm text-primary-700" href={`tel:${branch.phone}`} onClick={() => trackBusinessEvent(business.id, 'CLICK_PHONE', { placement: 'branch' })}><Phone size={16} />{branch.phone}</a>}
               </li>
             ))}
           </ul>

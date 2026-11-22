@@ -61,6 +61,7 @@
     "UpdateCategoryDto",
     "UpdateCipStatusDto",
     "UpdateCouponDto",
+    "UpdateEditorialRedirectDto",
     "UpdateInstallmentPlanDto",
     "UpdatePlanDto",
     "UpdateProductCategoryDto",
@@ -72,6 +73,8 @@
     "UpdateSettingDto",
     "UpdateWorkingHoursDto",
     "UpdatedAdminUserDto",
+    "UpsertEditorialProfileDto",
+    "UpsertEditorialRedirectDto",
     "VerifyOtpDto",
     "WorkingHourItemDto"
   ],
@@ -79,6 +82,14 @@
     "schemas/AdminPlanResponseDto/properties/tier": [
       "FREE",
       "VIP"
+    ],
+    "schemas/UpdateEditorialRedirectDto/properties/statusCode": [
+      301,
+      410
+    ],
+    "schemas/UpsertEditorialRedirectDto/properties/statusCode": [
+      301,
+      410
     ],
     "schemas/UpdateProfileDto/properties/gender": [
       "MALE",
@@ -151,6 +162,8 @@
       "CLICK_PHONE",
       "CLICK_WEBSITE",
       "CLICK_LOCATION",
+      "CLICK_WHATSAPP",
+      "SHARE_BUSINESS",
       "ADD_FAVORITE",
       "REMOVE_FAVORITE",
       "SUBMIT_REVIEW",

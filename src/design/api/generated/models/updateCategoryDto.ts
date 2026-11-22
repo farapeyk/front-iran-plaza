@@ -10,6 +10,11 @@ import type { UpdateCategoryDtoParentId } from './updateCategoryDtoParentId';
 export interface UpdateCategoryDto {
   name?: string;
   /**
+     * @maxLength 500
+     * @nullable
+     */
+  description?: string | null;
+  /**
      * نام kebab-case آیکن از مجموعه lucide-react
      * @maxLength 100
      * @pattern ^[a-z0-9]+(?:-[a-z0-9]+)*$
@@ -19,9 +24,4 @@ export interface UpdateCategoryDto {
   parentId?: UpdateCategoryDtoParentId;
   isActive?: boolean;
   sortOrder?: number;
-  /**
-     * @maxLength 500
-     * @nullable
-     */
-  description?: string | null;
 }

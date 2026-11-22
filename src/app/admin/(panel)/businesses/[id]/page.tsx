@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
-import { BackendError } from '@/lib/api/backend-get';
+import { BackendError, backendGet } from '@/lib/api/backend-get';
 import { getAdminBusinessDetail } from '@/features/admin/lib/get-business-detail';
 import { BusinessProfileOverview } from '@/features/admin/components/business-profile-overview';
 // src/app/admin/(panel)/businesses/[id]/page.tsx
@@ -10,6 +10,7 @@ import { BusinessApprovalActions } from "@/features/admin/components/business-ap
 import { PlanChangeControl } from "@/features/admin/components/plan-change-control";
 import { DocumentReviewCard } from "@/features/admin/components/document-review-card";
 import { CipStatusControl } from "@/features/admin/components/cip-status-control";
+import { BusinessEngagement } from '@/features/admin/components/business-engagement';
 
 export default async function BusinessDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -20,6 +21,12 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
     throw error;
   });
   const { business, plans, unavailable } = detail;
+  const engagement = await backendGet<{ byType: Record<string, number>; legacyEstimate: number; displayedViews: number }>(
+    `/api/admin/businesses/${encodeURIComponent(id)}/engagement`, accessToken,
+  ).catch(error => {
+    if (error instanceof BackendError && [401, 403].includes(error.status)) throw error;
+    return null;
+  });
 
   return (
     <div dir="rtl" className="space-y-6">
@@ -49,6 +56,8 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
       <BusinessApprovalActions businessId={business.id} status={business.status} suspendedReason={business.suspendedReason} />
 
       <BusinessProfileOverview business={business} unavailable={unavailable} />
+
+      <BusinessEngagement businessId={business.id} report={engagement} />
 
       <div>
         <p className="text-sm font-bold text-neutral-900 mb-3">مدارک ارسالی</p>

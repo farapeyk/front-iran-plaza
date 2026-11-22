@@ -7,9 +7,15 @@
  */
 import type { ArticleBlockDto } from './articleBlockDto';
 import type { ArticleFaqDto } from './articleFaqDto';
+import type { UpdateArticleDtoByline } from './updateArticleDtoByline';
 import type { UpdateArticleDtoSchemaType } from './updateArticleDtoSchemaType';
 
 export interface UpdateArticleDto {
+  /**
+     * Public display name for this article only
+     * @maxLength 120
+     */
+  byline?: UpdateArticleDtoByline;
   title?: string;
   /** @pattern ^[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)*$ */
   slug?: string;

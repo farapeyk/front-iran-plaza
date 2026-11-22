@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { MapPin, Phone, Share2 } from "lucide-react";
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { SiteLayout } from '@/design/components/site-layout';
 import { UserAvatar } from '@/design/components/user-avatar';
@@ -31,6 +31,7 @@ import { ReplyCommentSheet, type ReplyComment } from '@/design/components/reply-
 import { BusinessProfileSummary } from '@/features/public/components/business-profile-summary';
 import { rememberRecentBusiness } from '@/design/lib/recent-businesses';
 import { useDesignUser } from '@/design/provider';
+import { trackBusinessEvent } from '@/features/analytics/business-events';
 
 const fileUrl=(id:string)=>'/api/backend/files/'+encodeURIComponent(id);
 function shareBusinessProfile(name:string,showMessage:(message:string)=>void) {
@@ -153,6 +154,11 @@ export function BusinessLivePage({business,reviews,favorited,features}:{business
   const [active,setActive]=useState('gallery');
   const [expanded,setExpanded]=useState<string[]>([]);
   const [galleryIndex,setGalleryIndex]=useState(0);
+  const viewTracked=useRef<string|null>(null);
+  useEffect(()=>{if(viewTracked.current!==business.id){viewTracked.current=business.id;trackBusinessEvent(business.id,'VIEW_BUSINESS');}},[business.id]);
+  const share=()=>{trackBusinessEvent(business.id,'SHARE_BUSINESS');shareBusinessProfile(business.name,setMessage);};
+  const showAddress=()=>{trackBusinessEvent(business.id,'CLICK_LOCATION',{placement:'profile_action'});scrollTo('address');};
+  const openGallery=()=>{trackBusinessEvent(business.id,'VIEW_GALLERY');setGalleryOpen(true);};
   const logo=business.logoId?fileUrl(business.logoId):'/design/icons/briefcase.svg';
   const activeVip=business.planType==='VIP'&&!!business.planExpiryDate&&new Date(business.planExpiryDate)>new Date();
   useEffect(()=>{
@@ -180,7 +186,7 @@ export function BusinessLivePage({business,reviews,favorited,features}:{business
     {id:'products',title:'محصولات',icon:'three-square',body:<BusinessOfferings business={business}/>},
     ...(business.installmentPlan?.isActive?[{id:'installment',title:'شرایط اقساط',icon:'convert-card',body:<div className="grid gap-4 sm:grid-cols-2"><p>پیش‌پرداخت: {business.installmentPlan.minDownPaymentPercent}٪</p><p>سود ماهانه: {business.installmentPlan.monthlyInterestPercent}٪</p><p>بازپرداخت: {business.installmentPlan.repaymentPeriodsMonths.join('، ')} ماه</p><p>{business.installmentPlan.guaranteeNote}</p></div>}]:[]),
     {id:'about',title:'درباره ما',icon:'flag',body:<AboutText text={business.aboutText??business.description??''}/>},
-    {id:'socials',title:'شبکه‌های اجتماعی',icon:'share',body:<div className="flex flex-wrap gap-3">{socialLinks(business.socialMedia).map(link=><SocialMediaIcon key={link.name} {...link} type="Button"/>)}</div>},
+    {id:'socials',title:'شبکه‌های اجتماعی',icon:'share',body:<div className="flex flex-wrap gap-3">{socialLinks({...(typeof business.socialMedia==='object'&&business.socialMedia&&!Array.isArray(business.socialMedia)?business.socialMedia:{}),...(business.website?{website:business.website}:{})}).map(link=><SocialMediaIcon key={link.name} {...link} type="Button" onClick={()=>trackBusinessEvent(business.id,link.name==='Whatsapp'?'CLICK_WHATSAPP':'CLICK_WEBSITE',{placement:'socials',channel:link.name})}/>)}</div>},
     {id:'hours',title:'ساعات کاری',icon:'clock',body:<ul className="business-hours space-y-3">{business.workingHours.map(h=><li key={h.weekday} className="flex justify-between"><strong>{WEEKDAYS.find(d=>d.value===h.weekday)?.label}</strong><span dir="ltr">{h.openTime1&&h.closeTime1?`${h.openTime1} – ${h.closeTime1}`:'تعطیل'}{h.isTwoShift&&h.openTime2&&h.closeTime2?` / ${h.openTime2} – ${h.closeTime2}`:''}</span></li>)}</ul>},
     {id:'address',title:'آدرس و مسیریابی',icon:'location',body:<BusinessLocations business={business} features={features}/>},
   ];
@@ -197,21 +203,21 @@ export function BusinessLivePage({business,reviews,favorited,features}:{business
       reviewCount={ratedReviews.length}
       rating={rating}
       onRatingChange={setRating}
-      onAddress={()=>scrollTo('address')}
+      onAddress={showAddress}
       onContact={()=>setContact(true)}
-      onShare={()=>shareBusinessProfile(business.name,setMessage)}
+      onShare={share}
     />
     <div className="business-tabs sticky top-[72px] z-40 border-b border-[var(--border-default)] lg:top-20"><div className="business-container flex items-center gap-2"><TabsList className="min-w-0 flex-1 justify-start">{[{id:'gallery',title:'گالری'},...sections,{id:'comments',title:'نظرات'}].map(s=><Tab key={s.id} active={active===s.id} variant="border" onClick={()=>scrollTo(s.id)}>{s.title}</Tab>)}</TabsList><FavoriteButton businessId={business.id} initialFavorited={favorited}/></div></div>
     <section id="gallery" className="business-container business-gallery scroll-mt-36">
-      {gallery.length>0&&<button type="button" onClick={()=>setGalleryOpen(true)} className="block w-full" aria-label="باز کردن گالری"><GalleryProfile items={galleryItems} className="w-full max-lg:h-[180px] lg:h-[400px]"/></button>}
-      {gallery.length>0&&<div className="gallery-controls"><Button variant="outline" size="sm" onClick={()=>setGalleryOpen(true)}>مشاهده همه گالری</Button><div className="flex gap-3"><Button variant="outline" size="icon" aria-label="عکس قبلی" disabled={gallery.length<2} onClick={()=>rotateGallery(-1)}><Image src="/design/icons/arrow-right.svg" alt="" width={20} height={20}/></Button><Button variant="outline" size="icon" aria-label="عکس بعدی" disabled={gallery.length<2} onClick={()=>rotateGallery(1)}><Image src="/design/icons/arrow-left.svg" alt="" width={20} height={20}/></Button></div></div>}
+      {gallery.length>0&&<button type="button" onClick={openGallery} className="block w-full" aria-label="باز کردن گالری"><GalleryProfile items={galleryItems} className="w-full max-lg:h-[180px] lg:h-[400px]"/></button>}
+      {gallery.length>0&&<div className="gallery-controls"><Button variant="outline" size="sm" onClick={openGallery}>مشاهده همه گالری</Button><div className="flex gap-3"><Button variant="outline" size="icon" aria-label="عکس قبلی" disabled={gallery.length<2} onClick={()=>rotateGallery(-1)}><Image src="/design/icons/arrow-right.svg" alt="" width={20} height={20}/></Button><Button variant="outline" size="icon" aria-label="عکس بعدی" disabled={gallery.length<2} onClick={()=>rotateGallery(1)}><Image src="/design/icons/arrow-left.svg" alt="" width={20} height={20}/></Button></div></div>}
 
     </section>
     <div className="business-container pb-10">
       <div className="lg:hidden"><Accordion value={expanded} onValueChange={setExpanded}>{sections.map(s=><AccordionItem key={s.id} value={s.id} id={'mobile-'+s.id} className="scroll-mt-36"><AccordionTrigger><span>{s.title}</span></AccordionTrigger><AccordionContent>{s.body}</AccordionContent></AccordionItem>)}</Accordion><div id="mobile-comments" className="mt-8 scroll-mt-36">{reviewSection}</div></div>
-      <div className="business-columns hidden"><aside className="business-sidebar sticky top-40 self-start"><div className="business-sidebar-card rounded"><div className="mb-5 flex items-center justify-end gap-3"><button type="button" aria-label="اشتراک‌گذاری" className="flex size-10 items-center justify-center text-[var(--text-title)] transition-colors hover:text-primary-700" onClick={()=>shareBusinessProfile(business.name,setMessage)}><Share2 size={20}/></button>{(activeVip||business.isCip)&&<div className="flex items-center gap-1">{activeVip&&<VipBadge/>}{business.isCip&&<CipBadge/>}</div>}</div><BusinessBrandVideo videoId={business.introVideoId} imageSrc={logo} name={business.name} size="small"/><h2>{business.name}</h2><p>{business.description}</p><p className="flex items-start gap-2"><MapPin size={18} className="mt-1 shrink-0"/>{business.address}</p><BusinessProfileTags business={business} features={features}/><div className="mt-6 flex flex-wrap gap-2"><Button variant="secondary" size="sm" onClick={()=>scrollTo('address')}><MapPin size={16}/>آدرس</Button><Button size="sm" onClick={()=>setContact(true)}><Phone size={16}/>تماس و واتساپ</Button></div></div><Scoring orientation="vertical" average={average} count={ratedReviews.length} value={rating} onChange={setRating}/></aside><div className="business-content min-w-0 space-y-[var(--5xl)]">{sections.map(s=><section key={s.id} id={'desktop-'+s.id} className="business-section scroll-mt-36 space-y-6"><h2 className="flex items-center gap-3 font-bold"><Image src={'/design/icons/'+s.icon+'.svg'} alt="" width={24} height={24}/>{s.title}</h2>{s.body}</section>)}<div id="desktop-comments" className="scroll-mt-36">{reviewSection}</div></div></div>
+      <div className="business-columns hidden"><aside className="business-sidebar sticky top-40 self-start"><div className="business-sidebar-card rounded"><div className="mb-5 flex items-center justify-end gap-3"><button type="button" aria-label="اشتراک‌گذاری" className="flex size-10 items-center justify-center text-[var(--text-title)] transition-colors hover:text-primary-700" onClick={share}><Share2 size={20}/></button>{(activeVip||business.isCip)&&<div className="flex items-center gap-1">{activeVip&&<VipBadge/>}{business.isCip&&<CipBadge/>}</div>}</div><BusinessBrandVideo videoId={business.introVideoId} imageSrc={logo} name={business.name} size="small"/><h2>{business.name}</h2><p>{business.description}</p><p className="flex items-start gap-2"><MapPin size={18} className="mt-1 shrink-0"/>{business.address}</p><BusinessProfileTags business={business} features={features}/><div className="mt-6 flex flex-wrap gap-2"><Button variant="secondary" size="sm" onClick={showAddress}><MapPin size={16}/>آدرس</Button><Button size="sm" onClick={()=>setContact(true)}><Phone size={16}/>تماس و واتساپ</Button></div></div><Scoring orientation="vertical" average={average} count={ratedReviews.length} value={rating} onChange={setRating}/></aside><div className="business-content min-w-0 space-y-[var(--5xl)]">{sections.map(s=><section key={s.id} id={'desktop-'+s.id} className="business-section scroll-mt-36 space-y-6"><h2 className="flex items-center gap-3 font-bold"><Image src={'/design/icons/'+s.icon+'.svg'} alt="" width={24} height={24}/>{s.title}</h2>{s.body}</section>)}<div id="desktop-comments" className="scroll-mt-36">{reviewSection}</div></div></div>
     </div>
-    {business.categories.length>0&&<NewMembers className="business-similar" title={"\u06a9\u0633\u0628 \u0648 \u06a9\u0627\u0631\u0647\u0627\u06cc \u0645\u0634\u0627\u0628\u0647"} categoryId={business.categories[0]?.category.id} excludeBusinessId={business.id}/>}<GalleryLightbox open={galleryOpen} onClose={()=>setGalleryOpen(false)} items={gallery}/><CallContactSheet open={contact} onClose={()=>setContact(false)} phone={business.phone} whatsapp={business.whatsapp??undefined} socialMedia={business.socialMedia}/>
+    {business.categories.length>0&&<NewMembers className="business-similar" title={"\u06a9\u0633\u0628 \u0648 \u06a9\u0627\u0631\u0647\u0627\u06cc \u0645\u0634\u0627\u0628\u0647"} categoryId={business.categories[0]?.category.id} excludeBusinessId={business.id}/>}<GalleryLightbox open={galleryOpen} onClose={()=>setGalleryOpen(false)} items={gallery}/><CallContactSheet open={contact} onClose={()=>setContact(false)} phone={business.phone} whatsapp={business.whatsapp??undefined} website={business.website} socialMedia={business.socialMedia} businessId={business.id}/>
     <ReplyCommentSheet open={!!reply} comment={reply} onClose={()=>setReply(null)} onSubmit={text=>{if(!reply)return;startTransition(async()=>{const result=await submitReviewReplyAction(reply.id,text);setMessage(result.success?'پاسخ ثبت شد.':result.message);if(result.success)router.refresh();});}}/>
   </SiteLayout>;
 }

@@ -8,6 +8,7 @@
 import type {
   AddGalleryImageDto,
   AdminBusinessControllerCreateManual201,
+  AdminBusinessControllerEngagementSummary200,
   AdminMessageControllerSendMessage201,
   AdminPanelControllerCreateCoupon201,
   AdminPanelControllerCreateTaxRule201,
@@ -36,6 +37,8 @@ import type {
   ArticlesControllerCategories200Item,
   ArticlesControllerListParams,
   ArticlesControllerRandomParams,
+  ArticlesControllerResolveRedirect200,
+  ArticlesControllerResolveRedirectParams,
   AssignContentAuthorDto,
   AssignRoleDto,
   AuthControllerLoginWithPassword200,
@@ -73,7 +76,6 @@ import type {
   BusinessProfileControllerDeleteProduct200,
   BusinessProfileControllerDeleteProductCategory200,
   BusinessProfileControllerDeleteService200,
-  BusinessProfileControllerGetAnalytics200,
   BusinessProfileControllerGetBranches200Item,
   BusinessProfileControllerGetFeatures200Item,
   BusinessProfileControllerGetGalleryImages200Item,
@@ -172,6 +174,7 @@ import type {
   UpdateCategoryDto,
   UpdateCipStatusDto,
   UpdateCouponDto,
+  UpdateEditorialRedirectDto,
   UpdateInstallmentPlanDto,
   UpdatePlanDto,
   UpdateProductCategoryDto,
@@ -183,6 +186,8 @@ import type {
   UpdateSettingDto,
   UpdateWorkingHoursDto,
   UpdatedAdminUserDto,
+  UpsertEditorialProfileDto,
+  UpsertEditorialRedirectDto,
   UsersAdminControllerGetById200,
   UsersAdminControllerList200,
   UsersAdminControllerListParams,
@@ -1976,9 +1981,9 @@ export const getBusinessProfileControllerGetAnalyticsUrl = (id: string,) => {
   return `/api/businesses/${encodeURIComponent(String(id))}/analytics`
 }
 
-export const businessProfileControllerGetAnalytics = async (id: string, options?: Parameters<typeof browserFetch>[1]): Promise<BusinessProfileControllerGetAnalytics200> => {
+export const businessProfileControllerGetAnalytics = async (id: string, options?: Parameters<typeof browserFetch>[1]): Promise<unknown> => {
 
-  return browserFetch<BusinessProfileControllerGetAnalytics200>(getBusinessProfileControllerGetAnalyticsUrl(id),
+  return browserFetch<unknown>(getBusinessProfileControllerGetAnalyticsUrl(id),
   {
     ...options,
     method: 'GET'
@@ -3691,6 +3696,78 @@ export const favoriteControllerGetMine = async ( options?: Parameters<typeof bro
 
 
 
+export const getAdminBusinessControllerEngagementSummaryUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/businesses/${encodeURIComponent(String(id))}/engagement`
+}
+
+/**
+ * @summary [ادمین] آمار تعامل کسب‌وکار
+ */
+export const adminBusinessControllerEngagementSummary = async (id: string, options?: Parameters<typeof browserFetch>[1]): Promise<AdminBusinessControllerEngagementSummary200> => {
+
+  return browserFetch<AdminBusinessControllerEngagementSummary200>(getAdminBusinessControllerEngagementSummaryUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getAdminBusinessControllerEngagementCsvUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/businesses/${encodeURIComponent(String(id))}/engagement/events.csv`
+}
+
+/**
+ * @summary [ادمین] خروجی رویدادهای واقعی کسب‌وکار برای تحلیل
+ */
+export const adminBusinessControllerEngagementCsv = async (id: string, options?: Parameters<typeof browserFetch>[1]): Promise<string> => {
+
+  return browserFetch<string>(getAdminBusinessControllerEngagementCsvUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getAdminBusinessControllerEngagementExcelUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/businesses/${encodeURIComponent(String(id))}/engagement/report.xlsx`
+}
+
+/**
+ * @summary [ادمین] فایل اکسل ارائه کسب‌وکار
+ */
+export const adminBusinessControllerEngagementExcel = async (id: string, options?: Parameters<typeof browserFetch>[1]): Promise<Blob> => {
+
+  return browserFetch<Blob>(getAdminBusinessControllerEngagementExcelUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
 export const getAdminBusinessControllerCreateManualUrl = () => {
 
 
@@ -3886,6 +3963,30 @@ export const articlesControllerList = async (params?: ArticlesControllerListPara
 
 
 
+export const getArticlesControllerAuthorProfileUrl = (slug: string,) => {
+
+
+
+
+  return `/api/articles/authors/${encodeURIComponent(String(slug))}`
+}
+
+/**
+ * @summary Get public editorial author profile and latest articles
+ */
+export const articlesControllerAuthorProfile = async (slug: string, options?: Parameters<typeof browserFetch>[1]): Promise<unknown> => {
+
+  return browserFetch<unknown>(getArticlesControllerAuthorProfileUrl(slug),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
 export const getArticlesControllerCategoriesUrl = () => {
 
 
@@ -3931,6 +4032,37 @@ export const getArticlesControllerRandomUrl = (params?: ArticlesControllerRandom
 export const articlesControllerRandom = async (params?: ArticlesControllerRandomParams, options?: Parameters<typeof browserFetch>[1]): Promise<unknown> => {
 
   return browserFetch<unknown>(getArticlesControllerRandomUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getArticlesControllerResolveRedirectUrl = (params: ArticlesControllerResolveRedirectParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/articles/redirect?${stringifiedParams}` : `/api/articles/redirect`
+}
+
+/**
+ * @summary Resolve a manually managed editorial redirect by its old path
+ */
+export const articlesControllerResolveRedirect = async (params: ArticlesControllerResolveRedirectParams, options?: Parameters<typeof browserFetch>[1]): Promise<ArticlesControllerResolveRedirect200> => {
+
+  return browserFetch<ArticlesControllerResolveRedirect200>(getArticlesControllerResolveRedirectUrl(params),
   {
     ...options,
     method: 'GET'
@@ -3999,6 +4131,125 @@ return browserFetch<unknown>(getArticlesControllerFeedbackUrl(slug),
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
     body: JSON.stringify(createArticleFeedbackDto)
+  }
+);}
+
+
+
+export const getContentControllerRedirectsUrl = () => {
+
+
+
+
+  return `/api/content/redirects`
+}
+
+/**
+ * @summary مدیریت ریدایرکت‌های دستی مقالات
+ */
+export const contentControllerRedirects = async ( options?: Parameters<typeof browserFetch>[1]): Promise<unknown> => {
+
+  return browserFetch<unknown>(getContentControllerRedirectsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export const getContentControllerCreateRedirectUrl = () => {
+
+
+
+
+  return `/api/content/redirects`
+}
+
+/**
+ * @summary ساخت یا اصلاح ریدایرکت دائمی مقاله
+ */
+export const contentControllerCreateRedirect = async (upsertEditorialRedirectDto: UpsertEditorialRedirectDto, options?: Parameters<typeof browserFetch>[1]): Promise<unknown> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return browserFetch<unknown>(getContentControllerCreateRedirectUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(upsertEditorialRedirectDto)
+  }
+);}
+
+
+
+export const getContentControllerUpdateRedirectUrl = (id: string,) => {
+
+
+
+
+  return `/api/content/redirects/${encodeURIComponent(String(id))}`
+}
+
+export const contentControllerUpdateRedirect = async (id: string,
+    updateEditorialRedirectDto: UpdateEditorialRedirectDto, options?: Parameters<typeof browserFetch>[1]): Promise<unknown> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return browserFetch<unknown>(getContentControllerUpdateRedirectUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateEditorialRedirectDto)
+  }
+);}
+
+
+
+export const getContentControllerDeleteRedirectUrl = (id: string,) => {
+
+
+
+
+  return `/api/content/redirects/${encodeURIComponent(String(id))}`
+}
+
+export const contentControllerDeleteRedirect = async (id: string, options?: Parameters<typeof browserFetch>[1]): Promise<unknown> => {
+
+  return browserFetch<unknown>(getContentControllerDeleteRedirectUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
   }
 );}
 
@@ -4210,6 +4461,30 @@ return browserFetch<unknown>(getContentControllerUpdateUrl(id),
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
     body: JSON.stringify(updateArticleDto)
+  }
+);}
+
+
+
+export const getContentControllerDeleteArticleUrl = (id: string,) => {
+
+
+
+
+  return `/api/content/articles/${encodeURIComponent(String(id))}`
+}
+
+/**
+ * @summary حذف کامل مقالهٔ پیش‌نویس یا بایگانی‌شده
+ */
+export const contentControllerDeleteArticle = async (id: string, options?: Parameters<typeof browserFetch>[1]): Promise<unknown> => {
+
+  return browserFetch<unknown>(getContentControllerDeleteArticleUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
   }
 );}
 
@@ -4797,6 +5072,45 @@ return browserFetch<unknown>(getContentAdminControllerAssignUrl(),
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
     body: JSON.stringify(assignContentAuthorDto)
+  }
+);}
+
+
+
+export const getContentAdminControllerSaveProfileUrl = (userId: string,) => {
+
+
+
+
+  return `/api/admin/content/authors/${encodeURIComponent(String(userId))}/profile`
+}
+
+/**
+ * @summary Create or update an editorial author profile
+ */
+export const contentAdminControllerSaveProfile = async (userId: string,
+    upsertEditorialProfileDto: UpsertEditorialProfileDto, options?: Parameters<typeof browserFetch>[1]): Promise<unknown> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return browserFetch<unknown>(getContentAdminControllerSaveProfileUrl(userId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(upsertEditorialProfileDto)
   }
 );}
 

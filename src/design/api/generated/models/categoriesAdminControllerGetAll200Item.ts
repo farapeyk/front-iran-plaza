@@ -8,6 +8,8 @@
 
 export type CategoriesAdminControllerGetAll200Item = {
   /** @nullable */
+  description: string | null;
+  /** @nullable */
   icon: string | null;
   id: string;
   isActive: boolean;
@@ -16,6 +18,4 @@ export type CategoriesAdminControllerGetAll200Item = {
   parentId: string | null;
   slug: string;
   sortOrder: number;
-  /** @nullable */
-  description: string | null;
 };

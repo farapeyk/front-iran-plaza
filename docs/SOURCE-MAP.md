@@ -136,6 +136,20 @@ src/design/api/generated/models/adminBusinessControllerDowngradeToFree401.ts
 src/design/api/generated/models/adminBusinessControllerDowngradeToFree403.ts
 src/design/api/generated/models/adminBusinessControllerDowngradeToFree404.ts
 src/design/api/generated/models/adminBusinessControllerDowngradeToFree429.ts
+src/design/api/generated/models/adminBusinessControllerEngagementCsv401.ts
+src/design/api/generated/models/adminBusinessControllerEngagementCsv403.ts
+src/design/api/generated/models/adminBusinessControllerEngagementCsv404.ts
+src/design/api/generated/models/adminBusinessControllerEngagementCsv429.ts
+src/design/api/generated/models/adminBusinessControllerEngagementExcel401.ts
+src/design/api/generated/models/adminBusinessControllerEngagementExcel403.ts
+src/design/api/generated/models/adminBusinessControllerEngagementExcel404.ts
+src/design/api/generated/models/adminBusinessControllerEngagementExcel429.ts
+src/design/api/generated/models/adminBusinessControllerEngagementSummary200.ts
+src/design/api/generated/models/adminBusinessControllerEngagementSummary200ByType.ts
+src/design/api/generated/models/adminBusinessControllerEngagementSummary401.ts
+src/design/api/generated/models/adminBusinessControllerEngagementSummary403.ts
+src/design/api/generated/models/adminBusinessControllerEngagementSummary404.ts
+src/design/api/generated/models/adminBusinessControllerEngagementSummary429.ts
 src/design/api/generated/models/adminBusinessControllerGrantPlan200.ts
 src/design/api/generated/models/adminBusinessControllerGrantPlan400.ts
 src/design/api/generated/models/adminBusinessControllerGrantPlan401.ts
@@ -381,6 +395,10 @@ src/design/api/generated/models/businessProfileControllerDeleteProduct200.ts
 src/design/api/generated/models/businessProfileControllerDeleteProductCategory200.ts
 src/design/api/generated/models/businessProfileControllerDeleteService200.ts
 src/design/api/generated/models/businessProfileControllerGetAnalytics200.ts
+src/design/api/generated/models/businessProfileControllerGetAnalytics401.ts
+src/design/api/generated/models/businessProfileControllerGetAnalytics403.ts
+src/design/api/generated/models/businessProfileControllerGetAnalytics404.ts
+src/design/api/generated/models/businessProfileControllerGetAnalytics429.ts
 src/design/api/generated/models/businessProfileControllerGetBranches200Item.ts
 src/design/api/generated/models/businessProfileControllerGetFeatures200Item.ts
 src/design/api/generated/models/businessProfileControllerGetGalleryImages200Item.ts
@@ -909,6 +927,7 @@ src/features/admin/components/admin-login-form.tsx
 src/features/admin/components/admin-sidebar.tsx
 src/features/admin/components/business-approval-actions.tsx
 src/features/admin/components/business-city-form.tsx
+src/features/admin/components/business-engagement.tsx
 src/features/admin/components/business-list-filters.tsx
 src/features/admin/components/business-profile-overview.tsx
 src/features/admin/components/category-manager.tsx
@@ -928,6 +947,7 @@ src/features/admin/lib/get-business-page.ts
 src/features/admin/types/plan.ts
 src/features/admin/types/user.ts
 src/features/analytics/configured-site-analytics.tsx
+src/features/analytics/business-events.ts
 src/features/analytics/site-analytics.tsx
 src/features/analytics/site-integrations.ts
 src/features/auth/actions/logout.action.ts
@@ -1109,6 +1129,7 @@ tests/article-seo.test.cjs
 tests/browser/design-transfer.spec.ts
 tests/browser/reference-layout.spec.ts
 tests/business-category-routing.test.cjs
+tests/business-events.test.cjs
 tests/business-slug.test.cjs
 tests/category-icons.test.cjs
 tests/cip.test.cjs

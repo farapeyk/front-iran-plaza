@@ -580,6 +580,21 @@
     "operationId": "AdminBusinessController_updateCipStatus"
   },
   {
+    "route": "/api/admin/businesses/{id}/engagement",
+    "method": "get",
+    "operationId": "AdminBusinessController_engagementSummary"
+  },
+  {
+    "route": "/api/admin/businesses/{id}/engagement/events.csv",
+    "method": "get",
+    "operationId": "AdminBusinessController_engagementCsv"
+  },
+  {
+    "route": "/api/admin/businesses/{id}/engagement/report.xlsx",
+    "method": "get",
+    "operationId": "AdminBusinessController_engagementExcel"
+  },
+  {
     "route": "/api/admin/businesses/{id}/plan",
     "method": "patch",
     "operationId": "AdminBusinessController_grantPlan"
@@ -643,6 +658,11 @@
     "route": "/api/content/articles/export.csv",
     "method": "get",
     "operationId": "ContentController_exportCsv"
+  },
+  {
+    "route": "/api/content/articles/{id}",
+    "method": "delete",
+    "operationId": "ContentController_deleteArticle"
   },
   {
     "route": "/api/content/articles/{id}",
@@ -753,5 +773,40 @@
     "route": "/api/admin/content/authors/{userId}",
     "method": "delete",
     "operationId": "ContentAdminController_revoke"
+  },
+  {
+    "route": "/api/content/redirects",
+    "method": "get",
+    "operationId": "ContentController_redirects"
+  },
+  {
+    "route": "/api/content/redirects",
+    "method": "post",
+    "operationId": "ContentController_createRedirect"
+  },
+  {
+    "route": "/api/content/redirects/{id}",
+    "method": "patch",
+    "operationId": "ContentController_updateRedirect"
+  },
+  {
+    "route": "/api/content/redirects/{id}",
+    "method": "delete",
+    "operationId": "ContentController_deleteRedirect"
+  },
+  {
+    "route": "/api/articles/redirect",
+    "method": "get",
+    "operationId": "ArticlesController_resolveRedirect"
+  },
+  {
+    "route": "/api/admin/content/authors/{userId}/profile",
+    "method": "post",
+    "operationId": "ContentAdminController_saveProfile"
+  },
+  {
+    "route": "/api/articles/authors/{slug}",
+    "method": "get",
+    "operationId": "ArticlesController_authorProfile"
   }
 ]

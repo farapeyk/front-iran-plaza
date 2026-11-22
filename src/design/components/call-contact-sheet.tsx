@@ -7,6 +7,7 @@ import { Button } from "@/design/components/ui/button"
 import { SocialMediaIcon } from "@/design/components/social-media-icon"
 import { socialLinks } from '@/design/api/socials'
 import { useModalFocus } from '@/design/lib/use-modal-focus'
+import { trackBusinessEvent } from '@/features/analytics/business-events'
 const callIcon = "/design/icons/call.svg"
 const whatsappIcon = "/design/icons/social-whatsapp.svg"
 const infoCircle = "/design/icons/info-circle.svg"
@@ -19,6 +20,8 @@ type CallContactSheetProps = {
   whatsapp?: string
   socialMedia?: unknown
   className?: string
+  businessId?: string
+  website?: string | null
 }
 
 
@@ -30,6 +33,8 @@ function CallContactSheet({
   whatsapp,
   socialMedia,
   className,
+  businessId,
+  website,
 }: CallContactSheetProps) {
   const modalRef = useModalFocus(open, onClose)
   if (!open) return null
@@ -69,7 +74,7 @@ function CallContactSheet({
         <div className="flex flex-col gap-[var(--7xl)] px-[var(--2xl)] pb-[var(--2xl)]">
           <div className="flex w-full flex-col gap-[var(--2xl)]">
             <div className="flex flex-col gap-[var(--md)]">
-              <a href={`tel:${phone}`} className="block w-full">
+              <a href={`tel:${phone}`} className="block w-full" onClick={() => businessId && trackBusinessEvent(businessId, 'CLICK_PHONE', { placement: 'contact_sheet' })}>
                 <Button size="lg" className="h-12 w-full gap-2">
                   تماس
                   <Image
@@ -86,6 +91,7 @@ function CallContactSheet({
                 target="_blank"
                 rel="noreferrer"
                 className="block w-full"
+                onClick={() => businessId && trackBusinessEvent(businessId, 'CLICK_WHATSAPP', { placement: 'contact_sheet' })}
               >
                 <Button size="lg" variant="light" className="h-12 w-full gap-2">
                   واتساپ
@@ -116,8 +122,8 @@ function CallContactSheet({
           </div>
 
           <div className="flex flex-wrap items-center justify-start gap-[var(--sm)]">
-            {socialLinks(socialMedia).map((link) => (
-              <SocialMediaIcon key={link.name} {...link} type="Button" />
+            {socialLinks({ ...(typeof socialMedia === 'object' && socialMedia && !Array.isArray(socialMedia) ? socialMedia : {}), ...(website ? { website } : {}) }).map((link) => (
+              <SocialMediaIcon key={link.name} {...link} type="Button" onClick={() => businessId && trackBusinessEvent(businessId, link.name === 'Whatsapp' ? 'CLICK_WHATSAPP' : 'CLICK_WEBSITE', { placement: 'contact_sheet', channel: link.name })} />
             ))}
           </div>
         </div>
