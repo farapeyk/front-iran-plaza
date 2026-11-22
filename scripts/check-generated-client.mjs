@@ -6,7 +6,7 @@ function inventory(directory) {
   return Object.fromEntries(fs.readdirSync(directory, { withFileTypes:true }).flatMap(entry => {
     const file=path.join(directory,entry.name);
     return entry.isDirectory()?Object.entries(inventory(file)):[[file,crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')]];
-  }));
+  }).sort(([left], [right]) => left.localeCompare(right)));
 }
 const before=inventory('src/design/api/generated');
 const command=process.platform==='win32'?'pnpm.cmd':'pnpm';

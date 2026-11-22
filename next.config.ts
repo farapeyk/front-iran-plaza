@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
   // Keep resolution/scanning inside this app, including isolated QA snapshots.
   turbopack: { root: process.cwd() },
   experimental: {
+    agentUpgrade: "security",
     serverActions: {
       bodySizeLimit: "25mb",
     },
