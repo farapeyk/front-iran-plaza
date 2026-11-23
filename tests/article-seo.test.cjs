@@ -112,7 +112,16 @@ test('legacy listing articles receive ItemList schema from their imported table 
   const list = data['@graph'].find(node => node['@type'] === 'ItemList');
   assert.equal(list.numberOfItems, 1);
   assert.equal(list.itemListElement[0].item.name, 'کسب‌وکار قدیمی');
+  assert.equal(list.itemListElement[0].item['@type'], 'LocalBusiness');
   assert.match(list.itemListElement[0].item.description, /شیراز/);
+});
+
+test('article tables do not publish unsupported TableRow or TableCell microdata', () => {
+  const source = fs.readFileSync(path.join(__dirname, '../src/features/content/components/article-public-page.tsx'), 'utf8');
+  assert.doesNotMatch(source, /itemType="https:\/\/schema\.org\/(?:Table|TableRow|TableCell)"/);
+  assert.doesNotMatch(source, /itemProp="hasPart"|itemProp="text"/);
+  assert.match(source, /role="table"/);
+  assert.match(source, /role="row"/);
 });
 
 test('Article schema mode omits ItemList while preserving BlogPosting', () => {

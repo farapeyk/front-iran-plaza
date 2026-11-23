@@ -218,7 +218,7 @@ export function buildArticleStructuredData(
         ? tableItems.map((item, index) => ({
             "@type": "ListItem",
             position: index + 1,
-            item: { "@type": "Thing", name: item.name, ...(item.description ? { description: item.description } : {}), ...(item.phone ? { telephone: item.phone } : {}) },
+            item: { "@type": "LocalBusiness", name: item.name, ...(item.description ? { description: item.description } : {}), ...(item.phone ? { telephone: item.phone } : {}) },
           }))
         : headingItems.length
           ? headingItems.map((item, index) => ({ "@type": "ListItem", position: index + 1, item: { "@type": "WebPage", name: item.text, url: `${articleUrl}#${item.id}` } }))
