@@ -28,6 +28,13 @@ test('article TOC anchors use readable Persian heading text and stay unique', ()
   ]);
 });
 
+test('article TOC clicks scroll to their heading without changing the URL', () => {
+  const component = fs.readFileSync(path.join(__dirname, '../src/design/components/table-of-content.tsx'), 'utf8');
+
+  assert.match(component, /event\.preventDefault\(\)/u);
+  assert.match(component, /target\.scrollIntoView\(\{ behavior: "smooth", block: "start" \}\)/u);
+});
+
 test('article blocks can move directly to a numbered display position', () => {
   const blocks = [
     { id: 'one', type: 'paragraph' },

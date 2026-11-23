@@ -101,6 +101,14 @@ function TableOfContent({
                   <a
                     href={item.href}
                     className="flex w-full items-center justify-start gap-[var(--sm)]"
+                    onClick={event => {
+                      if (!item.href?.startsWith("#")) return;
+                      const target = document.getElementById(item.href.slice(1));
+                      if (!target) return;
+
+                      event.preventDefault();
+                      target.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }}
                   >
                     {content}
                   </a>
