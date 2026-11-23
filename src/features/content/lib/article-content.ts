@@ -4,6 +4,23 @@ export const ARTICLE_EXCERPT_MAX_LENGTH = 5_000;
 
 export type CompactPaginationItem = number | "ellipsis-start" | "ellipsis-end";
 
+/** Create readable, Persian-friendly fragment IDs for article heading links. */
+export function articleHeadingAnchorIds(titles: string[]): string[] {
+  const occurrences = new Map<string, number>();
+
+  return titles.map(title => {
+    const slug = title
+      .normalize("NFKC")
+      .trim()
+      .replace(/[\p{P}\p{S}]+/gu, " ")
+      .replace(/\s+/gu, "_")
+      .replace(/^_+|_+$/gu, "") || "section";
+    const occurrence = (occurrences.get(slug) ?? 0) + 1;
+    occurrences.set(slug, occurrence);
+    return `_${slug}${occurrence > 1 ? `_${occurrence}` : ""}`;
+  });
+}
+
 export function moveArticleBlockToPosition(blocks: ArticleBlock[], sourceIndex: number, requestedPosition: number): ArticleBlock[] {
   if (!Number.isInteger(sourceIndex) || sourceIndex < 0 || sourceIndex >= blocks.length) return blocks;
   if (!Number.isInteger(requestedPosition) || requestedPosition < 1 || requestedPosition > blocks.length) return blocks;

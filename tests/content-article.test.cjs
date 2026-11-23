@@ -6,6 +6,7 @@ const { load } = require('./helpers.cjs');
 
 const {
   ARTICLE_EXCERPT_MAX_LENGTH,
+  articleHeadingAnchorIds,
   compactPaginationItems,
   displayArticleExcerpt,
   moveArticleBlockToPosition,
@@ -14,6 +15,18 @@ const {
 } = load('src/features/content/lib/article-content.ts');
 const { canEditPublicArticle, editorArticleToPreview } = load('src/features/content/lib/article-preview.ts');
 const { articlePreviewPath } = load('src/features/content/lib/public-paths.ts');
+
+test('article TOC anchors use readable Persian heading text and stay unique', () => {
+  assert.deepEqual(articleHeadingAnchorIds([
+    'رتبه ۱: کمپ مطالعاتی و گروه مشاوره پرگاس',
+    'رتبه ۱: کمپ مطالعاتی و گروه مشاوره پرگاس',
+    '!!!',
+  ]), [
+    '_رتبه_۱_کمپ_مطالعاتی_و_گروه_مشاوره_پرگاس',
+    '_رتبه_۱_کمپ_مطالعاتی_و_گروه_مشاوره_پرگاس_2',
+    '_section',
+  ]);
+});
 
 test('article blocks can move directly to a numbered display position', () => {
   const blocks = [
