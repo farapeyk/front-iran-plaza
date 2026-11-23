@@ -19,9 +19,12 @@ test('business page and metadata both pass decoded Persian slugs to the existing
     '@/lib/api/backend-get':{backendGet:async()=>[],BackendError:class extends Error{}},
     '@/design/api/generated/server':{businessControllerGetFullBySlug:async value=>{calls.push(value);assert.equal(value,slug);return business;},businessProfileControllerGetFeatures:async id=>{assert.equal(id,business.id);return [];}},
     '@/design/pages/business-live':{BusinessLivePage:()=>null},'@/lib/auth/cookies':{getAccessTokenCookie:async()=>null},
+    '@/features/seo/json-ld':{JsonLd:props=>({type:'JsonLd',props})},
+    '@/features/seo/business-seo':{buildBusinessStructuredData:value=>({business:value.id})},
     '@/features/public/lib/business-slug':normalizer,
   });
   const metadata=await route.generateMetadata({params:Promise.resolve({slug})});
   const page=await route.default({params:Promise.resolve({slug:encodeURIComponent(slug)})});
-  assert.equal(page.props.business.id,business.id);assert.equal(metadata.alternates.canonical,'/businesses/'+encodeURIComponent(slug));assert.deepEqual(calls,[slug,slug]);
+  assert.equal(page.props.children[1].props.business.id,business.id);assert.equal(metadata.alternates.canonical,'/businesses/'+encodeURIComponent(slug));assert.deepEqual(calls,[slug,slug]);
+  assert.deepEqual(page.props.children[0].props.data,{business:business.id});
 });

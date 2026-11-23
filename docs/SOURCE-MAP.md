@@ -946,8 +946,8 @@ src/features/admin/lib/get-business-detail.ts
 src/features/admin/lib/get-business-page.ts
 src/features/admin/types/plan.ts
 src/features/admin/types/user.ts
-src/features/analytics/configured-site-analytics.tsx
 src/features/analytics/business-events.ts
+src/features/analytics/configured-site-analytics.tsx
 src/features/analytics/site-analytics.tsx
 src/features/analytics/site-integrations.ts
 src/features/auth/actions/logout.action.ts
@@ -1081,6 +1081,7 @@ src/features/public/lib/business-slug.ts
 src/features/public/types/public-business.ts
 src/features/public/types/review.ts
 src/features/seo/article-seo.ts
+src/features/seo/business-seo.ts
 src/features/seo/json-ld.tsx
 src/features/seo/site-structured-data.ts
 src/features/seo/sitemap-data.ts
@@ -1130,6 +1131,7 @@ tests/browser/design-transfer.spec.ts
 tests/browser/reference-layout.spec.ts
 tests/business-category-routing.test.cjs
 tests/business-events.test.cjs
+tests/business-seo.test.cjs
 tests/business-slug.test.cjs
 tests/category-icons.test.cjs
 tests/cip.test.cjs
