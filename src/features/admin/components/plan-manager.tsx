@@ -107,7 +107,7 @@ export function PlanManager({ plans }: { plans: PlanSummary[] }) {
         {FEATURE_LABELS.map(([key, label]) => <label key={key} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-lg border border-neutral-200 px-3 py-2 text-sm"><input type="checkbox" className="size-4 accent-emerald-800" checked={draft.features[key]} onChange={event => setDraft(current => ({ ...current, features: { ...current.features, [key]: event.target.checked } }))} /><span>{label}</span></label>)}
       </div></fieldset>
 
-      <button type="button" disabled={pending} onClick={submit} className="mt-6 h-11 rounded-md bg-emerald-950 px-6 text-sm font-bold text-white disabled:opacity-50">{pending ? "در حال ذخیره…" : editingId ? "ذخیره تغییرات" : "ایجاد پلن ۳۰ روزه"}</button>
+      <button type="button" disabled={pending} onClick={submit} className="mt-6 h-11 rounded-md bg-emerald-950 px-6 text-sm font-bold text-white disabled:opacity-50">{pending ? "در حال ذخیره…" : editingId ? "ذخیره تغییرات" : "ایجاد پلن"}</button>
     </section>
 
     <section>
