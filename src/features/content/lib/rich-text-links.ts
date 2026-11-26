@@ -38,6 +38,7 @@ const supportedNodeTypes = new Set([
   "doc", "paragraph", "heading", "bulletList", "orderedList", "listItem",
   "blockquote", "codeBlock", "hardBreak", "horizontalRule", "image", "youtube",
   "table", "tableRow", "tableHeader", "tableCell", "rawHtml", "text",
+  "faq", "faqQuestion", "faqAnswer", "businessList", "callout",
 ]);
 
 const supportedMarkTypes = new Set(["bold", "italic", "underline", "strike", "code", "link", "textStyle"]);
@@ -88,7 +89,14 @@ function canonicalNode(value: RichTextNode, origin: string, isRoot = false): Ric
   const node: RichTextNode = { type: value.type };
   const attrs = plainObject(value.attrs);
   const textAlign = ["right", "center", "left"].includes(String(attrs.textAlign)) ? attrs.textAlign : undefined;
-  if (value.type === "heading") {
+  if (value.type === "businessList") {
+    node.attrs = {
+      businessIds: Array.isArray(attrs.businessIds) ? attrs.businessIds.filter((id): id is string => typeof id === "string").map(id => id.trim()) : [],
+      listTitle: typeof attrs.listTitle === "string" ? attrs.listTitle.trim().slice(0, 160) : "",
+    };
+  } else if (value.type === "faq") {
+    node.attrs = { isActive: attrs.isActive !== false };
+  } else if (value.type === "heading") {
     const level = attrs.level === 3 || attrs.level === 4 ? attrs.level : 2;
     node.attrs = { level, ...(textAlign ? { textAlign } : {}) };
   } else if (value.type === "paragraph" && textAlign) {

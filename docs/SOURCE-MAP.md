@@ -1018,6 +1018,7 @@ src/features/content/components/article-editor-insights.tsx
 src/features/content/components/article-feedback-form.tsx
 src/features/content/components/article-public-page.tsx
 src/features/content/components/article-search.tsx
+src/features/content/components/business-picker.tsx
 src/features/content/components/content-authors-manager.tsx
 src/features/content/components/content-category-manager.tsx
 src/features/content/components/content-media-library.tsx
@@ -1026,6 +1027,7 @@ src/features/content/components/editorial-profile-manager.tsx
 src/features/content/components/editorial-redirect-manager.tsx
 src/features/content/components/feedback-queue.tsx
 src/features/content/components/rich-text-editor.tsx
+src/features/content/components/rich-text-extensions.tsx
 src/features/content/components/rich-text-renderer.tsx
 src/features/content/lib/article-content.ts
 src/features/content/lib/article-preview.ts
@@ -1143,6 +1145,9 @@ tests/customer-dashboard-cache.test.cjs
 tests/design-api.test.cjs
 tests/docs.test.cjs
 tests/editorial-tags.test.cjs
+tests/fixtures/editor-runtime.cjs
+tests/fixtures/editor-typescript-loader.cjs
+tests/fixtures/rich-text-editor.tsx
 tests/glob-security.test.cjs
 tests/helpers.cjs
 tests/http.test.cjs
@@ -1155,6 +1160,8 @@ tests/production-deployment.test.cjs
 tests/products.test.cjs
 tests/recent-businesses.test.cjs
 tests/reviews.test.cjs
+tests/rich-text-editor.browser.cjs
+tests/rich-text-embedded.test.cjs
 tests/rich-text-links.test.cjs
 tests/rich-text-media.test.cjs
 tests/same-origin.test.cjs

@@ -16,15 +16,15 @@ import { ArticleBusinessList } from "@/features/content/components/article-busin
 
 const fileUrl = (id: string) => `/api/backend/files/${encodeURIComponent(id)}`;
 
-function TextBlock({ block, headingId }: { block: ArticleBlock; headingId?: string }) {
+function TextBlock({ block, headingId, renderBusinessList }: { block: ArticleBlock; headingId?: string; renderBusinessList: (ids: string[], title: string) => React.ReactNode }) {
   if (block.type === "heading") {
     if (block.level === 4) return <h4 id={headingId ?? block.id} className="scroll-mt-24 text-lg font-bold text-[var(--text-title)]">{block.text}</h4>;
     if (block.level === 3) return <h3 id={headingId ?? block.id} className="scroll-mt-24 text-xl font-bold text-[var(--text-title)]">{block.text}</h3>;
     return <h2 id={headingId ?? block.id} className="scroll-mt-24 text-2xl font-black text-[var(--text-title)]">{block.text}</h2>;
   }
-  if (block.type === "quote") return <blockquote className="border-s-4 border-primary-500 bg-primary-50 p-5 text-lg leading-loose">{block.richText ? <RichTextRenderer document={block.richText} /> : block.text}</blockquote>;
-  if (block.type === "callout") return <aside className="rounded-[var(--radius-xs)] bg-secondary-100 p-5 leading-loose text-[var(--text-title)]">{block.richText ? <RichTextRenderer document={block.richText} /> : block.text}</aside>;
-  if (block.richText) return <RichTextRenderer document={block.richText} />;
+  if (block.type === "quote") return <blockquote className="border-s-4 border-primary-500 bg-primary-50 p-5 text-lg leading-loose">{block.richText ? <RichTextRenderer document={block.richText} renderBusinessList={renderBusinessList} /> : block.text}</blockquote>;
+  if (block.type === "callout") return <aside className="rounded-[var(--radius-xs)] bg-secondary-100 p-5 leading-loose text-[var(--text-title)]">{block.richText ? <RichTextRenderer document={block.richText} renderBusinessList={renderBusinessList} /> : block.text}</aside>;
+  if (block.richText) return <RichTextRenderer document={block.richText} renderBusinessList={renderBusinessList} />;
   return <p className="whitespace-pre-line text-base leading-loose text-[var(--text-body)] md:text-lg">{block.text}</p>;
 }
 
@@ -119,7 +119,7 @@ export function ArticlePublicPage({ article, relatedArticles = [], categoryPath,
                 return <div key={block.id} id={block.id}><ArticleBusinessList businesses={businesses} title={block.listTitle} /></div>;
               }
               if (block.type === "table") return <ArticleTableView key={block.id} block={block} />;
-              return <TextBlock key={block.id} block={block} headingId={headingIds.get(block.id)} />;
+              return <TextBlock key={block.id} block={block} headingId={headingIds.get(block.id)} renderBusinessList={(ids, title) => <ArticleBusinessList title={title} businesses={ids.map(id => businessById.get(id)).filter((item): item is NonNullable<typeof item> => Boolean(item))} />} />;
             })}
 
             {activeFaqs.length ? (

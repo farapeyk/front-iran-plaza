@@ -2,7 +2,9 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { load } = require('./helpers.cjs');
 
-const { auditArticleSeo } = load('src/features/content/lib/article-seo-audit.ts');
+const { auditArticleSeo } = load('src/features/content/lib/article-seo-audit.ts', {
+  '@/features/content/lib/article-content': load('src/features/content/lib/article-content.ts'),
+});
 
 test('editor SEO audit rewards complete listing data and flags missing listing sources', () => {
   const input = {
@@ -19,4 +21,6 @@ test('editor SEO audit rewards complete listing data and flags missing listing s
   const missing = auditArticleSeo({ ...input, title: '', slug: '', excerpt: '', seoTitle: '', seoDescription: '', primaryKeyword: '', coverImageAlt: '', blocks: [] });
   assert.ok(missing.score < complete.score);
   assert.equal(missing.checks.find(check => /ItemList/.test(check.label)).passed, false);
+  const inline = auditArticleSeo({ ...input, blocks: [{ id: 'inline', type: 'paragraph', richText: { type: 'doc', content: [{ type: 'businessList', attrs: { businessIds: ['business-1'], listTitle: 'منتخب‌ها' } }] } }] });
+  assert.equal(inline.checks.find(check => /ItemList/.test(check.label)).passed, true);
 });

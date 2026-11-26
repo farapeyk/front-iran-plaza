@@ -33,7 +33,9 @@ function safeSpan(value: unknown): number {
   return typeof value === "number" && Number.isInteger(value) && value >= 1 && value <= 20 ? value : 1;
 }
 
-function renderNode(node: RichTextNode, key: string): ReactNode {
+type RenderBusinessList = (ids: string[], title: string) => ReactNode;
+
+function renderNode(node: RichTextNode, key: string, renderBusinessList?: RenderBusinessList): ReactNode {
   if (node.type === "text") {
     let child: ReactNode = node.text || "";
     for (const [index, mark] of (node.marks || []).entries()) {
@@ -59,7 +61,13 @@ function renderNode(node: RichTextNode, key: string): ReactNode {
     }
     return child;
   }
-  const children = (node.content || []).map((child, index) => renderNode(child, `${key}-${index}`));
+  if (node.type === "faq" && node.attrs?.isActive === false) return null;
+  const children = (node.content || []).map((child, index) => renderNode(child, `${key}-${index}`, renderBusinessList));
+  if (node.type === "businessList") return <div key={key}>{renderBusinessList?.((node.attrs?.businessIds as string[]) || [], String(node.attrs?.listTitle || ""))}</div>;
+  if (node.type === "faq") return <details key={key} className="rounded-xl border bg-white p-4"><summary className="cursor-pointer font-bold">{children[0]}</summary><div className="mt-3">{children[1]}</div></details>;
+  if (node.type === "faqQuestion") return <span key={key}>{children}</span>;
+  if (node.type === "faqAnswer") return <div key={key}>{children}</div>;
+  if (node.type === "callout") return <aside key={key} className="rounded-xl border border-amber-200 bg-amber-50 p-4">{children}</aside>;
   if (node.type === "doc") return children;
   if (node.type === "rawHtml") {
     const html = typeof node.attrs?.html === "string" ? node.attrs.html : "";
@@ -94,13 +102,13 @@ function renderNode(node: RichTextNode, key: string): ReactNode {
     if (!src) return null;
     return <iframe key={key} src={src} title={typeof node.attrs?.title === "string" ? node.attrs.title : "ویدئوی مقاله"} loading="lazy" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen className="aspect-video w-full rounded-xl border-0" />;
   }
-  if (node.type === "table") return <div key={key} className="overflow-x-auto"><table className="w-full border-collapse">{children}</table></div>;
+  if (node.type === "table") return <div key={key} className="overflow-x-auto"><table className="w-full border-collapse"><tbody>{children}</tbody></table></div>;
   if (node.type === "tableRow") return <tr key={key}>{children}</tr>;
   if (node.type === "tableHeader") return <th key={key} colSpan={safeSpan(node.attrs?.colspan)} rowSpan={safeSpan(node.attrs?.rowspan)} className="border border-slate-300 bg-slate-100 p-2 text-right font-black">{children}</th>;
   if (node.type === "tableCell") return <td key={key} colSpan={safeSpan(node.attrs?.colspan)} rowSpan={safeSpan(node.attrs?.rowspan)} className="border border-slate-300 p-2 align-top">{children}</td>;
   return null;
 }
 
-export function RichTextRenderer({ document }: { document: RichTextNode }) {
-  return <div className="space-y-4 leading-8 text-[var(--text-body)]">{renderNode(document, "rich-text")}</div>;
+export function RichTextRenderer({ document, renderBusinessList }: { document: RichTextNode; renderBusinessList?: RenderBusinessList }) {
+  return <div className="space-y-4 leading-8 text-[var(--text-body)]">{renderNode(document, "rich-text", renderBusinessList)}</div>;
 }

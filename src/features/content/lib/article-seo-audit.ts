@@ -1,4 +1,5 @@
 import type { ArticleBlock, ArticleSchemaType } from "@/features/content/types";
+import { articleStructuredBlocks } from "@/features/content/lib/article-content";
 
 export type SeoAuditInput = {
   title: string;
@@ -23,7 +24,7 @@ export function auditArticleSeo(input: SeoAuditInput) {
   const effectiveTitle = input.seoTitle.trim() || input.title.trim();
   const effectiveDescription = input.seoDescription.trim() || input.excerpt.trim();
   const firstText = input.blocks.find(block => block.type === "paragraph")?.text || "";
-  const hasListingSource = input.blocks.some(block =>
+  const hasListingSource = articleStructuredBlocks(input.blocks).some(block =>
     (block.type === "business-list" && Boolean(block.businessIds?.length))
     || (block.type === "table" && Boolean(block.table?.rows.length))
     || (block.type === "heading" && Boolean(block.text?.trim())),

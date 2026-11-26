@@ -1,4 +1,42 @@
-import type { ArticleBlock } from "@/features/content/types";
+import type { ArticleBlock, ArticleFaq, RichTextNode } from "@/features/content/types";
+
+export function richTextPlainText(node: RichTextNode): string {
+  if (node.type === "text") return node.text || "";
+  if (node.type === "businessList") return String(node.attrs?.listTitle || "معرفی کسب‌وکار");
+  return (node.content || []).map(richTextPlainText).join(["paragraph", "heading", "faqQuestion"].includes(node.type) ? "" : " ").trim();
+}
+
+/** Only visible nodes contribute to public structured data. */
+export function articleEmbeddedNodes(blocks: ArticleBlock[]): RichTextNode[] {
+  const walk = (node: RichTextNode): RichTextNode[] => node.type === "faq" && node.attrs?.isActive === false
+    ? [] : [node, ...(node.content || []).flatMap(walk)];
+  return blocks.flatMap(block => block.richText ? walk(block.richText) : []);
+}
+
+export function articleStructuredBlocks(blocks: ArticleBlock[]): ArticleBlock[] {
+  return blocks.flatMap(block => [block, ...articleEmbeddedNodes([block]).flatMap((node, index): ArticleBlock[] => {
+    if (node.type === "businessList") return [{ id: `${block.id}-embedded-${index}`, type: "business-list", businessIds: (node.attrs?.businessIds as string[]) || [], listTitle: String(node.attrs?.listTitle || "") }];
+    if (node.type === "table") {
+      const rows = (node.content || []).map(row => ({ cells: (row.content || []).map(richTextPlainText) }));
+      const hasHeader = node.content?.[0]?.content?.every(cell => cell.type === "tableHeader");
+      return [{ id: `${block.id}-table-${index}`, type: "table", table: { headers: hasHeader ? rows[0]?.cells || [] : rows[0]?.cells.map((_, i) => `ستون ${i + 1}`) || [], rows: hasHeader ? rows.slice(1) : rows } }];
+    }
+    return [];
+  })]);
+}
+
+export function articleVisibleFaqs(blocks: ArticleBlock[], faqs: ArticleFaq[]): ArticleFaq[] {
+  const entries = [...faqs.filter(item => item.isActive !== false), ...articleEmbeddedNodes(blocks).filter(node => node.type === "faq").map(node => ({
+    question: richTextPlainText(node.content?.[0] || { type: "faqQuestion" }),
+    answer: richTextPlainText(node.content?.[1] || { type: "faqAnswer" }),
+  }))];
+  const seen = new Set<string>();
+  return entries.filter(item => {
+    const key = item.question.trim().toLocaleLowerCase("fa");
+    if (!key || !item.answer.trim() || seen.has(key)) return false;
+    seen.add(key); return true;
+  });
+}
 
 export const ARTICLE_EXCERPT_MAX_LENGTH = 5_000;
 

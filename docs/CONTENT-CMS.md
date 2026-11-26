@@ -133,7 +133,7 @@ QA نمایش اندازهٔ بنر (۲۰۲۶-۱۱-۰۴): ۱۴۰ تست Node، `
 
 - کلیک دوباره روی حالت فعال «متن» یا «HTML» دیگر سند را بازنویسی نمی‌کند.
 - هنگام ورود به HTML یک snapshot از منبع فعلی گرفته می‌شود؛ بازگشت به متن بدون تغییر واقعی، فقط نما را عوض می‌کند و ساختار TipTap، لینک، تصویر، جدول و متن قبلی دست‌نخورده می‌مانند.
-- فقط وقتی منبع HTML واقعاً تغییر کرده باشد، گره `rawHtml` تازه ساخته می‌شود؛ بنابراین افزودن HTML به انتهای منبع موجود، متن قبلی را نیز حفظ می‌کند.
+- HTML معمولی پس از تغییر به گره‌های قابل ویرایش برمی‌گردد. کد اختصاصی با انتخاب حالت HTML/CSS سفارشی یا درج باکس HTML در متن در گره `rawHtml` نگهداری می‌شود.
 
 ### QA
 
@@ -197,3 +197,19 @@ QA این تغییر: `pnpm typecheck`، `pnpm test` و `pnpm build` اجرا ش
 Authors and administrators have public editorial profiles at `/authors/{slug}`. The content authors manager edits a profile slug, display name, and short bio. Published article pages link the displayed author name to the matching profile; each profile lists the author's three latest published articles. The article editor's byline is an article-only display override and does not update the account or profile name.
 
 QA (2026-11-15): frontend typecheck, production build, and all 159 frontend tests passed.
+
+## اجزای ساختاریافته داخل متن غنی (۲۰۲۶-۱۱-۲۷)
+
+- بلوک‌بندی مقاله حفظ شده است؛ هر متن غنی می‌تواند در محل نشانگر FAQ، معرفی کسب‌وکار، جدول، نقل‌قول، باکس نکته، تصویر، ویدئو و HTML/CSS سفارشی داشته باشد.
+- FAQ شامل پرسش و پاسخ قابل ویرایش است. کنترل «انتشار FAQ و اسکیما» پرسش جاری را فعال یا غیرفعال می‌کند؛ پرسش غیرفعال در صفحه و JSON-LD نمایش داده نمی‌شود. FAQهای جداگانه همچنان در انتهای مقاله هستند؛ FAQ داخل متن در همان جایگاه نمایش داده می‌شود.
+- معرفی کسب‌وکار همان انتخاب‌گر جست‌وجو و ترتیب‌دهی بلوک مستقل را دارد. فقط شناسه و عنوان فهرست ذخیره می‌شود؛ اطلاعات کسب‌وکار از روابط معتبر مقاله می‌آید. API تکرار کسب‌وکار در سراسر مقاله، شناسهٔ نامعتبر و کسب‌وکار فاقد شرایط انتشار را رد می‌کند.
+- FAQPage از پرسش‌های فعال هر دو محل ساخته می‌شود. BlogPosting کسب‌وکارهای قابل نمایش را با LocalBusiness در `mentions` معرفی می‌کند. در حالت LISTING، ItemList از فهرست‌های مستقل و درون متن یا سطرهای جدول ساخته می‌شود؛ حالت ARTICLE همچنان ItemList ندارد. جدول HTML به TableRow/TableCell ساختگی اسکیما تبدیل نمی‌شود.
+- چک‌لیست سئوی ویرایشگر، فهرست کسب‌وکار و جدول داخل متن غنی را نیز به‌عنوان منبع ItemList شناسایی می‌کند.
+- جدول متن غنی کنترل افزودن/حذف سطر و ستون، سطر/ستون عنوان، ادغام و تفکیک خانه و حذف جدول دارد. لینک تماس را می‌توان روی متن داخل خانه درج کرد.
+- تب HTML برای اجزای ساختاریافته از `data-faq`، `data-faq-question`، `data-faq-answer`، `data-active`، `data-business-list`، `data-business-ids`، `data-list-title` و `data-callout` استفاده می‌کند. این ویژگی‌ها باید حفظ شوند. تغییر معتبر HTML بلافاصله به مدل مقاله منتقل می‌شود؛ ذخیرهٔ مقاله با HTML نامعتبر متوقف می‌شود.
+- HTML قابل ویرایش فقط گره‌ها و قالب‌های پشتیبانی‌شدهٔ ویرایشگر را نگه می‌دارد. برای حفظ دقیق HTML/CSS اختصاصی از باکس سفارشی استفاده کنید. تگ style همراه FAQ/کسب‌وکار در یک منبع پذیرفته نمی‌شود؛ CSS اختصاصی را در باکس HTML جداگانه قرار دهید. باکس HTML ترکیبی نیز با `data-rich-html` و `data-html` رفت‌وبرگشت می‌کند. پاک‌سازی امنیتی اصلی در backend پیش از ذخیره انجام می‌شود.
+- فایل‌های اصلی: `src/features/content/components/rich-text-extensions.tsx`، `business-picker.tsx`، `rich-text-editor.tsx`، `rich-text-renderer.tsx`، `src/features/content/lib/article-content.ts` و `src/features/seo/article-seo.ts`.
+
+آزمون‌های مرتبط: `node --test tests/rich-text-embedded.test.cjs tests/rich-text-links.test.cjs tests/article-seo.test.cjs` و `node tests/rich-text-editor.browser.cjs`. آزمون مرورگر از خود ویرایشگر React/TipTap در Edge و fixture محلی استفاده می‌کند؛ آپلود، احراز هویت و پایگاه دادهٔ واقعی را پوشش نمی‌دهد. نتیجهٔ نهایی QA در گزارش این تغییر ثبت می‌شود.
+
+QA نهایی این تغییر: `npm test` با ۱۷۸ تست موفق، `npm run lint`، `npm run typecheck`، `npm run build` و `git diff --check` موفق شدند. آزمون Edge نیز درج FAQ، فعال/غیرفعال‌کردن، انتخاب کسب‌وکار، درج جزء جدید هنگام انتخاب پرسش بدون شکستن FAQ، همگام‌سازی زندهٔ HTML، حفظ متن سؤال پس از رفت‌وبرگشت، جدول با سطر افزوده، باکس نکته و HTML/CSS ترکیبی، رد HTML نامعتبر، خوانایی دکمهٔ فعال و نبود بیرون‌زدگی در عرض ۳۹۰ پیکسل را تأیید کرد. خروجی build نیز منبع درون‌متنی را در چک‌لیست سئو دارد. ذخیرهٔ احرازشده با دیتابیس واقعی و انتشار production اجرا نشده‌اند.

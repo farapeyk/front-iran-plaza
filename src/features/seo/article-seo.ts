@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { displayArticleExcerpt, withoutLegacyArticleWidgets } from "@/features/content/lib/article-content";
+import { articleStructuredBlocks, articleVisibleFaqs, displayArticleExcerpt, withoutLegacyArticleWidgets } from "@/features/content/lib/article-content";
 import { articlePath } from "@/features/content/lib/public-paths";
 import type { PublicArticle, PublicArticleListItem } from "@/features/content/types";
 
@@ -121,7 +121,10 @@ export function buildArticleStructuredData(
     : undefined;
   const authorName = article.author.fullName?.trim();
   const businessById = new Map(article.businesses.map(link => [link.business.id, link.business]));
-  const activeFaqs = article.faqs.filter(item => item.isActive !== false);
+  const activeFaqs = articleVisibleFaqs(article.bodyBlocks, article.faqs);
+  const structuredBlocks = articleStructuredBlocks(article.bodyBlocks);
+  const mentionedBusinesses = [...new Set(structuredBlocks.flatMap(block => block.type === "business-list" ? block.businessIds || [] : []))]
+    .map(id => businessById.get(id)).filter((item): item is NonNullable<typeof item> => Boolean(item));
   const graph: Array<Record<string, unknown>> = [
     {
       "@type": "WebPage",
@@ -143,6 +146,14 @@ export function buildArticleStructuredData(
       datePublished: article.publishedAt,
       dateModified: article.updatedAt,
       wordCount: articleWordCount(article),
+      ...(mentionedBusinesses.length ? { mentions: mentionedBusinesses.map(business => ({
+        "@type": "LocalBusiness",
+        "@id": `${absoluteSiteUrl(`/businesses/${encodeURIComponent(business.slug)}`, configured)}#business`,
+        name: business.name,
+        url: absoluteSiteUrl(`/businesses/${encodeURIComponent(business.slug)}`, configured),
+        ...(business.phone ? { telephone: business.phone } : {}),
+        ...(businessAddress(business) ? { address: businessAddress(business) } : {}),
+      })) } : {}),
       ...(article.tags?.length ? { keywords: article.tags.join(", ") } : {}),
       ...(article.category?.name ? { articleSection: article.category.name } : {}),
       author: authorName
@@ -186,10 +197,10 @@ export function buildArticleStructuredData(
   }
 
   if (article.schemaType === "LISTING") {
-    const businessItems = article.bodyBlocks.flatMap(block => block.type === "business-list"
+    const businessItems = structuredBlocks.flatMap(block => block.type === "business-list"
       ? (block.businessIds || []).map(id => businessById.get(id)).filter((item): item is NonNullable<typeof item> => Boolean(item))
       : []);
-    const tableItems = article.bodyBlocks.flatMap(block => block.type === "table"
+    const tableItems = structuredBlocks.flatMap(block => block.type === "table"
       ? (block.table?.rows || []).filter(row => row.cells.some(Boolean)).map(row => ({
           name: row.cells[0] || article.title,
           description: row.cells.slice(1).map((cell, index) => `${block.table?.headers[index + 1] || "ویژگی"}: ${cell}`).filter(value => !value.endsWith(": ")).join("، "),
@@ -226,7 +237,7 @@ export function buildArticleStructuredData(
     graph.push({
       "@type": "ItemList",
       "@id": `${articleUrl}#listing`,
-      name: article.bodyBlocks.find(block => block.type === "business-list" && block.listTitle?.trim())?.listTitle || article.title,
+      name: structuredBlocks.find(block => block.type === "business-list" && block.listTitle?.trim())?.listTitle || article.title,
       numberOfItems: itemListElement.length,
       itemListOrder: "https://schema.org/ItemListOrderAscending",
       itemListElement,
